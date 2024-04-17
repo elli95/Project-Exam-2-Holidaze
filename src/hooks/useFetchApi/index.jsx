@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 
 function useFetchApi(url) {
-  const [products, setProduct] = useState([]);
+  const [venues, setVenues] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchData() {
       try {
         setIsLoading(true);
@@ -14,7 +16,12 @@ function useFetchApi(url) {
         const response = await fetch(url);
         const json = await response.json();
 
-        setProduct(json.data);
+        // console.log(json.data);
+        // setVenues(json.data);
+
+        if (isMounted) {
+          setVenues(json.data);
+        }
       } catch (error) {
         console.log(error);
         setIsError(true);
@@ -24,10 +31,14 @@ function useFetchApi(url) {
       }
     }
     fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [url]);
 
   return {
-    products,
+    venues,
     isLoading,
     isError,
   };
