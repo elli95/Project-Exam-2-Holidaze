@@ -12,7 +12,7 @@ function LoginPage() {
   });
 
   const validateEmail = (email) => {
-    const emailRegex = /\S+@\S+\.\S+/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@stud\.noroff\.no$/;
     return emailRegex.test(email);
   };
 
@@ -78,7 +78,7 @@ function LoginPage() {
           </div>
           <div>
             <label htmlFor="password">Password</label>
-            <textarea
+            <input
               type="password"
               name="password"
               value={formState.password}
