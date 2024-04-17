@@ -1,7 +1,9 @@
+import VenueInfo from "../../components/VenueInfo";
+
 function VenuePage() {
   return (
     <div>
-      <h1>VenuePage</h1>
+      <VenueInfo />
     </div>
   );
 }
