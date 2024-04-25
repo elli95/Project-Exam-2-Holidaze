@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_LOGIN_URL } from "../../shared/apis";
 
 function LoginPage() {
   const [formState, setFormState] = useState({
@@ -47,11 +48,47 @@ function LoginPage() {
     setErrors(newErrors);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const isValidForm = Object.values(errors).every((error) => !error);
     if (isValidForm) {
       console.log("Form submitted:", formState);
+      try {
+        const response = await fetch(API_LOGIN_URL, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formState),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          console.log("error", data.errors[0].message);
+        } else {
+          const apiData = data.data;
+          const { accessToken, ...userProfile } = apiData;
+
+          localStorage.setItem("token", accessToken);
+          localStorage.setItem("profile", JSON.stringify(userProfile));
+
+          console.log("Form submitted localStorage:", localStorage);
+          window.location.href = "/";
+        }
+
+        // if (!response.ok) {
+        //   console.log("error2", data.errors[0].message);
+        //   // console.log("error", response);
+        //   // throw new Error(response.status);
+        // } else {
+        //   console.log("User registered successfully!");
+        //   // window.location.href = "/";
+        // }
+      } catch (error) {
+        console.error("Error during login:", error);
+      }
     } else {
       console.log("This form has errors. Please correct them.");
     }
