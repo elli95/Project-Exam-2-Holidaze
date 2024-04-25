@@ -1,10 +1,12 @@
-import MenuNav from "../MenuNav";
+import FooterSection from "../FooterSection";
+import HeaderNav from "../HeaderNav";
 
 function Layout({ children }) {
   return (
     <div>
-      <MenuNav />
+      <HeaderNav />
       <main>{children}</main>
+      <FooterSection />
     </div>
   );
 }

@@ -20,7 +20,13 @@ function SearchField() {
 
   return (
     <div>
-      <input type="text" placeholder="Search" value={inputValue} onChange={inputValueChange}></input>
+      <input
+        type="text"
+        placeholder="Search"
+        value={inputValue}
+        onChange={inputValueChange}
+        className="rounded-lg p-2 max-h-10 text-xl w-80 h-10 lg:w-96"
+      ></input>
       {inputValue && (
         <ul>
           {filteredVenues.map((venue) => (

@@ -1,7 +1,9 @@
+import ProfileInfo from "../../components/ProfileInfo";
+
 function ProfilePage() {
   return (
     <div>
-      <h1>ProfilePage</h1>
+      <ProfileInfo />
     </div>
   );
 }
