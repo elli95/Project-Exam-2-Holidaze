@@ -1,13 +1,27 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
 img {
+  height: 100%;
   width: 100%;
-  max-width: 10%;
+}
+
+.imgBox {
+  overflow: hidden;
+  height: 160px;
+  border-radius: 7px 7px 0px 0px;
+}
+
+.imgBox img {
+  object-fit: cover;
 }
 
 main {
   display: flex;
   justify-content: center;
-  padding: 0;
-  margin: 0;
+  padding: 20px;
+  margin: 80px 0px 0px 0px;
   min-height: 100vh;
 }
 
@@ -40,12 +54,20 @@ main {
   flex-wrap: wrap;
   justify-content: center;
   gap: 50px;
-  max-width: 2000px;
+  max-width: 1350px;
 }
 
 .venueSection a {
   display: flex;
   flex-direction: column;
   width: 300px;
-  border: 2px solid black;
+  /* border: 2px solid black; */
+}
+
+.highlight {
+  background-color: yellow; /* Customize the styling as desired */
+}
+
+.highlightBooking {
+  background-color: rgb(94, 17, 217); /* Customize the styling as desired */
 }
