@@ -9,7 +9,7 @@ function VenueInfo() {
   const { id } = useParams();
   const { venues, fetchVenues } = useVenues();
   const [venue, setVenue] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
+  // const [selectedDate, setSelectedDate] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
