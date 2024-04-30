@@ -36,7 +36,7 @@ function VenueInfo() {
 
   return (
     <div className="venueSection flex-col" key={venue.id}>
-      <div className="overflow-hidden self-center max-h-56 md:h-96 w-5/6 ">
+      <div className="overflow-hidden self-center max-h-56 w-5/6 md:h-96  ">
         {venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} className="object-contain" />}
       </div>
       <div className="flex justify-around lg:justify-between">
@@ -45,7 +45,7 @@ function VenueInfo() {
       </div>
       {/* <div className="flex flex-col gap-7 lg:gap-0 lg:flex-row "> */}
       <div className="flex flex-col gap-7 lg:gap-0 lg:grid lg:grid-cols-2 ">
-        <div className="flex flex-col items-center self-center lg:border-r-2 lg:px-5 xl:px-12">
+        <div className="flex flex-col justify-center items-center self-center min-h-128 lg:border-r-2 lg:px-5 xl:px-12">
           <div className="flex flex-col gap-4 max-w-56 sm:max-w-none sm:flex-row sm:justify-evenly sm:gap-20">
             <div className="min-w-48">
               <h2>Location:</h2>
