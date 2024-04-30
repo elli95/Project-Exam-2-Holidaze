@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { API_LOGIN_URL } from "../../shared/apis";
 
+
 function LoginPage() {
+  const [errorMessage, setErrorMessage] = useState("");
   const [formState, setFormState] = useState({
     email: "",
     password: "",
@@ -67,6 +69,7 @@ function LoginPage() {
 
         if (!response.ok) {
           console.log("error", data.errors[0].message);
+          setErrorMessage(data.errors[0].message);
         } else {
           const apiData = data.data;
           const { accessToken, ...userProfile } = apiData;
@@ -95,8 +98,8 @@ function LoginPage() {
   };
 
   return (
-    <div className="contactForm">
-      <div className="contactFormContainer">
+    <div className="loginForm">
+      <div className="loginFormContainer">
         <h1>Contact form:</h1>
         <form onSubmit={handleSubmit}>
           <div>
@@ -127,7 +130,10 @@ function LoginPage() {
             />
             <span className="error">{errors.password}</span>
           </div>
-          <button type="submit">Submit</button>
+          <button type="submit" className="btnStyle">
+            Submit
+          </button>
+          {errorMessage && <span className="error">{errorMessage}</span>}
         </form>
       </div>
     </div>

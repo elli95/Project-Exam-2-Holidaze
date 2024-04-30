@@ -1,14 +1,16 @@
 import { useState } from "react";
-// import useApiPost from "../../hooks/usePostApi";
+import useApiPost from "../../hooks/usePostApi";
 import { API_REGISTER_URL } from "../../shared/apis";
 
 function RegistrationPage() {
+  const [errorMessage, setErrorMessage] = useState("");
   const [formState, setFormState] = useState({
     name: "",
     email: "",
     bio: "",
     // avatar: "",
     password: "",
+    venueManager: "",
   });
 
   const [errors, setErrors] = useState({
@@ -30,12 +32,35 @@ function RegistrationPage() {
   };
 
   const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormState((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    const { name, value, type, checked } = event.target;
+    if (type === "text") {
+      setFormState((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    } else if (type === "checkbox") {
+      setFormState((prevState) => ({
+        ...prevState,
+        [name]: checked,
+      }));
+    }
   };
+
+  // const handleInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setFormState((prevState) => ({
+  //     ...prevState,
+  //     [name]: value,
+  //   }));
+  // };
+
+  // const handleInputChange = (event) => {
+  //   const { name, checked } = event.target;
+  //   setFormState((prevState) => ({
+  //     ...prevState,
+  //     [name]: checked, // Set venueManager to true or false based on checkbox state
+  //   }));
+  // };
 
   const handleBlur = (event) => {
     const { name, value } = event.target;
@@ -74,13 +99,14 @@ function RegistrationPage() {
           body: JSON.stringify(formState),
         });
 
+        const data = await response.json();
         if (!response.ok) {
-          throw new Error(response.status);
+          console.log("error", data.errors[0].message);
+          setErrorMessage(data.errors[0].message);
         } else {
           console.log("User registered successfully!");
         }
 
-        const data = await response.json();
         console.log("Form submitted:", data);
       } catch (error) {
         console.error("Error during registration:", error);
@@ -91,8 +117,8 @@ function RegistrationPage() {
   };
 
   return (
-    <div className="contactForm">
-      <div className="contactFormContainer">
+    <div className="registrationForm">
+      <div className="registrationFormContainer">
         <h1>Contact form:</h1>
         <form onSubmit={handleSubmit}>
           <div>
@@ -169,7 +195,15 @@ function RegistrationPage() {
             />
             <span className="error">{errors.password}</span>
           </div>
-          <button type="submit">Submit</button>
+          <div className="flex flex-row">
+            <label htmlFor="venueManager">Venue manager</label>
+            <input type="hidden" name="venueManager" value="0" />
+            <input type="checkbox" name="venueManager" onChange={handleInputChange} />
+          </div>
+          <button type="submit" className="btnStyle">
+            Submit
+          </button>
+          {errorMessage && <span className="error">{errorMessage}</span>}
         </form>
       </div>
     </div>
