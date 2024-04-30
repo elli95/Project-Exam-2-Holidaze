@@ -1,8 +1,8 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { API_REGISTER_URL } from "../../shared/apis";
 
 async function useApiPost(formData) {
-  const [errorMessage, setErrorMessage] = useState("");
+  // const [errorMessage, setErrorMessage] = useState("");
 
   try {
     const response = await fetch(API_REGISTER_URL, {
@@ -16,8 +16,9 @@ async function useApiPost(formData) {
     const data = await response.json();
 
     if (!response.ok) {
-      setErrorMessage("There was an error: " + data.errors[0].message);
-      throw new Error(response.status);
+      console.log("error", data.errors[0].message);
+      // setErrorMessage("There was an error: " + data.errors[0].message);
+      // throw new Error(response.status);
     } else {
       // Handle success (e.g., show a success message)
       console.log("User registered successfully!");

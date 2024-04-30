@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useApiPost from "../../hooks/usePostApi";
+// import useApiPost from "../../hooks/usePostApi";
 import { API_REGISTER_URL } from "../../shared/apis";
 
 function RegistrationPage() {
@@ -46,22 +46,6 @@ function RegistrationPage() {
     }
   };
 
-  // const handleInputChange = (event) => {
-  //   const { name, value } = event.target;
-  //   setFormState((prevState) => ({
-  //     ...prevState,
-  //     [name]: value,
-  //   }));
-  // };
-
-  // const handleInputChange = (event) => {
-  //   const { name, checked } = event.target;
-  //   setFormState((prevState) => ({
-  //     ...prevState,
-  //     [name]: checked, // Set venueManager to true or false based on checkbox state
-  //   }));
-  // };
-
   const handleBlur = (event) => {
     const { name, value } = event.target;
     const newErrors = { ...errors };
@@ -69,7 +53,6 @@ function RegistrationPage() {
     switch (name) {
       case "name":
       case "bio":
-      // case "avatar":
       case "password":
         newErrors[name] = validateInputLength(value) ? "" : `You must enter at least 3 characters`;
         break;
