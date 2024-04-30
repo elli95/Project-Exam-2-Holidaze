@@ -47,6 +47,14 @@ main {
   }
 }
 
+/* button style */
+.btnStyle {
+  padding: 6px 30px;
+  background-color: rgb(66, 219, 66);
+  border-radius: 10px;
+  align-self: center;
+}
+
 /* Homepage */
 
 .venueSection {
@@ -70,4 +78,32 @@ main {
 
 .highlightBooking {
   background-color: rgb(94, 17, 217); /* Customize the styling as desired */
+}
+
+/* Login & Registration page */
+
+.registrationForm,
+.loginForm {
+  display: flex;
+  align-self: center;
+}
+
+.registrationForm form,
+.loginForm form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.registrationFormContainer div,
+.loginFormContainer div {
+  display: flex;
+  flex-direction: column;
+}
+
+.registrationFormContainer input,
+.loginFormContainer input {
+  border: 1px solid rgb(126, 125, 125);
+  border-radius: 5px;
+  background-color: rgb(237, 237, 237);
 }
