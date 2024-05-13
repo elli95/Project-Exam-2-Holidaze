@@ -4,14 +4,25 @@ import { useParams } from "react-router-dom";
 import useVenues from "../../store/venueLocations";
 import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
+import { API_BOOKINGS } from "../../shared/apis";
+import usePostApiKey from "../../hooks/usePostApiKey";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 function VenueInfo() {
+  const { apiKey } = usePostApiKey();
+  const { accessToken } = useLocalStorage();
   const { id } = useParams();
   const { venues, fetchVenues } = useVenues();
   const [venue, setVenue] = useState(null);
   // const [selectedDate, setSelectedDate] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [formState, setFormState] = useState({
+    dateFrom: new Date().toISOString(),
+    dateTo: "",
+    guests: "",
+    venueId: "",
+  });
 
   useEffect(() => {
     fetchVenues();
@@ -31,8 +42,47 @@ function VenueInfo() {
     to: new Date(booking.dateTo),
   }));
 
-  console.log("bookedDates", bookedDates);
-  console.log("startDate and endDate", startDate, endDate);
+  // console.log("bookedDates", bookedDates);
+  // console.log("startDate and endDate", startDate, endDate);
+  console.log("venue", venue);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    const parsedValue = parseInt(value, 10);
+    const parsedDate = new Date(value);
+    setFormState((prevState) => ({
+      ...prevState,
+      [name]: name === "guests" ? parsedValue : parsedDate,
+      venueId: venue.id,
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log("formState", formState);
+    try {
+      const response = await fetch(API_BOOKINGS, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+          "X-Noroff-API-Key": apiKey.key,
+        },
+        body: JSON.stringify(formState),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.log("error", data.errors[0].message);
+        // setErrorMessage(data.errors[0].message);
+      } else {
+        console.log("booking Data:", data);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+  };
 
   return (
     <div className="venueSection flex-col" key={venue.id}>
@@ -145,18 +195,29 @@ function VenueInfo() {
             }}
             minDate={new Date()}
           />
-          <div className="flex gap-12">
-            <div className="flex flex-col">
-              <label>Start Date:</label>
-              <input type="date" value={startDate || ""} onChange={(e) => setStartDate(e.target.value)} />
+          <form onSubmit={handleSubmit}>
+            <div className="flex gap-12">
+              <div className="flex flex-col">
+                <label>Start Date:</label>
+                <input type="date" name="dateFrom" onChange={handleInputChange} />
+              </div>
+              <div className="flex flex-col">
+                <label>End Date:</label>
+                <input type="date" name="dateTo" onChange={handleInputChange} />
+              </div>
             </div>
-            <div className="flex flex-col">
-              <label>End Date:</label>
-              <input type="date" value={endDate || ""} onChange={(e) => setEndDate(e.target.value)} />
-            </div>
-          </div>
 
-          {/* <Calendar
+            {/* <div className="flex gap-12">
+              <div className="flex flex-col">
+                <label>Start Date:</label>
+                <input type="date" value={startDate || ""} onChange={(e) => setStartDate(e.target.value)} />
+              </div>
+              <div className="flex flex-col">
+                <label>End Date:</label>
+                <input type="date" value={endDate || ""} onChange={(e) => setEndDate(e.target.value)} />
+              </div>
+            </div> */}
+            {/* <Calendar
             tileClassName={({ date, view }) => {
               if (view === "month") {
                 // Check if the date falls within any booking range
@@ -186,12 +247,23 @@ function VenueInfo() {
               console.log("Selected dates:", inputDates);
             }}
           /> */}
-          <div className="flex">
-            <label>Guests:</label>
-            <input type="number" min="1" max={venue.maxGuests} pattern="[0-9]*"></input>
-          </div>
-          <p>Total: {venue.price}</p>
-          <button>Book Venue</button>
+            <div className="flex">
+              <label>Guests:</label>
+              <input
+                type="number"
+                name="guests"
+                value={formState.guests}
+                min="1"
+                max={venue.maxGuests}
+                pattern="[0-9]*"
+                onChange={handleInputChange}
+              ></input>
+            </div>
+            <p>Total: {venue.price}</p>
+            <button type="submit" className="btnStyle">
+              Book Venue
+            </button>
+          </form>
         </div>
       </div>
     </div>

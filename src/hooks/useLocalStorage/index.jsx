@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 function useLocalStorage() {
   const [accessToken, setAccessToken] = useState([]);
+  const [userInfo, setUserInfo] = useState([]);
 
   useEffect(() => {
     const accessToken = localStorage.getItem("token");
@@ -10,11 +11,26 @@ function useLocalStorage() {
     }
   }, []);
 
+  useEffect(() => {
+    const userProfile = localStorage.getItem("profile");
+    const userInfo = JSON.parse(userProfile);
+    if (userInfo) {
+      setUserInfo(userInfo);
+    }
+  }, []);
+
   const clearLocalStorage = () => {
     localStorage.clear();
   };
 
-  return { accessToken, clearLocalStorage };
+  return { accessToken, userInfo, clearLocalStorage };
 }
 
 export default useLocalStorage;
+
+// useEffect(() => {
+//   const userInfo = localStorage.getItem("profile");
+//   if (userInfo) {
+//     setUserInfo(userInfo);
+//   }
+// }, []);

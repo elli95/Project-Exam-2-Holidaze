@@ -1,26 +1,16 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import Venues from "../Venues";
+import useBtnDividerEventHandlers from "../../hooks/useBtnDividerEventHandlers";
 
 function HomepagePreLogin() {
-  const [isTravelersShown, setIsTravelersShown] = useState(false);
-  const [isVenueManagersShown, setIsVenueManagersShown] = useState(false);
-  const [isTravelersButtonDisabled, setTravelersButtonDisabled] = useState(true);
-  const [isVenueManagersButtonDisabled, setVenueManagersButtonDisabled] = useState(false);
-
-  const handleTravelersClick = () => {
-    setIsTravelersShown(!isTravelersShown);
-    setIsVenueManagersShown(!isVenueManagersShown);
-    setTravelersButtonDisabled(true);
-    setVenueManagersButtonDisabled(false);
-  };
-
-  const handleVenueManagersClick = () => {
-    setIsVenueManagersShown(!isVenueManagersShown);
-    setIsTravelersShown(!isTravelersShown);
-    setTravelersButtonDisabled(false);
-    setVenueManagersButtonDisabled(true);
-  };
+  const {
+    isTravelersShown,
+    isVenueManagersShown,
+    isTravelersButtonDisabled,
+    isVenueManagersButtonDisabled,
+    handleTravelersClick,
+    handleVenueManagersClick,
+  } = useBtnDividerEventHandlers();
 
   return (
     <div>

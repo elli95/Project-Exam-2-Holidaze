@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { API_LOGIN_URL } from "../../shared/apis";
 
+console.log("123123123@stud.noroff.no or robinTest@stud.noroff.no");
 
 function LoginPage() {
   const [errorMessage, setErrorMessage] = useState("");

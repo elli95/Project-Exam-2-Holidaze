@@ -28,7 +28,7 @@ function HeaderNav() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 flex justify-around items-center text-3xl p-3 bg-tahiti">
+    <header className="fixed z-20 inset-x-0 top-0 flex justify-around items-center text-3xl p-3 bg-tahiti">
       <Link to="/">
         <h1 className="text-5xl">Holidaze</h1>
       </Link>
