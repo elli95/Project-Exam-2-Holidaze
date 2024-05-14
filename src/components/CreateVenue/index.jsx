@@ -41,35 +41,52 @@ function CreateVenue() {
     setIsVenueFormShown(!isVenueFormShown);
   };
 
-  // const isValidUrl = (string) => {
-  //   try {
-  //     new URL(string);
-  //   } catch (_) {
-  //     return false;
-  //   }
-  //   return true;
-  // };
+  const handleAddImage = () => {
+    setFormState({
+      ...formState,
+      media: [...formState.media, { url: "", alt: "" }],
+    });
+  };
+
+  const handleRemoveImage = (index) => {
+    if (formState.media.length > 1) {
+      const newMedia = [...formState.media];
+      newMedia.splice(index, 1);
+      setFormState({ ...formState, media: newMedia });
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // const mediaUrl = event.target.elements["media.url"].value;
-
-    // if (!isValidUrl(mediaUrl)) {
-    //   console.error("Image URL must be valid URL");
-    //   return;
-    // }
+    const media = [];
+    for (let element of event.target.elements) {
+      if (element.name.startsWith("media.url.")) {
+        const index = parseInt(element.name.replace("media.url.", ""), 10);
+        if (!media[index]) {
+          media[index] = { url: "", alt: "" };
+        }
+        media[index].url = element.value;
+      } else if (element.name.startsWith("media.alt.")) {
+        const index = parseInt(element.name.replace("media.alt.", ""), 10);
+        if (!media[index]) {
+          media[index] = { url: "", alt: "" };
+        }
+        media[index].alt = element.value;
+      }
+    }
 
     const updatedFormState = {
       ...formState,
       name: event.target.elements.name.value,
       description: event.target.elements.description.value,
-      media: [
-        {
-          url: event.target.elements["media.url"].value,
-          alt: event.target.elements["media.alt"].value,
-        },
-      ],
+      media,
+      // media: [
+      //   {
+      //     url: event.target.elements["media.url"].value,
+      //     alt: event.target.elements["media.alt"].value,
+      //   },
+      // ],
       price: Number(event.target.elements.price.value),
       maxGuests: Number(event.target.elements.maxGuests.value),
       rating: Number(event.target.elements.rating.value),
@@ -132,7 +149,35 @@ function CreateVenue() {
               <label htmlFor="Venue description">Venue description</label>
               <input type="text" name="description" placeholder="Venue description" minLength={3} aria-label="Venue description" required />
             </div>
-            <div>
+            {formState.media.map((mediaItem, index) => (
+              <div key={index}>
+                <label htmlFor={`media.url.${index}`}>Venue media url</label>
+                <input
+                  type="text"
+                  name={`media.url.${index}`}
+                  placeholder="User media url"
+                  minLength={3}
+                  aria-label="User media url"
+                  defaultValue="https://images.unsplash.com/photo-1579547945413-497e1b99dac0?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&q=80&h=400&w=400"
+                />
+                <label htmlFor={`media.alt.${index}`}>Venue media alt</label>
+                <input
+                  type="text"
+                  name={`media.alt.${index}`}
+                  placeholder="User media alt"
+                  minLength={3}
+                  aria-label="User media alt"
+                  defaultValue={"Venue image"}
+                />
+                <button type="button" className="btnStyle" onClick={() => handleRemoveImage(index)}>
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button type="button" className="btnStyle" onClick={handleAddImage}>
+              Add Image
+            </button>
+            {/* <div>
               <label htmlFor="media.url">Venue media url</label>
               <input
                 type="text"
@@ -146,14 +191,14 @@ function CreateVenue() {
             <div>
               <label htmlFor="media.alt">Venue media alternative text</label>
               <input type="text" name="media.alt" placeholder="User media alternative text" minLength={3} aria-label="User media alternative text" />
-            </div>
+            </div> */}
             <div>
               <label htmlFor="price">Venue price</label>
               <input type="number" name="price" placeholder="Venue price" aria-label="Venue price" required />
             </div>
             <div className="flex flex-row">
               <label htmlFor="maxGuests">Max guests</label>
-              <input type="number" name="maxGuests" aria-label="Max guests" required />
+              <input type="number" name="maxGuests" min={1} max={100} aria-label="Max guests" required />
             </div>
             <div className="flex flex-row">
               <label htmlFor="rating">Venue rating</label>
@@ -199,11 +244,11 @@ function CreateVenue() {
             </div>
             <div>
               <label htmlFor="location.lat">Venue latitude</label>
-              <input type="number" name="location.lat" placeholder="Venue latitude" minLength={3} aria-label="Venue latitude" />
+              <input type="number" name="location.lat" placeholder="Venue latitude" min={-90} max={90} aria-label="Venue latitude" />
             </div>
             <div>
               <label htmlFor="location.lng">Venue longitude </label>
-              <input type="number" name="location.lng" placeholder="Venue longitude" minLength={3} aria-label="Venue longitude" />
+              <input type="number" name="location.lng" placeholder="Venue longitude" min={-90} max={90} aria-label="Venue longitude" />
             </div>
             <button type="submit" className="btnStyle">
               Submit

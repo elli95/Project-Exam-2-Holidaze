@@ -144,7 +144,7 @@ function VenueInfo() {
               </div>
             </div>
           </div>
-          <p className="p-6">{venue.description}</p>
+          <p className="p-6 break-all">{venue.description}</p>
           <div className="min-w-48 sm:self-baseline">
             <h2>Venue manager:</h2>
             <div className="flex items-center justify-center gap-2.5">

@@ -1,22 +1,19 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useGETProfileData from "../../hooks/useGETProfileData";
 import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { API_VENUES } from "../../shared/apis";
 
-// import usePostApiKey from "../../hooks/usePostApiKey";
-// import { API_PROFILES } from "../../shared/apis";
-// import { useEffect } from "react";
-// import useLocalStorage from "../../hooks/useLocalStorage";
-
 function VenueEdit({ venueId }) {
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
-  //   const [isVenueFormShown, setIsVenueFormShown] = useState(false);
 
   const { profileData } = useGETProfileData();
 
-  //   console.log("venueId={venue.id}venueId={venue.id}", venueId);
+  let editVenueFilter;
+  if (profileData && profileData.venues) {
+    editVenueFilter = profileData.venues.filter((venue) => venue.id === venueId);
+  }
 
   const [formState, setFormState] = useState({
     name: "",
@@ -46,45 +43,68 @@ function VenueEdit({ venueId }) {
       lng: "",
     },
   });
-  console.log("profileData Venue Edits:", profileData.venues);
 
-  let editVenueFilter;
-  if (profileData && profileData.venues) {
-    editVenueFilter = profileData.venues.filter((venue) => venue.id === venueId);
-    console.log("editVenueFilter", editVenueFilter[0]);
-  }
-  console.log("editVenueFilter????", editVenueFilter);
+  const handleAddImage = () => {
+    setFormState({
+      ...formState,
+      media: [...formState.media, { url: "", alt: "" }],
+    });
+  };
 
-  //   const isValidUrl = (string) => {
-  //     try {
-  //       new URL(string);
-  //     } catch (_) {
-  //       return false;
-  //     }
-  //     return true;
-  //   };
+  const runCount = useRef(0);
+
+  useEffect(() => {
+    if (editVenueFilter && runCount.current < editVenueFilter[0].media.length - 1) {
+      handleAddImage(editVenueFilter[0].media[runCount.current]);
+      runCount.current += 1;
+    }
+  }, [editVenueFilter]);
+
+  const handleRemoveImage = (index) => {
+    console.log("HELLLLLLLOOOOOOOOOOOOOOOOOOOOO!");
+    console.log("Removing image at index:", index);
+    console.log("formState before removing image:", formState);
+    if (formState.media.length > 1) {
+      const newMedia = [...formState.media];
+      newMedia.splice(index, 1);
+      setFormState({ ...formState, media: newMedia });
+    }
+    console.log("formState after removing image:", formState);
+  };
+  console.log("Rendering with formState:", formState);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // const { type, checked } = event.target;
-    // const avatarUrl = event.target.elements["avatar.url"].value;
-    // const bannerUrl = event.target.elements["banner.url"].value;
 
-    // if (!isValidUrl(avatarUrl) || !isValidUrl(bannerUrl)) {
-    //   console.error("Image URL must be valid URL");
-    //   return;
-    // }
+    const media = [];
+    for (let element of event.target.elements) {
+      if (element.name.startsWith("media.url.")) {
+        const index = parseInt(element.name.replace("media.url.", ""), 10);
+        if (!media[index]) {
+          media[index] = { url: "", alt: "" };
+        }
+        media[index].url = element.value;
+      } else if (element.name.startsWith("media.alt.")) {
+        const index = parseInt(element.name.replace("media.alt.", ""), 10);
+        if (!media[index]) {
+          media[index] = { url: "", alt: "" };
+        }
+        media[index].alt = element.value;
+      }
+    }
 
+    console.log("media--media--media", media);
     const updatedFormState = {
       ...formState,
       name: event.target.elements.name.value,
       description: event.target.elements.description.value,
-      media: [
-        {
-          url: event.target.elements["media.url"].value,
-          alt: event.target.elements["media.alt"].value,
-        },
-      ],
+      media,
+      // media: [
+      //   {
+      //     url: event.target.elements["media.url"].value,
+      //     alt: event.target.elements["media.alt"].value,
+      //   },
+      // ],
       price: Number(event.target.elements.price.value),
       maxGuests: Number(event.target.elements.maxGuests.value),
       rating: Number(event.target.elements.rating.value),
@@ -133,8 +153,6 @@ function VenueEdit({ venueId }) {
   console.log("formState", formState);
 
   const handleDelete = async () => {
-    console.log("hello :D");
-
     try {
       const response = await fetch(API_VENUES + "/" + venueId, {
         method: "DELETE",
@@ -164,14 +182,8 @@ function VenueEdit({ venueId }) {
 
   return (
     <div>
-      {/* <button className="btnStyle" onClick={handleCreateVenueForm}>
-        Edit Venue
-      </button> */}
-      {/* {isVenueFormShown && ( */}
-      {/* venueBookingData.venues.map((venue) => (<div></div>)) */}
       <div>
         <h2>Create A Venue</h2>
-        {/* <h2>{editVenueFilter && editVenueFilter[0] && editVenueFilter[0].name}</h2> */}
         {!editVenueFilter ? (
           <div className="loading"></div>
         ) : (
@@ -201,7 +213,35 @@ function VenueEdit({ venueId }) {
                   required
                 />
               </div>
-              <div>
+              {formState.media.map((mediaItem, index) => (
+                <div key={index}>
+                  <label htmlFor={`media.url.${index}`}>Venue media url</label>
+                  <input
+                    type="text"
+                    name={`media.url.${index}`}
+                    placeholder="User media url"
+                    aria-label="User media url"
+                    defaultValue={editVenueFilter[0].media[index]?.url || ""}
+                  />
+                  <label htmlFor={`media.alt.${index}`}>Venue media alt</label>
+                  <input
+                    type="text"
+                    name={`media.alt.${index}`}
+                    placeholder="User media alt"
+                    aria-label="User media alt"
+                    defaultValue={editVenueFilter[0].media[index]?.alt || ""}
+                  />
+                  {index !== 0 && (
+                    <button type="button" className="btnStyle" onClick={() => handleRemoveImage(index)}>
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button type="button" className="btnStyle" onClick={handleAddImage}>
+                Add Image
+              </button>
+              {/* <div>
                 <label htmlFor="media.url">Venue media url</label>
                 <input
                   type="text"
@@ -211,8 +251,8 @@ function VenueEdit({ venueId }) {
                   aria-label="User media url"
                   defaultValue={editVenueFilter[0].media[0].url}
                 />
-              </div>
-              <div>
+              </div> */}
+              {/* <div>
                 <label htmlFor="media.alt">Venue media alternative text</label>
                 <input
                   type="text"
@@ -222,7 +262,7 @@ function VenueEdit({ venueId }) {
                   aria-label="User media alternative text"
                   defaultValue={editVenueFilter[0].media[0].alt}
                 />
-              </div>
+              </div> */}
               <div>
                 <label htmlFor="price">Venue price</label>
                 <input
