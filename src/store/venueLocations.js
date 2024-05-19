@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { API_VENUES, API_REGISTER_URL } from "../shared/apis";
-// import useLocalStorage from "../hooks/useLocalStorage";
+// import useApiCall from "../hooks/useApiCall";
 
 const useVenues = create((set) => ({
   venues: [],
@@ -14,28 +14,39 @@ const useVenues = create((set) => ({
     const json = await response.json();
     console.log("register", json);
   },
-  // fetchProfile: async () => {
-  //   const accessToken = useLocalStorage();
-  //   try {
-  //     const response = await fetch(API_PROFILES, {
-  //       headers: {
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     console.log("profile", data);
-  //     return data;
-  //   } catch (error) {
-  //     console.error("Error fetching profiles:", error);
-  //     throw error;
-  //   }
+  // fetchUserProfiles: () => {
+  //   const { apiKey } = usePostApiKey();
+  //   const { accessToken, userInfo } = useLocalStorage();
+  //   const [venueBookingData, setVenueBookingData] = useState([]);
+  //   useApiCall(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", "GET", {
+  //     "Content-Type": "application/json",
+  //     Authorization: `Bearer ${accessToken}`,
+  //     "X-Noroff-API-Key": apiKey.key,
+  //   })
+  //     .then((data) => setVenueBookingData(data.data))
+  //     .catch((error) => console.error("Error fetching data:", error));
   // },
+  validateField: (value, rule) => {
+    switch (rule) {
+      case "email":
+        return /^[a-zA-Z0-9._%+-]+@stud\.noroff\.no$/.test(value);
+      case "imgUrl":
+        return (
+          value === "" || /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?/.test(value)
+        );
+      case "inputLength":
+        return value.length >= 1 && value.length <= 20;
+      case "inputLengthPassword":
+        const validCharacters = /^[A-Za-z0-9_]+$/;
+        return value.length >= 8 && validCharacters.test(value);
+      case "date":
+        return !isNaN(Date.parse(value));
+      case "numbersOnly":
+        return /^\d+$/.test(value);
+      default:
+        return true;
+    }
+  },
 }));
 
 export default useVenues;
-
-// fetchProfile: async () => {
-//   const response = await fetch(API_PROFILES);
-//   const json = await response.json();
-//   set((state) => ({ ...state, venues: json.data }));
-// },

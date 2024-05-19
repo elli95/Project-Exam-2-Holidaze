@@ -3,8 +3,11 @@ import useGETProfileData from "../../hooks/useGETProfileData";
 import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { API_VENUES } from "../../shared/apis";
+import useApiCall from "../../hooks/useApiCall";
+import useVenues from "../../store/venueLocations";
 
-function VenueEdit({ venueId }) {
+function VenueEdit({ setVenueBookingData = () => {}, venueId }) {
+  const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
 
@@ -44,6 +47,49 @@ function VenueEdit({ venueId }) {
     },
   });
 
+  const [errors, setErrors] = useState({
+    name: "",
+    description: "",
+    // media: formState.media.map(() => ({ url: "" })),
+    media: [
+      {
+        url: "",
+      },
+    ],
+    price: "",
+    maxGuests: "",
+  });
+
+  const handleBlur = (event) => {
+    const { name, value } = event.target;
+    const newErrors = { ...errors };
+
+    if (name.startsWith("media.url")) {
+      const index = name.split(".")[2];
+      if (!newErrors.media[index]) {
+        newErrors.media[index] = {};
+      }
+      newErrors.media[index].url = validateField(value, "imgUrl") ? "" : "Please enter a valid URL";
+    } else {
+      switch (name) {
+        case "name":
+        case "description":
+          newErrors[name] = validateField(value, "inputLength") ? "" : "You must enter at least 1 characters";
+          break;
+        case "price":
+        case "maxGuests":
+          newErrors[name] = validateField(value, "numbersOnly") ? "" : "Value must be a number";
+          break;
+        default:
+          break;
+      }
+    }
+
+    setErrors(newErrors);
+  };
+
+  const apiCall = useApiCall();
+
   const handleAddImage = () => {
     setFormState({
       ...formState,
@@ -61,17 +107,16 @@ function VenueEdit({ venueId }) {
   }, [editVenueFilter]);
 
   const handleRemoveImage = (index) => {
-    console.log("HELLLLLLLOOOOOOOOOOOOOOOOOOOOO!");
-    console.log("Removing image at index:", index);
-    console.log("formState before removing image:", formState);
+    console.log("index after btn", index);
     if (formState.media.length > 1) {
       const newMedia = [...formState.media];
+      console.log("index after btn newMedia", newMedia);
+      console.log("index after btn", index);
       newMedia.splice(index, 1);
       setFormState({ ...formState, media: newMedia });
     }
-    console.log("formState after removing image:", formState);
+    console.log("index after btn formState", formState);
   };
-  console.log("Rendering with formState:", formState);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -93,18 +138,22 @@ function VenueEdit({ venueId }) {
       }
     }
 
+    for (let i = 0; i < media.length; i++) {
+      if (!media[i].url) {
+        media[i].url =
+          "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?q=80&w=2624&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+      }
+      if (!media[i].alt) {
+        media[i].alt = "This is a goldfish";
+      }
+    }
+
     console.log("media--media--media", media);
     const updatedFormState = {
       ...formState,
       name: event.target.elements.name.value,
       description: event.target.elements.description.value,
       media,
-      // media: [
-      //   {
-      //     url: event.target.elements["media.url"].value,
-      //     alt: event.target.elements["media.alt"].value,
-      //   },
-      // ],
       price: Number(event.target.elements.price.value),
       maxGuests: Number(event.target.elements.maxGuests.value),
       rating: Number(event.target.elements.rating.value),
@@ -128,56 +177,49 @@ function VenueEdit({ venueId }) {
     setFormState(updatedFormState);
 
     try {
-      const response = await fetch(API_VENUES + "/" + venueId, {
-        method: "PUT",
-        headers: {
+      const updatedProfileData = await apiCall(
+        API_VENUES + "/" + venueId,
+        "PUT",
+        {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
           "X-Noroff-API-Key": apiKey.key,
         },
-        body: JSON.stringify(updatedFormState),
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        console.log("error", data.errors[0].message);
-      } else {
-        console.log("User registered successfully!");
-      }
-
-      console.log("Form submitted:", data);
+        updatedFormState
+      );
+      console.log("try", updatedProfileData.data);
+      setVenueBookingData((prevState) => ({
+        ...prevState,
+        venues: prevState.venues.map((venue) =>
+          venue.id === updatedProfileData.data.id
+            ? {
+                ...venue,
+                name: updatedProfileData.data.name,
+                description: updatedProfileData.data.description,
+                media: updatedProfileData.data.media,
+                price: updatedProfileData.data.price,
+                maxGuests: updatedProfileData.data.maxGuests,
+                rating: updatedProfileData.data.rating,
+                meta: updatedProfileData.data.meta,
+                location: updatedProfileData.data.location,
+              }
+            : venue
+        ),
+      }));
     } catch (error) {
-      console.error("Error during registration:", error);
+      console.error("Failed to update profile:", error);
     }
+    // Samme Kode!!
   };
   console.log("formState", formState);
 
   const handleDelete = async () => {
-    try {
-      const response = await fetch(API_VENUES + "/" + venueId, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-          "X-Noroff-API-Key": apiKey.key,
-        },
-      });
-
-      if (response.ok) {
-        if (response.status !== 204) {
-          const data = await response.json();
-          console.log("Deletion successful!");
-          console.log("Response data:", data);
-        } else {
-          console.log("Deletion successful!");
-        }
-      } else {
-        const data = await response.json();
-        console.log("error", data.errors[0].message);
-      }
-    } catch (error) {
-      console.error("Error during registration:", error);
-    }
+    apiCall(API_VENUES + "/" + venueId, "DELETE", {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+      "X-Noroff-API-Key": apiKey.key,
+    });
+    // Samme Kode!!
   };
 
   return (
@@ -195,11 +237,12 @@ function VenueEdit({ venueId }) {
                   type="text"
                   name="name"
                   placeholder="Venue name"
-                  minLength={3}
                   aria-label="Venue Name"
+                  onBlur={handleBlur}
                   defaultValue={editVenueFilter[0].name}
                   required
                 />
+                <span className="error">{errors.name}</span>
               </div>
               <div>
                 <label htmlFor="Venue description">Venue description</label>
@@ -207,11 +250,12 @@ function VenueEdit({ venueId }) {
                   type="text"
                   name="description"
                   placeholder="Venue description"
-                  minLength={3}
                   aria-label="Venue description"
+                  onBlur={handleBlur}
                   defaultValue={editVenueFilter[0].description}
                   required
                 />
+                <span className="error">{errors.description}</span>
               </div>
               {formState.media.map((mediaItem, index) => (
                 <div key={index}>
@@ -221,8 +265,10 @@ function VenueEdit({ venueId }) {
                     name={`media.url.${index}`}
                     placeholder="User media url"
                     aria-label="User media url"
+                    onBlur={handleBlur}
                     defaultValue={editVenueFilter[0].media[index]?.url || ""}
                   />
+                  <span className="error">{errors.media[index] && errors.media[index].url}</span>
                   <label htmlFor={`media.alt.${index}`}>Venue media alt</label>
                   <input
                     type="text"
@@ -231,6 +277,7 @@ function VenueEdit({ venueId }) {
                     aria-label="User media alt"
                     defaultValue={editVenueFilter[0].media[index]?.alt || ""}
                   />
+                  {console.log("index before btn", index)}
                   {index !== 0 && (
                     <button type="button" className="btnStyle" onClick={() => handleRemoveImage(index)}>
                       Remove
@@ -241,28 +288,6 @@ function VenueEdit({ venueId }) {
               <button type="button" className="btnStyle" onClick={handleAddImage}>
                 Add Image
               </button>
-              {/* <div>
-                <label htmlFor="media.url">Venue media url</label>
-                <input
-                  type="text"
-                  name="media.url"
-                  placeholder="User media url"
-                  minLength={3}
-                  aria-label="User media url"
-                  defaultValue={editVenueFilter[0].media[0].url}
-                />
-              </div> */}
-              {/* <div>
-                <label htmlFor="media.alt">Venue media alternative text</label>
-                <input
-                  type="text"
-                  name="media.alt"
-                  placeholder="User media alternative text"
-                  minLength={3}
-                  aria-label="User media alternative text"
-                  defaultValue={editVenueFilter[0].media[0].alt}
-                />
-              </div> */}
               <div>
                 <label htmlFor="price">Venue price</label>
                 <input
@@ -270,17 +295,27 @@ function VenueEdit({ venueId }) {
                   name="price"
                   placeholder="Venue price"
                   aria-label="Venue price"
+                  onBlur={handleBlur}
                   defaultValue={editVenueFilter[0].price}
                   required
                 />
+                <span className="error">{errors.price}</span>
               </div>
               <div className="flex flex-row">
                 <label htmlFor="maxGuests">Max guests</label>
-                <input type="number" name="maxGuests" aria-label="Max guests" defaultValue={editVenueFilter[0].maxGuests} required />
+                <input
+                  type="number"
+                  name="maxGuests"
+                  aria-label="Max guests"
+                  onBlur={handleBlur}
+                  defaultValue={editVenueFilter[0].maxGuests}
+                  required
+                />
+                <span className="error">{errors.maxGuests}</span>
               </div>
               <div className="flex flex-row">
                 <label htmlFor="rating">Venue rating</label>
-                <input type="number" name="rating" aria-label="Venue rating" defaultValue={editVenueFilter[0].rating} />
+                <input type="number" name="rating" aria-label="Venue rating" max={5} defaultValue={editVenueFilter[0].rating} />
               </div>
               <h2>Amenities</h2>
               <div>

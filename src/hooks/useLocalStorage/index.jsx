@@ -27,10 +27,3 @@ function useLocalStorage() {
 }
 
 export default useLocalStorage;
-
-// useEffect(() => {
-//   const userInfo = localStorage.getItem("profile");
-//   if (userInfo) {
-//     setUserInfo(userInfo);
-//   }
-// }, []);

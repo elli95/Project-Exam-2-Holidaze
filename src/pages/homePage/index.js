@@ -6,9 +6,6 @@ function HomePage() {
   const { accessToken } = useLocalStorage();
   const isLoggedIn = accessToken.length > 0;
 
-  // console.log("123123123@stud.noroff.no", accessToken);
-  console.log(`Bearer ${accessToken}`);
-
   return (
     <div>
       {!isLoggedIn && <HomepagePreLogin />}

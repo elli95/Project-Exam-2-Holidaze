@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { API_LOGIN_URL } from "../../shared/apis";
+import useApiCall from "../../hooks/useApiCall";
+import useVenues from "../../store/venueLocations";
 
-console.log("123123123@stud.noroff.no or robinTest@stud.noroff.no");
+console.log("123123123@stud.noroff.no or robinTest@stud.noroff.no or robin@stud.noroff.no");
 
 function LoginPage() {
+  const { validateField } = useVenues();
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [shown, setShown] = useState(false);
+  const type = shown ? "text" : "password";
+  const buttonText = shown ? "Hide password" : "Show Password";
+
   const [formState, setFormState] = useState({
     email: "",
     password: "",
@@ -15,34 +23,20 @@ function LoginPage() {
     password: "",
   });
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@stud\.noroff\.no$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = (password) => {
-    const passwordInput = password.length > 0;
-    return passwordInput;
-  };
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormState((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+  const apiCall = useApiCall();
 
   const handleBlur = (event) => {
     const { name, value } = event.target;
     const newErrors = { ...errors };
 
     switch (name) {
-      case "password":
-        newErrors.password = validatePassword(value) ? "" : `Please enter a valid password`;
-        break;
       case "email":
-        newErrors.email = validateEmail(value) ? "" : "Please enter a valid email";
+        newErrors.email = validateField(value, "email") ? "" : `Please enter a valid email ending with "@stud.noroff.no"`;
+        break;
+      case "password":
+        newErrors.password = validateField(value, "inputLengthPassword")
+          ? ""
+          : `Please enter a valid password, consist of minimum 8 characters and and only use a-Z, 0-9, and _`;
         break;
       default:
         break;
@@ -53,49 +47,37 @@ function LoginPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const isValidForm = Object.values(errors).every((error) => !error);
-    if (isValidForm) {
-      console.log("Form submitted:", formState);
-      try {
-        const response = await fetch(API_LOGIN_URL, {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formState),
-        });
+    const updatedFormState = {
+      ...formState,
+      email: event.target.elements.email.value,
+      password: event.target.elements.password.value,
+    };
+    setFormState(updatedFormState);
+    // const isValidForm = Object.values(errors).every((error) => !error);
+    // if (isValidForm) {
+    //   console.log("Form submitted:", formState);
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          console.log("error", data.errors[0].message);
-          setErrorMessage(data.errors[0].message);
-        } else {
-          const apiData = data.data;
-          const { accessToken, ...userProfile } = apiData;
-
+    apiCall(
+      API_LOGIN_URL,
+      "POST",
+      {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      updatedFormState
+    )
+      .then((data) => {
+        if (!data.errors) {
+          const { accessToken, ...userProfile } = data.data;
           localStorage.setItem("token", accessToken);
           localStorage.setItem("profile", JSON.stringify(userProfile));
-
-          console.log("Form submitted localStorage:", localStorage);
-          window.location.href = "/";
+          console.log("data", data);
+          window.location.href = "/profilePage";
+        } else {
+          setErrorMessage(data.errors[0].message);
         }
-
-        // if (!response.ok) {
-        //   console.log("error2", data.errors[0].message);
-        //   // console.log("error", response);
-        //   // throw new Error(response.status);
-        // } else {
-        //   console.log("User registered successfully!");
-        //   // window.location.href = "/";
-        // }
-      } catch (error) {
-        console.error("Error during login:", error);
-      }
-    } else {
-      console.log("This form has errors. Please correct them.");
-    }
+      })
+      .catch((error) => console.error("Error fetching data:", error));
   };
 
   return (
@@ -105,30 +87,15 @@ function LoginPage() {
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="email">Email</label>
-            <input
-              type="text"
-              name="email"
-              value={formState.email}
-              placeholder="Your Email"
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              aria-label="Email"
-              required
-            />
+            <input type="text" name="email" placeholder="Your Email" onBlur={handleBlur} aria-label="Email" required />
             <span className="error">{errors.email}</span>
           </div>
           <div>
             <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formState.password}
-              placeholder="Password"
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              aria-label="Password"
-              required
-            />
+            <input type={type} name="password" placeholder="Password" minLength={8} onBlur={handleBlur} aria-label="Password" required />
+            <button type="button" onClick={() => setShown(!shown)}>
+              {buttonText}
+            </button>
             <span className="error">{errors.password}</span>
           </div>
           <button type="submit" className="btnStyle">

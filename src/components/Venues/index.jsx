@@ -1,20 +1,28 @@
 import { Link } from "react-router-dom";
 import { API_VENUES } from "../../shared/apis";
-import useFetchApi from "../../hooks/useFetchApi";
+import useApiCall from "../../hooks/useApiCall";
+import usePostApiKey from "../../hooks/usePostApiKey";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import { useEffect, useState } from "react";
 
 function Venues() {
-  const { venues, isLoading, isError } = useFetchApi(API_VENUES);
+  const [venues, setVenue] = useState([]);
+  const { apiKey } = usePostApiKey();
+  const { accessToken } = useLocalStorage();
+  const apiCall = useApiCall();
 
-  if (isLoading) {
-    return <div className="loading"></div>;
-  }
+  useEffect(() => {
+    apiCall(API_VENUES, "GET", {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+      "X-Noroff-API-Key": apiKey.key,
+    })
+      .then((data) => setVenue(data.data))
+      .catch((error) => console.error("Error fetching data:", error));
+    // Samme Kode!!
+  }, []);
 
-  if (isError) {
-    return <div>Sorry, there was an error loading the product</div>;
-  }
-
-  console.log("venues1", venues);
-
+  console.log("venues", venues);
   return (
     <div className="venueSection">
       {venues.map((venue) => (

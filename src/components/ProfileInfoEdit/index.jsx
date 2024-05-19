@@ -3,16 +3,16 @@ import useGETProfileData from "../../hooks/useGETProfileData";
 import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { API_PROFILES } from "../../shared/apis";
+import useApiCall from "../../hooks/useApiCall";
+import useVenues from "../../store/venueLocations";
 
-// import usePostApiKey from "../../hooks/usePostApiKey";
-// import { API_PROFILES } from "../../shared/apis";
-// import { useEffect } from "react";
-// import useLocalStorage from "../../hooks/useLocalStorage";
-
-function ProfileInfoEdit() {
+function ProfileInfoEdit({ setProfileData = () => {} }) {
+  const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
   const [isVenueFormShown, setIsVenueFormShown] = useState(false);
+
+  // const [profileData, setProfileData] = useState();
 
   const { profileData } = useGETProfileData();
 
@@ -28,76 +28,117 @@ function ProfileInfoEdit() {
     },
     venueManager: false,
   });
-  console.log("profileData---------ProfileInfoEdit", profileData);
-  // }
+
+  const [errors, setErrors] = useState({
+    avatar: {
+      url: "",
+    },
+    banner: {
+      url: "",
+    },
+  });
+
+  const handleBlur = (event) => {
+    const { name, value } = event.target;
+    const newErrors = { ...errors };
+
+    switch (name) {
+      case "avatar.url":
+        newErrors.avatar.url = validateField(value, "imgUrl") ? "" : "Please enter a valid URL";
+        break;
+      case "banner.url":
+        newErrors.banner.url = validateField(value, "imgUrl") ? "" : "Please enter a valid URL";
+        break;
+      default:
+        break;
+    }
+
+    setErrors(newErrors);
+  };
+
+  const apiCall = useApiCall();
+  // console.log("accessTokenaccessToken", accessToken);
+  // useEffect(() => {
+  //   apiCall(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", "GET", {
+  //     "Content-Type": "application/json",
+  //     Authorization: `Bearer ${accessToken}`,
+  //     "X-Noroff-API-Key": apiKey.key,
+  //   })
+  //     .then((data) => setProfileData(data.data))
+  //     .catch((error) => console.error("Error fetching data:", error));
+  //   // Samme Kode!!
+  // }, [userInfo.name, accessToken, apiKey.key]);
 
   const handleCreateVenueForm = () => {
     setIsVenueFormShown(!isVenueFormShown);
   };
 
-  console.log(isVenueFormShown);
-
-  const isValidUrl = (string) => {
-    try {
-      new URL(string);
-    } catch (_) {
-      return false;
-    }
-    return true;
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // const { type, checked } = event.target;
-    const avatarUrl = event.target.elements["avatar.url"].value;
-    const bannerUrl = event.target.elements["banner.url"].value;
 
-    if (!isValidUrl(avatarUrl) || !isValidUrl(bannerUrl)) {
-      console.error("Image URL must be valid URL");
-      return;
+    let avatarUrl = event.target.elements["avatar.url"].value;
+    let avatarAlt = event.target.elements["avatar.alt"].value;
+    if (!avatarUrl) {
+      avatarUrl =
+        "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?q=80&w=2624&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    }
+    if (!avatarAlt) {
+      avatarAlt = "This is a goldfish";
+    }
+
+    let bannerUrl = event.target.elements["banner.url"].value;
+    let bannerAlt = event.target.elements["banner.alt"].value;
+    if (!bannerUrl) {
+      bannerUrl =
+        "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    }
+    if (!bannerAlt) {
+      bannerAlt = "A wall of books";
     }
 
     const updatedFormState = {
       ...formState,
       bio: event.target.elements.bio.value,
       avatar: {
-        url: event.target.elements["avatar.url"].value,
-        alt: event.target.elements["avatar.alt"].value,
+        url: avatarUrl,
+        alt: avatarAlt,
       },
       banner: {
-        url: event.target.elements["banner.url"].value,
-        alt: event.target.elements["banner.alt"].value,
+        url: bannerUrl,
+        alt: bannerAlt,
       },
       venueManager: event.target.querySelector('input[name="venueManager"]').checked,
     };
-    console.log("Form submitted:", updatedFormState);
     setFormState(updatedFormState);
+    console.log("updatedFormState", updatedFormState);
 
     try {
-      const response = await fetch(API_PROFILES + "/" + profileData.name, {
-        method: "PUT",
-        headers: {
+      const updatedProfileData = await apiCall(
+        API_PROFILES + "/" + profileData.name,
+        "PUT",
+        {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
           "X-Noroff-API-Key": apiKey.key,
         },
-        body: JSON.stringify(updatedFormState),
+        updatedFormState
+      );
+
+      console.log("try", updatedProfileData.data);
+      setProfileData({
+        ...profileData,
+        bio: updatedProfileData.data.bio,
+        avatar: updatedProfileData.data.avatar,
+        banner: updatedProfileData.data.banner,
+        venueManager: updatedProfileData.data.venueManager,
       });
-
-      const data = await response.json();
-      if (!response.ok) {
-        console.log("error", data.errors[0].message);
-      } else {
-        console.log("User registered successfully!");
-      }
-
-      console.log("Form submitted:", data);
+      console.log("try2", profileData);
     } catch (error) {
-      console.error("Error during registration:", error);
+      console.error("Failed to update profile:", error);
     }
   };
-  console.log("formState", formState);
 
+  console.log("try333", profileData);
   return (
     <div>
       <button className="btnStyle" onClick={handleCreateVenueForm}>
@@ -117,10 +158,12 @@ function ProfileInfoEdit() {
                 type="text"
                 name="avatar.url"
                 placeholder="User avatar url"
-                minLength={3}
                 aria-label="User avatar url"
+                onBlur={handleBlur}
                 defaultValue={profileData.avatar.url}
+                // defaultValue={profileData.avatar ? profileData.avatar.url : ""}
               />
+              <span className="error">{errors.avatar.url}</span>
             </div>
             <div>
               <label htmlFor="avatar.alt">Venue avatar alternative text</label>
@@ -128,7 +171,6 @@ function ProfileInfoEdit() {
                 type="text"
                 name="avatar.alt"
                 placeholder="User avatar alternative text"
-                minLength={3}
                 aria-label="User avatar alternative text"
                 defaultValue={profileData.avatar.alt}
               />
@@ -139,10 +181,11 @@ function ProfileInfoEdit() {
                 type="text"
                 name="banner.url"
                 placeholder="Profile banner url"
-                minLength={3}
                 aria-label="Profile banner url"
+                onBlur={handleBlur}
                 defaultValue={profileData.banner.url}
               />
+              <span className="error">{errors.banner.url}</span>
             </div>
             <div>
               <label htmlFor="banner.alt">Profile banner alternative text</label>
@@ -150,20 +193,13 @@ function ProfileInfoEdit() {
                 type="text"
                 name="banner.alt"
                 placeholder="Profile banner alternative text"
-                minLength={3}
                 aria-label="Profile banner alternative text"
                 defaultValue={profileData.banner.alt}
               />
             </div>
             <div>
               <label htmlFor="venueManager">Venue Manager</label>
-              <input
-                type="checkbox"
-                name="venueManager"
-                // placeholder="Venue Manager"
-                aria-label="Venue Manager"
-                defaultChecked={profileData.venueManager}
-              />
+              <input type="checkbox" name="venueManager" aria-label="Venue Manager" defaultChecked={profileData.venueManager} />
             </div>
             <button type="submit" className="btnStyle">
               Submit

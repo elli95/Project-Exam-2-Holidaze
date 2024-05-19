@@ -2,11 +2,13 @@ import { useState } from "react";
 import { API_VENUES } from "../../shared/apis";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import usePostApiKey from "../../hooks/usePostApiKey";
+import useApiCall from "../../hooks/useApiCall";
+import useVenues from "../../store/venueLocations";
 
 function CreateVenue() {
+  const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
-  // console.log(accessToken, apiKey);
   const [isVenueFormShown, setIsVenueFormShown] = useState(false);
   const [formState, setFormState] = useState({
     name: "",
@@ -36,6 +38,48 @@ function CreateVenue() {
       lng: "",
     },
   });
+
+  const [errors, setErrors] = useState({
+    name: "",
+    description: "",
+    media: [
+      {
+        url: "",
+      },
+    ],
+    price: "",
+    maxGuests: "",
+  });
+
+  const handleBlur = (event) => {
+    const { name, value } = event.target;
+    const newErrors = { ...errors };
+
+    if (name.startsWith("media.url")) {
+      const index = name.split(".")[2];
+      if (!newErrors.media[index]) {
+        newErrors.media[index] = {};
+      }
+      newErrors.media[index].url = validateField(value, "imgUrl") ? "" : "Please enter a valid URL";
+    } else {
+      switch (name) {
+        case "name":
+        case "description":
+          newErrors[name] = validateField(value, "inputLength") ? "" : "You must enter at least 1 characters";
+          break;
+        case "price":
+        case "maxGuests":
+          newErrors[name] = validateField(value, "numbersOnly") ? "" : "Value must be a number";
+          break;
+        default:
+          break;
+      }
+    }
+
+    setErrors(newErrors);
+  };
+
+  const apiCall = useApiCall();
 
   const handleCreateVenueForm = () => {
     setIsVenueFormShown(!isVenueFormShown);
@@ -76,17 +120,21 @@ function CreateVenue() {
       }
     }
 
+    for (let i = 0; i < media.length; i++) {
+      if (!media[i].url) {
+        media[i].url =
+          "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?q=80&w=2624&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+      }
+      if (!media[i].alt) {
+        media[i].alt = "This is a goldfish";
+      }
+    }
+
     const updatedFormState = {
       ...formState,
       name: event.target.elements.name.value,
       description: event.target.elements.description.value,
       media,
-      // media: [
-      //   {
-      //     url: event.target.elements["media.url"].value,
-      //     alt: event.target.elements["media.alt"].value,
-      //   },
-      // ],
       price: Number(event.target.elements.price.value),
       maxGuests: Number(event.target.elements.maxGuests.value),
       rating: Number(event.target.elements.rating.value),
@@ -108,28 +156,17 @@ function CreateVenue() {
     };
     console.log("Venue form submitted:", updatedFormState);
     setFormState(updatedFormState);
-    try {
-      const response = await fetch(API_VENUES, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-          "X-Noroff-API-Key": apiKey.key,
-        },
-        body: JSON.stringify(updatedFormState),
-      });
 
-      const data = await response.json();
-      if (!response.ok) {
-        console.log("error", data.errors[0].message);
-      } else {
-        console.log("User registered successfully!");
-      }
-
-      console.log("Form submitted:", data);
-    } catch (error) {
-      console.error("Error during registration:", error);
-    }
+    apiCall(
+      API_VENUES,
+      "POST",
+      {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        "X-Noroff-API-Key": apiKey.key,
+      },
+      updatedFormState
+    );
   };
 
   return (
@@ -143,62 +180,40 @@ function CreateVenue() {
           <form onSubmit={handleSubmit}>
             <div>
               <label htmlFor="name">Venue name</label>
-              <input type="text" name="name" placeholder="Venue name" minLength={3} aria-label="Venue Name" required />
+              <input type="text" name="name" placeholder="Venue name" aria-label="Venue Name" onBlur={handleBlur} required />
+              <span className="error">{errors.name}</span>
             </div>
             <div>
               <label htmlFor="Venue description">Venue description</label>
-              <input type="text" name="description" placeholder="Venue description" minLength={3} aria-label="Venue description" required />
+              <input type="text" name="description" placeholder="Venue description" aria-label="Venue description" onBlur={handleBlur} required />
+              <span className="error">{errors.description}</span>
             </div>
             {formState.media.map((mediaItem, index) => (
               <div key={index}>
                 <label htmlFor={`media.url.${index}`}>Venue media url</label>
-                <input
-                  type="text"
-                  name={`media.url.${index}`}
-                  placeholder="User media url"
-                  minLength={3}
-                  aria-label="User media url"
-                  defaultValue="https://images.unsplash.com/photo-1579547945413-497e1b99dac0?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&q=80&h=400&w=400"
-                />
+                <input type="text" name={`media.url.${index}`} placeholder="User media url" aria-label="User media url" onBlur={handleBlur} />
+                <span className="error">{errors.media[index] && errors.media[index].url}</span>
                 <label htmlFor={`media.alt.${index}`}>Venue media alt</label>
-                <input
-                  type="text"
-                  name={`media.alt.${index}`}
-                  placeholder="User media alt"
-                  minLength={3}
-                  aria-label="User media alt"
-                  defaultValue={"Venue image"}
-                />
-                <button type="button" className="btnStyle" onClick={() => handleRemoveImage(index)}>
-                  Remove
-                </button>
+                <input type="text" name={`media.alt.${index}`} placeholder="User media alt" aria-label="User media alt" />
+                {index !== 0 && (
+                  <button type="button" className="btnStyle" onClick={() => handleRemoveImage(index)}>
+                    Remove
+                  </button>
+                )}
               </div>
             ))}
             <button type="button" className="btnStyle" onClick={handleAddImage}>
               Add Image
             </button>
-            {/* <div>
-              <label htmlFor="media.url">Venue media url</label>
-              <input
-                type="text"
-                name="media.url"
-                placeholder="User media url"
-                minLength={3}
-                aria-label="User media url"
-                defaultValue="https://images.unsplash.com/photo-1579547945413-497e1b99dac0?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&q=80&h=400&w=400"
-              />
-            </div>
-            <div>
-              <label htmlFor="media.alt">Venue media alternative text</label>
-              <input type="text" name="media.alt" placeholder="User media alternative text" minLength={3} aria-label="User media alternative text" />
-            </div> */}
             <div>
               <label htmlFor="price">Venue price</label>
-              <input type="number" name="price" placeholder="Venue price" aria-label="Venue price" required />
+              <input type="number" name="price" placeholder="Venue price" aria-label="Venue price" onBlur={handleBlur} required />
+              <span className="error">{errors.price}</span>
             </div>
             <div className="flex flex-row">
               <label htmlFor="maxGuests">Max guests</label>
-              <input type="number" name="maxGuests" min={1} max={100} aria-label="Max guests" required />
+              <input type="number" name="maxGuests" min={1} max={100} aria-label="Max guests" onBlur={handleBlur} required />
+              <span className="error">{errors.maxGuests}</span>
             </div>
             <div className="flex flex-row">
               <label htmlFor="rating">Venue rating</label>
@@ -224,23 +239,23 @@ function CreateVenue() {
             <h2>Venue location</h2>
             <div>
               <label htmlFor="location.address">Venue address</label>
-              <input type="text" name="location.address" placeholder="Venue address" minLength={3} aria-label="Venue address" />
+              <input type="text" name="location.address" placeholder="Venue address" aria-label="Venue address" />
             </div>
             <div>
               <label htmlFor="location.city">Venue city</label>
-              <input type="text" name="location.city" placeholder="Venue city" minLength={3} aria-label="Venue city" />
+              <input type="text" name="location.city" placeholder="Venue city" aria-label="Venue city" />
             </div>
             <div>
               <label htmlFor="location.zip">Venue zip</label>
-              <input type="number" name="location.zip" placeholder="Venue zip" minLength={3} aria-label="Venue zip" />
+              <input type="number" name="location.zip" placeholder="Venue zip" aria-label="Venue zip" />
             </div>
             <div>
               <label htmlFor="location.country">Venue country</label>
-              <input type="text" name="location.country" placeholder="Venue country" minLength={3} aria-label="Venue country" />
+              <input type="text" name="location.country" placeholder="Venue country" aria-label="Venue country" />
             </div>
             <div>
               <label htmlFor="location.continent">Venue continent</label>
-              <input type="text" name="location.continent" placeholder="Venue continent" minLength={3} aria-label="Venue continent" />
+              <input type="text" name="location.continent" placeholder="Venue continent" aria-label="Venue continent" />
             </div>
             <div>
               <label htmlFor="location.lat">Venue latitude</label>
@@ -261,33 +276,3 @@ function CreateVenue() {
 }
 
 export default CreateVenue;
-
-// const handleInputChange = (event) => {
-//   const { name, value, type, checked } = event.target;
-//   if (type === "checkbox" && name.startsWith("meta.")) {
-//     const metaProperty = name.substring(5);
-//     setFormState((prevState) => ({
-//       ...prevState,
-//       meta: {
-//         ...prevState.meta,
-//         [metaProperty]: checked,
-//       },
-//     }));
-//   } else if (type === "text" || type === "number") {
-//     const [parentName, childName] = name.split(".");
-//     if (parentName === "media" || parentName === "location") {
-//       setFormState((prevState) => ({
-//         ...prevState,
-//         [parentName]: {
-//           ...prevState[parentName],
-//           [childName]: value,
-//         },
-//       }));
-//     } else {
-//       setFormState((prevState) => ({
-//         ...prevState,
-//         [name]: value,
-//       }));
-//     }
-//   }
-// };

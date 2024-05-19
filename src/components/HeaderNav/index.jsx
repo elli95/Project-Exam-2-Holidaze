@@ -19,12 +19,12 @@ function HeaderNav() {
     setIsNavShown(!isNavShown);
   };
 
-  // const accessToken = accessToken();
   const isLoggedIn = accessToken.length > 0;
 
   const handleLogoutClick = () => {
     clearLocalStorage();
-    window.location.reload(false);
+    // window.location.reload(false);
+    window.location.href = "/";
   };
 
   return (

@@ -1,14 +1,45 @@
-import useFetchApi from "../../hooks/useFetchApi";
+// import useFetchApi from "../../hooks/useFetchApi";
 import { API_VENUES } from "../../shared/apis";
+import { useEffect, useState } from "react";
+import usePostApiKey from "../../hooks/usePostApiKey";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import useApiCall from "../../hooks/useApiCall";
 
 function VenueBookings({ venueId }) {
-  const { venues } = useFetchApi(API_VENUES + "/?_bookings=true");
+  // const { venues } = useFetchApi(API_VENUES + "/?_bookings=true");
+
+  const [venues, setVenue] = useState([]);
+  // const [inputValue, setInputValue] = useState("");
+  const { apiKey } = usePostApiKey();
+  const { accessToken } = useLocalStorage();
+  const apiCall = useApiCall();
+
+  useEffect(() => {
+    apiCall(API_VENUES + "/?_bookings=true", "GET", {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+      "X-Noroff-API-Key": apiKey.key,
+    })
+      .then((data) => {
+        setVenue(data.data);
+        console.log("data11", data);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+    // Samme Kode!!
+  }, []);
 
   let venueBookingsFilter;
   if (venues) {
     venueBookingsFilter = venues.filter((venue) => venue.id === venueId);
-    // console.log("venueBookingsFilter", venueBookingsFilter[0]);
   }
+
+  // let venueBookingsFilter2;
+  // if (venues) {
+  //   venueBookingsFilter2 = venues.filter((venue) => venue.id === "7d32f7c1-d6b6-4a9b-a7a0-17a73c97c076");
+  // }
+  // console.log("venueBookingsFilter2venueBookingsFilter2", venueBookingsFilter2);
+  // console.log("venueBookingsFilterVenues", venues);
+  // console.log("venueBookingsFilter", venueBookingsFilter, venueId);
 
   return (
     <div>

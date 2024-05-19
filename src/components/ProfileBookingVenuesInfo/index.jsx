@@ -7,6 +7,7 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 import VenueEdit from "../VenueEdit";
 import BookingEdit from "../BookingEdit";
 import VenueBookings from "../VenueBookings";
+import useApiCall from "../../hooks/useApiCall";
 
 function ProfileBookingVenuesInfo() {
   const { apiKey } = usePostApiKey();
@@ -16,26 +17,26 @@ function ProfileBookingVenuesInfo() {
   const [isVenueBookingsShown, setIsVenueBookingsShown] = useState(false);
   const [venueIdToShow, setVenueIdToShow] = useState(null);
 
-  useEffect(() => {
+  const apiCall = useApiCall();
+
+  function fetchVenueBookingData() {
     if (apiKey.key !== undefined && accessToken.length > 0) {
-      console.log("apiKey--2", apiKey);
-      console.log("accessToken--2", accessToken);
-      // Fetch data from an API
-      fetch(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-          "X-Noroff-API-Key": apiKey.key,
-        },
+      apiCall(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", "GET", {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        "X-Noroff-API-Key": apiKey.key,
       })
-        .then((response) => response.json())
         .then((data) => setVenueBookingData(data.data))
         .catch((error) => console.error("Error fetching data:", error));
     }
+  }
+
+  useEffect(() => {
+    fetchVenueBookingData();
   }, [apiKey.key, accessToken]);
 
-  console.log(venueBookingData.venues);
+  console.log("venueBookingData.venues", venueBookingData.venues);
+  console.log("venueBookingData", venueBookingData);
 
   const {
     isTravelersShown,
@@ -70,7 +71,7 @@ function ProfileBookingVenuesInfo() {
 
   return (
     <div>
-      <div className="max-w-3xl flex">
+      <div className="max-w-3xl flex justify-center">
         <button
           className={`${isVenueManagersButtonDisabled ? "bg-tahiti" : "bg-bermuda"} px-5 py-2 w-1/2 h-16 text-wrap rounded-l-lg border-2 sm:w-60`}
           onClick={handleTravelersClick}
@@ -108,6 +109,9 @@ function ProfileBookingVenuesInfo() {
                           <h3>{booked.venue.location.country}</h3>
                           <p>{booked.venue.location.city}</p>
                         </div>
+                        <p className="self-end">Guests:{booked.guests}</p>
+                        <p className="self-end">date From:{booked.dateFrom}</p>
+                        <p className="self-end">date To:{booked.dateTo}</p>
                         <p className="self-end">{booked.venue.price}</p>
                       </div>
                     </div>
@@ -115,7 +119,9 @@ function ProfileBookingVenuesInfo() {
                   <button className="btnStyle" onClick={() => handleCreateVenueForm(booked.id)}>
                     Edit Booking
                   </button>
-                  {venueIdToShow === booked.id && isVenueEditFormShown && <BookingEdit venueId={booked.id} />}
+                  {venueIdToShow === booked.id && isVenueEditFormShown && (
+                    <BookingEdit setVenueBookingData={setVenueBookingData} venueId={booked.id} />
+                  )}
                 </div>
               ))
             )
@@ -151,7 +157,7 @@ function ProfileBookingVenuesInfo() {
                 <button className="btnStyle" onClick={() => handleCreateVenueForm(venue.id)}>
                   Edit Venue
                 </button>
-                {venueIdToShow === venue.id && isVenueEditFormShown && <VenueEdit venueId={venue.id} />}
+                {venueIdToShow === venue.id && isVenueEditFormShown && <VenueEdit setVenueBookingData={setVenueBookingData} venueId={venue.id} />}
                 <button className="btnStyle" onClick={() => handleSeeVenueBookings(venue.id)}>
                   view Bookings
                 </button>

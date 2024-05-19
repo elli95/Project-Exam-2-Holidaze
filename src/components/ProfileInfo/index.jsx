@@ -2,10 +2,17 @@ import ProfileBookingVenuesInfo from "../ProfileBookingVenuesInfo";
 import ProfileInfoEdit from "../ProfileInfoEdit";
 import CreateVenue from "../CreateVenue";
 import useGETProfileData from "../../hooks/useGETProfileData";
+import { useEffect, useState } from "react";
 
 function ProfileInfo() {
-  const { profileData } = useGETProfileData();
-  // console.log("profileData---------", profileData);
+  // const [profileData, setProfileData] = useState({});
+  // const { profileData } = useGETProfileData();
+  const [profileData, setProfileData] = useState({});
+  const { profileData: fetchedProfileData } = useGETProfileData();
+
+  useEffect(() => {
+    setProfileData(fetchedProfileData);
+  }, [fetchedProfileData]);
 
   return (
     <div className="flex flex-col items-center">
@@ -21,7 +28,8 @@ function ProfileInfo() {
       </div>
       <p>{profileData.bio}</p>
 
-      <ProfileInfoEdit />
+      <ProfileInfoEdit setProfileData={setProfileData} />
+      {/* <ProfileInfoEdit /> */}
       <CreateVenue />
       <ProfileBookingVenuesInfo />
     </div>
