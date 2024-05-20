@@ -6,7 +6,7 @@ import { API_BOOKINGS } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import useVenues from "../../store/venueLocations";
 
-function BookingEdit({ setVenueBookingData = () => {}, venueId }) {
+function BookingEdit({ setVenueBookingData = () => {}, fetchVenueBookingData = () => {}, venueId }) {
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
@@ -163,19 +163,14 @@ function BookingEdit({ setVenueBookingData = () => {}, venueId }) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
         "X-Noroff-API-Key": apiKey.key,
-      });
-
-      console.log("hello :D");
-      console.log("try", updatedProfileData.data);
-      setVenueBookingData((prevState) => ({
-        ...prevState,
-        // bookings: prevState.bookings.filter((booking) => booking.id !== venueId),
-      }));
+      })
+        .then(() => {
+          fetchVenueBookingData();
+        })
+        .catch((error) => console.error("Error deleting venue:", error));
     } catch (error) {
       console.error("Failed to update profile:", error);
     }
-    // .then(() => fetchVenueBookingData())
-    // .catch((error) => console.error("Error updating data:", error));
   };
 
   return (

@@ -82,7 +82,7 @@ function LoginPage() {
 
   return (
     <div className="loginForm">
-      <div className="loginFormContainer">
+      <div className="loginFormContainer formStyle">
         <h1>Contact form:</h1>
         <form onSubmit={handleSubmit}>
           <div>

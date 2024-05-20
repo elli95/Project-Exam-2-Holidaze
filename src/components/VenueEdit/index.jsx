@@ -6,7 +6,7 @@ import { API_VENUES } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import useVenues from "../../store/venueLocations";
 
-function VenueEdit({ setVenueBookingData = () => {}, venueId }) {
+function VenueEdit({ setVenueBookingData = () => {}, fetchVenueBookingData = () => {}, venueId }) {
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
@@ -218,8 +218,12 @@ function VenueEdit({ setVenueBookingData = () => {}, venueId }) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
       "X-Noroff-API-Key": apiKey.key,
-    });
-    // Samme Kode!!
+    })
+      .then(() => {
+        console.log("hello :D");
+        fetchVenueBookingData();
+      })
+      .catch((error) => console.error("Error deleting venue:", error));
   };
 
   return (

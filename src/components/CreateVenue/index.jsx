@@ -170,104 +170,135 @@ function CreateVenue() {
   };
 
   return (
-    <div>
-      <button className="btnStyle" onClick={handleCreateVenueForm}>
-        Create new Venue
-      </button>
+    <div className="self-center">
+      <div className="flex justify-center">
+        <button className="btnStyle w-44" onClick={handleCreateVenueForm}>
+          Create new Venue
+        </button>
+      </div>
       {isVenueFormShown && (
-        <div>
-          <h2>Create A Venue</h2>
-          <form onSubmit={handleSubmit}>
+        <div className="flex flex-col items-center formStyle w-72 sm:w-formDiv35">
+          <h2 className="font-semibold text-lg">Create A Venue</h2>
+          <form onSubmit={handleSubmit} className="flex flex-col w-64 sm:w-form500">
             <div>
-              <label htmlFor="name">Venue name</label>
-              <input type="text" name="name" placeholder="Venue name" aria-label="Venue Name" onBlur={handleBlur} required />
-              <span className="error">{errors.name}</span>
-            </div>
-            <div>
-              <label htmlFor="Venue description">Venue description</label>
-              <input type="text" name="description" placeholder="Venue description" aria-label="Venue description" onBlur={handleBlur} required />
-              <span className="error">{errors.description}</span>
-            </div>
-            {formState.media.map((mediaItem, index) => (
-              <div key={index}>
-                <label htmlFor={`media.url.${index}`}>Venue media url</label>
-                <input type="text" name={`media.url.${index}`} placeholder="User media url" aria-label="User media url" onBlur={handleBlur} />
-                <span className="error">{errors.media[index] && errors.media[index].url}</span>
-                <label htmlFor={`media.alt.${index}`}>Venue media alt</label>
-                <input type="text" name={`media.alt.${index}`} placeholder="User media alt" aria-label="User media alt" />
-                {index !== 0 && (
-                  <button type="button" className="btnStyle" onClick={() => handleRemoveImage(index)}>
-                    Remove
-                  </button>
-                )}
+              <div className="gap-3">
+                <div>
+                  <label htmlFor="name">Venue name</label>
+                  <input type="text" name="name" placeholder="Venue name" aria-label="Venue Name" onBlur={handleBlur} required />
+                  <span className="error">{errors.name}</span>
+                </div>
+                <div>
+                  <label htmlFor="Venue description">Venue description</label>
+                  <textarea
+                    type="text"
+                    name="description"
+                    placeholder="Venue description"
+                    aria-label="Venue description"
+                    onBlur={handleBlur}
+                    className="h-48 "
+                    required
+                  />
+                  <span className="error">{errors.description}</span>
+                </div>
+                <div>
+                  <label htmlFor="price">Venue price</label>
+                  <input type="number" name="price" placeholder="Venue price" aria-label="Venue price" onBlur={handleBlur} required />
+                  <span className="error">{errors.price}</span>
+                </div>
+                <div className="flex flex-row">
+                  <label htmlFor="maxGuests">Max guests</label>
+                  <input type="number" name="maxGuests" min={1} max={100} aria-label="Max guests" onBlur={handleBlur} required />
+                  <span className="error">{errors.maxGuests}</span>
+                </div>
+                <div className="flex flex-row">
+                  <label htmlFor="rating">Venue rating</label>
+                  <input type="number" name="rating" aria-label="Venue rating" />
+                </div>
               </div>
-            ))}
-            <button type="button" className="btnStyle" onClick={handleAddImage}>
-              Add Image
-            </button>
+              <div className="gap-3">
+                <h2 className="font-semibold">Venue media</h2>
+                {formState.media.map((mediaItem, index) => (
+                  <div key={index} className="gap-1.5">
+                    <div>
+                      <label htmlFor={`media.url.${index}`}>Venue media url</label>
+                      <input type="text" name={`media.url.${index}`} placeholder="User media url" aria-label="User media url" onBlur={handleBlur} />
+                      <span className="error">{errors.media[index] && errors.media[index].url}</span>
+                    </div>
+                    <div>
+                      <label htmlFor={`media.alt.${index}`}>Venue media alt</label>
+                      <input type="text" name={`media.alt.${index}`} placeholder="User media alt" aria-label="User media alt" />
+                    </div>
+                    {index !== 0 && (
+                      <div className="mt-3">
+                        <button type="button" className="btnStyle w-32 self-center" onClick={() => handleRemoveImage(index)}>
+                          Remove
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                <div>
+                  <button type="button" className="btnStyle w-32 self-center" onClick={handleAddImage}>
+                    Add Image
+                  </button>
+                </div>
+              </div>
+              <div className="gap-3">
+                <h2 className="font-semibold">Amenities</h2>
+                <div className="checkboxStyle">
+                  <label htmlFor="meta.wifi">Wifi availability</label>
+                  <input type="checkbox" name="meta.wifi" aria-label="Wifi availability" />
+                </div>
+                <div className="checkboxStyle">
+                  <label htmlFor="meta.parking">Parking availability</label>
+                  <input type="checkbox" name="meta.parking" aria-label="Parking availability" />
+                </div>
+                <div className="checkboxStyle">
+                  <label htmlFor="meta.breakfast">Breakfast availability</label>
+                  <input type="checkbox" name="meta.breakfast" aria-label="Breakfast availability" />
+                </div>
+                <div className="checkboxStyle">
+                  <label htmlFor="meta.pets">Pets availability</label>
+                  <input type="checkbox" name="meta.pets" aria-label="Pets availability" />
+                </div>
+              </div>
+              <div className="gap-3">
+                <h2 className="font-semibold">Venue location</h2>
+                <div>
+                  <label htmlFor="location.address">Venue address</label>
+                  <input type="text" name="location.address" placeholder="Venue address" aria-label="Venue address" />
+                </div>
+                <div>
+                  <label htmlFor="location.city">Venue city</label>
+                  <input type="text" name="location.city" placeholder="Venue city" aria-label="Venue city" />
+                </div>
+                <div>
+                  <label htmlFor="location.zip">Venue zip</label>
+                  <input type="number" name="location.zip" placeholder="Venue zip" aria-label="Venue zip" />
+                </div>
+                <div>
+                  <label htmlFor="location.country">Venue country</label>
+                  <input type="text" name="location.country" placeholder="Venue country" aria-label="Venue country" />
+                </div>
+                <div>
+                  <label htmlFor="location.continent">Venue continent</label>
+                  <input type="text" name="location.continent" placeholder="Venue continent" aria-label="Venue continent" />
+                </div>
+                <div>
+                  <label htmlFor="location.lat">Venue latitude</label>
+                  <input type="number" name="location.lat" placeholder="Venue latitude" min={-90} max={90} aria-label="Venue latitude" />
+                </div>
+                <div>
+                  <label htmlFor="location.lng">Venue longitude </label>
+                  <input type="number" name="location.lng" placeholder="Venue longitude" min={-90} max={90} aria-label="Venue longitude" />
+                </div>
+              </div>
+            </div>
             <div>
-              <label htmlFor="price">Venue price</label>
-              <input type="number" name="price" placeholder="Venue price" aria-label="Venue price" onBlur={handleBlur} required />
-              <span className="error">{errors.price}</span>
+              <button type="submit" className="btnStyle w-32 self-center mt-5">
+                Submit
+              </button>
             </div>
-            <div className="flex flex-row">
-              <label htmlFor="maxGuests">Max guests</label>
-              <input type="number" name="maxGuests" min={1} max={100} aria-label="Max guests" onBlur={handleBlur} required />
-              <span className="error">{errors.maxGuests}</span>
-            </div>
-            <div className="flex flex-row">
-              <label htmlFor="rating">Venue rating</label>
-              <input type="number" name="rating" aria-label="Venue rating" />
-            </div>
-            <h2>Amenities</h2>
-            <div>
-              <label htmlFor="meta.wifi">Wifi availability</label>
-              <input type="checkbox" name="meta.wifi" aria-label="Wifi availability" />
-            </div>
-            <div>
-              <label htmlFor="meta.parking">Parking availability</label>
-              <input type="checkbox" name="meta.parking" aria-label="Parking availability" />
-            </div>
-            <div>
-              <label htmlFor="meta.breakfast">Breakfast availability</label>
-              <input type="checkbox" name="meta.breakfast" aria-label="Breakfast availability" />
-            </div>
-            <div>
-              <label htmlFor="meta.pets">Pets availability</label>
-              <input type="checkbox" name="meta.pets" aria-label="Pets availability" />
-            </div>
-            <h2>Venue location</h2>
-            <div>
-              <label htmlFor="location.address">Venue address</label>
-              <input type="text" name="location.address" placeholder="Venue address" aria-label="Venue address" />
-            </div>
-            <div>
-              <label htmlFor="location.city">Venue city</label>
-              <input type="text" name="location.city" placeholder="Venue city" aria-label="Venue city" />
-            </div>
-            <div>
-              <label htmlFor="location.zip">Venue zip</label>
-              <input type="number" name="location.zip" placeholder="Venue zip" aria-label="Venue zip" />
-            </div>
-            <div>
-              <label htmlFor="location.country">Venue country</label>
-              <input type="text" name="location.country" placeholder="Venue country" aria-label="Venue country" />
-            </div>
-            <div>
-              <label htmlFor="location.continent">Venue continent</label>
-              <input type="text" name="location.continent" placeholder="Venue continent" aria-label="Venue continent" />
-            </div>
-            <div>
-              <label htmlFor="location.lat">Venue latitude</label>
-              <input type="number" name="location.lat" placeholder="Venue latitude" min={-90} max={90} aria-label="Venue latitude" />
-            </div>
-            <div>
-              <label htmlFor="location.lng">Venue longitude </label>
-              <input type="number" name="location.lng" placeholder="Venue longitude" min={-90} max={90} aria-label="Venue longitude" />
-            </div>
-            <button type="submit" className="btnStyle">
-              Submit
-            </button>
           </form>
         </div>
       )}

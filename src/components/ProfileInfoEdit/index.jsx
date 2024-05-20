@@ -57,17 +57,6 @@ function ProfileInfoEdit({ setProfileData = () => {} }) {
   };
 
   const apiCall = useApiCall();
-  // console.log("accessTokenaccessToken", accessToken);
-  // useEffect(() => {
-  //   apiCall(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", "GET", {
-  //     "Content-Type": "application/json",
-  //     Authorization: `Bearer ${accessToken}`,
-  //     "X-Noroff-API-Key": apiKey.key,
-  //   })
-  //     .then((data) => setProfileData(data.data))
-  //     .catch((error) => console.error("Error fetching data:", error));
-  //   // Samme Kode!!
-  // }, [userInfo.name, accessToken, apiKey.key]);
 
   const handleCreateVenueForm = () => {
     setIsVenueFormShown(!isVenueFormShown);
@@ -140,17 +129,28 @@ function ProfileInfoEdit({ setProfileData = () => {} }) {
 
   console.log("try333", profileData);
   return (
-    <div>
-      <button className="btnStyle" onClick={handleCreateVenueForm}>
-        Edit Profile
-      </button>
+    <div className="self-center">
+      <div className="flex justify-center">
+        <button className="btnStyle w-44" onClick={handleCreateVenueForm}>
+          Edit Profile
+        </button>
+      </div>
       {isVenueFormShown && (
-        <div>
-          <h2>Create A Venue</h2>
-          <form onSubmit={handleSubmit}>
+        <div className="flex flex-col items-center formStyle w-72 sm:w-formDiv35">
+          <h2 className="font-semibold text-lg">Edit Profile Information</h2>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-64 sm:w-form500">
             <div>
               <label htmlFor="name">User bio</label>
-              <input type="text" name="bio" placeholder="User bio" minLength={3} aria-label="User bio" defaultValue={profileData.bio} />
+              <textarea
+                type="text"
+                name="bio"
+                placeholder="User bio"
+                minLength={3}
+                maxLength={160}
+                aria-label="User bio"
+                defaultValue={profileData.bio}
+                className="h-48 sm:h-32"
+              />
             </div>
             <div>
               <label htmlFor="avatar.url">Venue avatar url</label>
@@ -161,7 +161,6 @@ function ProfileInfoEdit({ setProfileData = () => {} }) {
                 aria-label="User avatar url"
                 onBlur={handleBlur}
                 defaultValue={profileData.avatar.url}
-                // defaultValue={profileData.avatar ? profileData.avatar.url : ""}
               />
               <span className="error">{errors.avatar.url}</span>
             </div>
@@ -197,11 +196,11 @@ function ProfileInfoEdit({ setProfileData = () => {} }) {
                 defaultValue={profileData.banner.alt}
               />
             </div>
-            <div>
+            <div className="checkboxStyle">
               <label htmlFor="venueManager">Venue Manager</label>
-              <input type="checkbox" name="venueManager" aria-label="Venue Manager" defaultChecked={profileData.venueManager} />
+              <input type="checkbox" name="venueManager" aria-label="Venue Manager" defaultChecked={profileData.venueManager} className="switch" />
             </div>
-            <button type="submit" className="btnStyle">
+            <button type="submit" className="btnStyle w-32 self-center mt-5">
               Submit
             </button>
           </form>

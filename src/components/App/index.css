@@ -21,7 +21,7 @@ main {
   display: flex;
   justify-content: center;
   padding: 20px;
-  margin: 80px 0px 0px 0px;
+  margin: 52px 0px 0px 0px;
   min-height: 100vh;
 }
 
@@ -49,10 +49,57 @@ main {
 
 /* button style */
 .btnStyle {
-  padding: 6px 30px;
-  background-color: rgb(66, 219, 66);
-  border-radius: 10px;
-  align-self: center;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border: 1px solid black;
+  border-radius: 0.25rem;
+}
+
+.btnStyle:hover {
+  color: #ffffff;
+  background-color: #000000;
+}
+
+/*Checkbox style*/
+
+.checkboxStyle {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  gap: 10px !important;
+}
+
+/* .switch {
+  width: 34px;
+  height: 34px;
+  color: #05ff26;
+} */
+
+/*Form style*/
+
+.formStyle {
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 8px;
+  margin: 10px 0px;
+  box-shadow: 0px 5px 5px #6a6a6a;
+}
+
+.formStyle form div {
+  display: flex;
+  flex-direction: column;
+}
+
+.formStyle form div input,
+.formStyle form div textarea {
+  border: 2px solid gray;
+  border-radius: 5px;
+  padding: 0.5rem;
+}
+
+.formStyle form div input:hover,
+.formStyle form div textarea:hover {
+  border: 2px solid black;
 }
 
 /* Homepage */

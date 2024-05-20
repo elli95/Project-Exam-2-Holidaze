@@ -139,7 +139,7 @@ function RegistrationPage() {
 
   return (
     <div className="registrationForm">
-      <div className="registrationFormContainer">
+      <div className="registrationFormContainer formStyle">
         <h1>Contact form:</h1>
         <form onSubmit={handleSubmit}>
           <div>

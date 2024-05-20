@@ -2,15 +2,22 @@
 module.exports = {
   content: ["./src/**/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      spacing: {
+        270: "270px;",
+        formDiv35: "35rem;",
+        form500: "500px;",
+        375: "375px;",
+      },
+      minHeight: {
+        128: "28.5rem",
+      },
+    },
     screens: {
       sm: "640px",
       md: "768px",
       lg: "1024px",
       xl: "1280px",
-    },
-    minHeight: {
-      128: "28.5rem",
     },
     colors: {
       transparent: "transparent",

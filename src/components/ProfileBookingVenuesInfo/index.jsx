@@ -70,7 +70,7 @@ function ProfileBookingVenuesInfo() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
       <div className="max-w-3xl flex justify-center">
         <button
           className={`${isVenueManagersButtonDisabled ? "bg-tahiti" : "bg-bermuda"} px-5 py-2 w-1/2 h-16 text-wrap rounded-l-lg border-2 sm:w-60`}
@@ -89,39 +89,85 @@ function ProfileBookingVenuesInfo() {
       </div>
 
       <div className="flex justify-center">
-        <div className={`${isTravelersShown ? "hidden" : "flex"} flex-1 flex-col max-w-2xl `}>
+        <div className={`${isTravelersShown ? "hidden" : "flex"} flex-col`}>
           <p className="text-center">My Current Bookings!</p>
-          {venueBookingData.bookings ? (
-            venueBookingData.bookings.length === 0 ? (
-              <p>No bookings found.</p>
+
+          <div className={`flex flex-1 flex-col flex-wrap max-w-2xl md:flex-row md:max-w-fit md:gap-5`}>
+            {venueBookingData.bookings ? (
+              venueBookingData.bookings.length === 0 ? (
+                <p>No bookings found.</p>
+              ) : (
+                venueBookingData.bookings.map((booked) => (
+                  <div key={booked.id}>
+                    <Link to={`/venue/${booked.venue.id}`} className="bg-redish rounded-lg">
+                      <div className="imgBox">{booked.venue.media[0] && <img src={booked.venue.media[0].url} alt={booked.venue.media[0].alt} />}</div>
+                      <div className="p-3">
+                        <div className="flex justify-between">
+                          <h2>{booked.venue.name}</h2>
+                          <p>⭐{booked.venue.rating}</p>
+                        </div>
+                        <div className="flex justify-between">
+                          <div>
+                            <h3>{booked.venue.location.country}</h3>
+                            <p>{booked.venue.location.city}</p>
+                          </div>
+                          <p className="self-end">Guests:{booked.guests}</p>
+                          <p className="self-end">date From:{booked.dateFrom}</p>
+                          <p className="self-end">date To:{booked.dateTo}</p>
+                          <p className="self-end">{booked.venue.price}</p>
+                        </div>
+                      </div>
+                    </Link>
+                    <button className="btnStyle" onClick={() => handleCreateVenueForm(booked.id)}>
+                      Edit Booking
+                    </button>
+                    {venueIdToShow === booked.id && isVenueEditFormShown && (
+                      <BookingEdit setVenueBookingData={setVenueBookingData} fetchVenueBookingData={fetchVenueBookingData} venueId={booked.id} />
+                    )}
+                  </div>
+                ))
+              )
             ) : (
-              venueBookingData.bookings.map((booked) => (
-                <div key={booked.id}>
-                  <Link to={`/venue/${booked.venue.id}`} className="bg-redish rounded-lg">
-                    <div className="imgBox">{booked.venue.media[0] && <img src={booked.venue.media[0].url} alt={booked.venue.media[0].alt} />}</div>
+              <div className="loading"></div>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className={`${isVenueManagersShown ? "flex" : "hidden"} flex-col`}>
+        <p className="text-center">My Current Venues!</p>
+        <div className={`flex flex-1 flex-col flex-wrap max-w-2xl md:flex-row md:max-w-fit md:gap-5`}>
+          {venueBookingData.bookings ? (
+            venueBookingData.venues.length === 0 ? (
+              <p>No venues found.</p>
+            ) : (
+              venueBookingData.venues.map((venue) => (
+                <div key={venue.id}>
+                  <Link to={`/venue/${venue.id}`} className="bg-redish rounded-lg">
+                    <div className="imgBox">{venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} />}</div>
                     <div className="p-3">
                       <div className="flex justify-between">
-                        <h2>{booked.venue.name}</h2>
-                        <p>⭐{booked.venue.rating}</p>
+                        <h2>{venue.name}</h2>
+                        <p>⭐{venue.rating}</p>
                       </div>
                       <div className="flex justify-between">
                         <div>
-                          <h3>{booked.venue.location.country}</h3>
-                          <p>{booked.venue.location.city}</p>
+                          <h3>{venue.location.country}</h3>
+                          <p>{venue.location.city}</p>
                         </div>
-                        <p className="self-end">Guests:{booked.guests}</p>
-                        <p className="self-end">date From:{booked.dateFrom}</p>
-                        <p className="self-end">date To:{booked.dateTo}</p>
-                        <p className="self-end">{booked.venue.price}</p>
+                        <p className="self-end">{venue.price}</p>
                       </div>
                     </div>
                   </Link>
-                  <button className="btnStyle" onClick={() => handleCreateVenueForm(booked.id)}>
-                    Edit Booking
+                  <button className="btnStyle" onClick={() => handleCreateVenueForm(venue.id)}>
+                    Edit Venue
                   </button>
-                  {venueIdToShow === booked.id && isVenueEditFormShown && (
-                    <BookingEdit setVenueBookingData={setVenueBookingData} venueId={booked.id} />
+                  {venueIdToShow === venue.id && isVenueEditFormShown && (
+                    <VenueEdit setVenueBookingData={setVenueBookingData} fetchVenueBookingData={fetchVenueBookingData} venueId={venue.id} />
                   )}
+                  <button className="btnStyle" onClick={() => handleSeeVenueBookings(venue.id)}>
+                    view Bookings
+                  </button>
+                  {venueIdToShow === venue.id && isVenueBookingsShown && <VenueBookings venueId={venue.id} />}
                 </div>
               ))
             )
@@ -129,45 +175,6 @@ function ProfileBookingVenuesInfo() {
             <div className="loading"></div>
           )}
         </div>
-      </div>
-      <div className={`${isVenueManagersShown ? "flex" : "hidden"} flex-1 flex-col max-w-2xl `}>
-        <p className="text-center">My Current Venues!</p>
-        {venueBookingData.bookings ? (
-          venueBookingData.venues.length === 0 ? (
-            <p>No venues found.</p>
-          ) : (
-            venueBookingData.venues.map((venue) => (
-              <div key={venue.id}>
-                <Link to={`/venue/${venue.id}`} className="bg-redish rounded-lg">
-                  <div className="imgBox">{venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} />}</div>
-                  <div className="p-3">
-                    <div className="flex justify-between">
-                      <h2>{venue.name}</h2>
-                      <p>⭐{venue.rating}</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <div>
-                        <h3>{venue.location.country}</h3>
-                        <p>{venue.location.city}</p>
-                      </div>
-                      <p className="self-end">{venue.price}</p>
-                    </div>
-                  </div>
-                </Link>
-                <button className="btnStyle" onClick={() => handleCreateVenueForm(venue.id)}>
-                  Edit Venue
-                </button>
-                {venueIdToShow === venue.id && isVenueEditFormShown && <VenueEdit setVenueBookingData={setVenueBookingData} venueId={venue.id} />}
-                <button className="btnStyle" onClick={() => handleSeeVenueBookings(venue.id)}>
-                  view Bookings
-                </button>
-                {venueIdToShow === venue.id && isVenueBookingsShown && <VenueBookings venueId={venue.id} />}
-              </div>
-            ))
-          )
-        ) : (
-          <div className="loading"></div>
-        )}
       </div>
     </div>
   );
