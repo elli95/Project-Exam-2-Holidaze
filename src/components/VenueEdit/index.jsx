@@ -6,12 +6,16 @@ import { API_VENUES } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import useVenues from "../../store/venueLocations";
 
-function VenueEdit({ setVenueBookingData = () => {}, fetchVenueBookingData = () => {}, venueId }) {
+function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingData, fetchVenueBookingData, venueId }) {
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
-
   const { profileData } = useGETProfileData();
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [showModal, setShowModal] = useState(false);
+  const [actionType, setActionType] = useState(null);
+  const [confirmHandler, setConfirmHandler] = useState(null);
 
   let editVenueFilter;
   if (profileData && profileData.venues) {
@@ -50,7 +54,6 @@ function VenueEdit({ setVenueBookingData = () => {}, fetchVenueBookingData = () 
   const [errors, setErrors] = useState({
     name: "",
     description: "",
-    // media: formState.media.map(() => ({ url: "" })),
     media: [
       {
         url: "",
@@ -118,9 +121,30 @@ function VenueEdit({ setVenueBookingData = () => {}, fetchVenueBookingData = () 
     console.log("index after btn formState", formState);
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const ConfirmationModal = ({ onConfirm, onCancel }) => {
+    const message = actionType === "submit" ? "Are you sure you want to edit this booking?" : "Are you sure you want to delete this booking?";
+    return (
+      <div className="overlayCheckVenue w-box300 sm:w-box565 md:w-form580 lg:w-box850">
+        <div className="modulePositionVenue rounded-lg w-box245 sm:w-auto">
+          <div className="flex flex-col justify-center ">
+            <p className="text-xl text-center">{message}</p>
+            <div className="flex gap-5 justify-evenly pt-5">
+              <button className="btnStyle confirmBtn w-24 bg-green" onClick={onConfirm}>
+                Yes
+              </button>
+              <button className="btnStyle denyBtn w-24 bg-redish" onClick={onCancel}>
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      // </div>
+    );
+  };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
     const media = [];
     for (let element of event.target.elements) {
       if (element.name.startsWith("media.url.")) {
@@ -175,6 +199,14 @@ function VenueEdit({ setVenueBookingData = () => {}, fetchVenueBookingData = () 
     };
     console.log("Form submitted:", updatedFormState);
     setFormState(updatedFormState);
+    setShowModal(true);
+    setActionType("submit");
+    setConfirmHandler(() => () => handleConfirm(updatedFormState));
+    console.log("handleConfirm:", confirmHandler);
+  };
+
+  const handleConfirm = async (updatedFormState) => {
+    setShowModal(false);
 
     try {
       const updatedProfileData = await apiCall(
@@ -188,24 +220,32 @@ function VenueEdit({ setVenueBookingData = () => {}, fetchVenueBookingData = () 
         updatedFormState
       );
       console.log("try", updatedProfileData.data);
-      setVenueBookingData((prevState) => ({
-        ...prevState,
-        venues: prevState.venues.map((venue) =>
-          venue.id === updatedProfileData.data.id
-            ? {
-                ...venue,
-                name: updatedProfileData.data.name,
-                description: updatedProfileData.data.description,
-                media: updatedProfileData.data.media,
-                price: updatedProfileData.data.price,
-                maxGuests: updatedProfileData.data.maxGuests,
-                rating: updatedProfileData.data.rating,
-                meta: updatedProfileData.data.meta,
-                location: updatedProfileData.data.location,
-              }
-            : venue
-        ),
-      }));
+      if (updatedProfileData && !updatedProfileData.errors) {
+        setVenueBookingData((prevState) => ({
+          ...prevState,
+          venues: prevState.venues.map((venue) =>
+            venue.id === updatedProfileData.data.id
+              ? {
+                  ...venue,
+                  name: updatedProfileData.data.name,
+                  description: updatedProfileData.data.description,
+                  media: updatedProfileData.data.media,
+                  price: updatedProfileData.data.price,
+                  maxGuests: updatedProfileData.data.maxGuests,
+                  rating: updatedProfileData.data.rating,
+                  meta: updatedProfileData.data.meta,
+                  location: updatedProfileData.data.location,
+                }
+              : venue
+          ),
+        }));
+        setVenueIdToShow(null);
+        setIsVenueBookingsShown(false);
+      } else {
+        console.log("Error:", updatedProfileData);
+        console.log("Error:", updatedProfileData.errors[0].message);
+        setErrorMessage("There was an error: " + updatedProfileData.errors[0].message);
+      }
     } catch (error) {
       console.error("Failed to update profile:", error);
     }
@@ -214,215 +254,283 @@ function VenueEdit({ setVenueBookingData = () => {}, fetchVenueBookingData = () 
   console.log("formState", formState);
 
   const handleDelete = async () => {
-    apiCall(API_VENUES + "/" + venueId, "DELETE", {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-      "X-Noroff-API-Key": apiKey.key,
-    })
-      .then(() => {
-        console.log("hello :D");
+    console.log("hello :D");
+    setShowModal(true);
+    setActionType("delete");
+    setConfirmHandler(() => handleDeleteConfirm);
+  };
+
+  const handleDeleteConfirm = async () => {
+    setShowModal(false);
+
+    try {
+      const updatedProfileData = await apiCall(API_VENUES + "/" + venueId, "DELETE", {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        "X-Noroff-API-Key": apiKey.key,
+      });
+
+      if (!updatedProfileData) {
         fetchVenueBookingData();
-      })
-      .catch((error) => console.error("Error deleting venue:", error));
+      } else {
+        console.log("Error:", updatedProfileData.errors[0].message);
+        setErrorMessage("There was an error: " + updatedProfileData.errors[0].message);
+      }
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+    }
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
   };
 
   return (
     <div>
+      {showModal && <ConfirmationModal onConfirm={confirmHandler} onCancel={handleCancel} />}
       <div>
-        <h2>Create A Venue</h2>
         {!editVenueFilter ? (
           <div className="loading"></div>
         ) : (
-          <div>
-            <form onSubmit={handleSubmit}>
-              <div>
-                <label htmlFor="name">Venue name</label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Venue name"
-                  aria-label="Venue Name"
-                  onBlur={handleBlur}
-                  defaultValue={editVenueFilter[0].name}
-                  required
-                />
-                <span className="error">{errors.name}</span>
-              </div>
-              <div>
-                <label htmlFor="Venue description">Venue description</label>
-                <input
-                  type="text"
-                  name="description"
-                  placeholder="Venue description"
-                  aria-label="Venue description"
-                  onBlur={handleBlur}
-                  defaultValue={editVenueFilter[0].description}
-                  required
-                />
-                <span className="error">{errors.description}</span>
-              </div>
-              {formState.media.map((mediaItem, index) => (
-                <div key={index}>
-                  <label htmlFor={`media.url.${index}`}>Venue media url</label>
-                  <input
-                    type="text"
-                    name={`media.url.${index}`}
-                    placeholder="User media url"
-                    aria-label="User media url"
-                    onBlur={handleBlur}
-                    defaultValue={editVenueFilter[0].media[index]?.url || ""}
-                  />
-                  <span className="error">{errors.media[index] && errors.media[index].url}</span>
-                  <label htmlFor={`media.alt.${index}`}>Venue media alt</label>
-                  <input
-                    type="text"
-                    name={`media.alt.${index}`}
-                    placeholder="User media alt"
-                    aria-label="User media alt"
-                    defaultValue={editVenueFilter[0].media[index]?.alt || ""}
-                  />
-                  {console.log("index before btn", index)}
-                  {index !== 0 && (
-                    <button type="button" className="btnStyle" onClick={() => handleRemoveImage(index)}>
-                      Remove
-                    </button>
-                  )}
+          <div className="relative">
+            <form onSubmit={handleSubmit} className="flex flex-col venueEdit">
+              <div className="flex flex-col items-center gap-5">
+                <div className="flex flex-wrap justify-center gap-2.5">
+                  <div className="flex flex-col">
+                    <label htmlFor="name">Venue name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Venue name"
+                      aria-label="Venue Name"
+                      onBlur={handleBlur}
+                      defaultValue={editVenueFilter[0].name}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                      required
+                    />
+                    <span className="error">{errors.name}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="Venue description">Venue description</label>
+                    <input
+                      type="text"
+                      name="description"
+                      placeholder="Venue description"
+                      aria-label="Venue description"
+                      onBlur={handleBlur}
+                      defaultValue={editVenueFilter[0].description}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                      required
+                    />
+                    <span className="error">{errors.description}</span>
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label htmlFor="price">Venue price</label>
+                    <input
+                      type="number"
+                      name="price"
+                      placeholder="Venue price"
+                      aria-label="Venue price"
+                      onBlur={handleBlur}
+                      defaultValue={editVenueFilter[0].price}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                      required
+                    />
+                    <span className="error">{errors.price}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="maxGuests">Max guests</label>
+                    <input
+                      type="number"
+                      name="maxGuests"
+                      aria-label="Max guests"
+                      onBlur={handleBlur}
+                      defaultValue={editVenueFilter[0].maxGuests}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                      required
+                    />
+                    <span className="error">{errors.maxGuests}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="rating">Venue rating</label>
+                    <input
+                      type="number"
+                      name="rating"
+                      aria-label="Venue rating"
+                      max={5}
+                      defaultValue={editVenueFilter[0].rating}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                    />
+                  </div>
                 </div>
-              ))}
-              <button type="button" className="btnStyle" onClick={handleAddImage}>
-                Add Image
-              </button>
-              <div>
-                <label htmlFor="price">Venue price</label>
-                <input
-                  type="number"
-                  name="price"
-                  placeholder="Venue price"
-                  aria-label="Venue price"
-                  onBlur={handleBlur}
-                  defaultValue={editVenueFilter[0].price}
-                  required
-                />
-                <span className="error">{errors.price}</span>
+                <div className="flex flex-col w-box280 sm:w-box490 gap-2.5">
+                  <h2>Amenities</h2>
+                  <div className="flex justify-between bg-greyBlur px-1">
+                    <label htmlFor="meta.wifi">Wifi availability</label>
+                    <input type="checkbox" name="meta.wifi" aria-label="Wifi availability" defaultChecked={editVenueFilter[0].meta.wifi} />
+                  </div>
+                  <div className="flex justify-between px-1">
+                    <label htmlFor="meta.parking">Parking availability</label>
+                    <input type="checkbox" name="meta.parking" aria-label="Parking availability" defaultChecked={editVenueFilter[0].meta.parking} />
+                  </div>
+                  <div className="flex justify-between bg-greyBlur px-1">
+                    <label htmlFor="meta.breakfast">Breakfast availability</label>
+                    <input
+                      type="checkbox"
+                      name="meta.breakfast"
+                      aria-label="Breakfast availability"
+                      defaultChecked={editVenueFilter[0].meta.breakfast}
+                    />
+                  </div>
+                  <div className="flex justify-between px-1">
+                    <label htmlFor="meta.pets">Pets availability</label>
+                    <input type="checkbox" name="meta.pets" aria-label="Pets availability" defaultChecked={editVenueFilter[0].meta.pets} />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2.5">
+                  <h2>Venue location</h2>
+                  <div className="flex flex-col">
+                    <label htmlFor="location.address">Venue address</label>
+                    <input
+                      type="text"
+                      name="location.address"
+                      placeholder="Venue address"
+                      minLength={3}
+                      aria-label="Venue address"
+                      defaultValue={editVenueFilter[0].location.address}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="location.city">Venue city</label>
+                    <input
+                      type="text"
+                      name="location.city"
+                      placeholder="Venue city"
+                      minLength={3}
+                      aria-label="Venue city"
+                      defaultValue={editVenueFilter[0].location.city}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="location.zip">Venue zip</label>
+                    <input
+                      type="number"
+                      name="location.zip"
+                      placeholder="Venue zip"
+                      minLength={3}
+                      aria-label="Venue zip"
+                      defaultValue={editVenueFilter[0].location.zip}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="location.country">Venue country</label>
+                    <input
+                      type="text"
+                      name="location.country"
+                      placeholder="Venue country"
+                      minLength={3}
+                      aria-label="Venue country"
+                      defaultValue={editVenueFilter[0].location.country}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="location.continent">Venue continent</label>
+                    <input
+                      type="text"
+                      name="location.continent"
+                      placeholder="Venue continent"
+                      minLength={3}
+                      aria-label="Venue continent"
+                      defaultValue={editVenueFilter[0].location.continent}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="location.lat">Venue latitude</label>
+                    <input
+                      type="number"
+                      name="location.lat"
+                      placeholder="Venue latitude"
+                      minLength={3}
+                      aria-label="Venue latitude"
+                      defaultValue={editVenueFilter[0].location.lat}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="location.lng">Venue longitude </label>
+                    <input
+                      type="number"
+                      name="location.lng"
+                      placeholder="Venue longitude"
+                      minLength={3}
+                      aria-label="Venue longitude"
+                      defaultValue={editVenueFilter[0].location.lng}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2.5">
+                  <h2>Venue Media</h2>
+                  {formState.media.map((mediaItem, index) => (
+                    <div key={index} className={`flex flex-col ${index === 0 ? "pb-5" : ""}`}>
+                      <label htmlFor={`media.url.${index}`}>Venue media url</label>
+                      <input
+                        type="text"
+                        name={`media.url.${index}`}
+                        placeholder="User media url"
+                        aria-label="User media url"
+                        onBlur={handleBlur}
+                        defaultValue={editVenueFilter[0].media[index]?.url || ""}
+                        className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                      />
+                      <span className="error">{errors.media[index] && errors.media[index].url}</span>
+                      <label htmlFor={`media.alt.${index}`}>Venue media alt</label>
+                      <input
+                        type="text"
+                        name={`media.alt.${index}`}
+                        placeholder="User media alt"
+                        aria-label="User media alt"
+                        defaultValue={editVenueFilter[0].media[index]?.alt || ""}
+                        className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                      />
+                      {console.log("index before btn", index)}
+                      {index !== 0 && (
+                        <button
+                          type="button"
+                          className="btnStyle alternativeBtnStyle mt-2.5 w-box280 sm:w-box490"
+                          onClick={() => handleRemoveImage(index)}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <div className="flex justify-center mt-4">
+                    <button type="button" className="btnStyle" onClick={handleAddImage}>
+                      Add Image
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-row">
-                <label htmlFor="maxGuests">Max guests</label>
-                <input
-                  type="number"
-                  name="maxGuests"
-                  aria-label="Max guests"
-                  onBlur={handleBlur}
-                  defaultValue={editVenueFilter[0].maxGuests}
-                  required
-                />
-                <span className="error">{errors.maxGuests}</span>
+              <div className="flex justify-center mt-4">
+                <button type="submit" className="btnStyle alternativeBtnStyle w-form500">
+                  Submit
+                </button>
               </div>
-              <div className="flex flex-row">
-                <label htmlFor="rating">Venue rating</label>
-                <input type="number" name="rating" aria-label="Venue rating" max={5} defaultValue={editVenueFilter[0].rating} />
-              </div>
-              <h2>Amenities</h2>
-              <div>
-                <label htmlFor="meta.wifi">Wifi availability</label>
-                <input type="checkbox" name="meta.wifi" aria-label="Wifi availability" defaultChecked={editVenueFilter[0].meta.wifi} />
-              </div>
-              <div>
-                <label htmlFor="meta.parking">Parking availability</label>
-                <input type="checkbox" name="meta.parking" aria-label="Parking availability" defaultChecked={editVenueFilter[0].meta.parking} />
-              </div>
-              <div>
-                <label htmlFor="meta.breakfast">Breakfast availability</label>
-                <input type="checkbox" name="meta.breakfast" aria-label="Breakfast availability" defaultChecked={editVenueFilter[0].meta.breakfast} />
-              </div>
-              <div>
-                <label htmlFor="meta.pets">Pets availability</label>
-                <input type="checkbox" name="meta.pets" aria-label="Pets availability" defaultChecked={editVenueFilter[0].meta.pets} />
-              </div>
-              <h2>Venue location</h2>
-              <div>
-                <label htmlFor="location.address">Venue address</label>
-                <input
-                  type="text"
-                  name="location.address"
-                  placeholder="Venue address"
-                  minLength={3}
-                  aria-label="Venue address"
-                  defaultValue={editVenueFilter[0].location.address}
-                />
-              </div>
-              <div>
-                <label htmlFor="location.city">Venue city</label>
-                <input
-                  type="text"
-                  name="location.city"
-                  placeholder="Venue city"
-                  minLength={3}
-                  aria-label="Venue city"
-                  defaultValue={editVenueFilter[0].location.city}
-                />
-              </div>
-              <div>
-                <label htmlFor="location.zip">Venue zip</label>
-                <input
-                  type="number"
-                  name="location.zip"
-                  placeholder="Venue zip"
-                  minLength={3}
-                  aria-label="Venue zip"
-                  defaultValue={editVenueFilter[0].location.zip}
-                />
-              </div>
-              <div>
-                <label htmlFor="location.country">Venue country</label>
-                <input
-                  type="text"
-                  name="location.country"
-                  placeholder="Venue country"
-                  minLength={3}
-                  aria-label="Venue country"
-                  defaultValue={editVenueFilter[0].location.country}
-                />
-              </div>
-              <div>
-                <label htmlFor="location.continent">Venue continent</label>
-                <input
-                  type="text"
-                  name="location.continent"
-                  placeholder="Venue continent"
-                  minLength={3}
-                  aria-label="Venue continent"
-                  defaultValue={editVenueFilter[0].location.continent}
-                />
-              </div>
-              <div>
-                <label htmlFor="location.lat">Venue latitude</label>
-                <input
-                  type="number"
-                  name="location.lat"
-                  placeholder="Venue latitude"
-                  minLength={3}
-                  aria-label="Venue latitude"
-                  defaultValue={editVenueFilter[0].location.lat}
-                />
-              </div>
-              <div>
-                <label htmlFor="location.lng">Venue longitude </label>
-                <input
-                  type="number"
-                  name="location.lng"
-                  placeholder="Venue longitude"
-                  minLength={3}
-                  aria-label="Venue longitude"
-                  defaultValue={editVenueFilter[0].location.lng}
-                />
-              </div>
-              <button type="submit" className="btnStyle">
-                Submit
-              </button>
             </form>
-            <button type="delete" className="btnStyle" onClick={handleDelete}>
-              Delete Booking
-            </button>
+            {/* {showModal && <ConfirmationModal onConfirm={confirmHandler} onCancel={handleCancel} />} */}
+            <div className="flex justify-center mt-5">
+              <button type="delete" className="btnStyle alternativeBtnStyle w-form500" onClick={handleDelete}>
+                Delete Booking
+              </button>
+            </div>
+            {errorMessage && <span className="error flex justify-center pt-2.5 text-xl">{errorMessage}</span>}
           </div>
         )}
       </div>

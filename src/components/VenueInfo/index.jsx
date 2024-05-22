@@ -35,8 +35,27 @@ function VenueInfo() {
     guests: "",
   });
 
+  const [selecting, setSelecting] = useState(true);
+
   console.log("venuevenue", venue);
   const apiCall = useApiCall();
+
+  console.log("formState", formState);
+  const onDateChange = (value) => {
+    if (selecting) {
+      setFormState({
+        dateFrom: value,
+        dateTo: null,
+      });
+      setSelecting(false);
+    } else {
+      setFormState({
+        ...formState,
+        dateTo: value,
+      });
+      setSelecting(true);
+    }
+  };
 
   useEffect(() => {
     if (startDate !== null && endDate !== null) {
@@ -222,7 +241,13 @@ function VenueInfo() {
             <div className="flex flex-col items-center self-center gap-5 lg:border-l-2 lg:px-5 xl:px-12">
               <h2>Book Venue</h2>
               <p>Choose a date</p>
-              <Calendar
+              <div>
+                <Calendar onChange={onDateChange} value={formState.dateFrom} />
+                <p>Start Date: {formState.dateFrom && formState.dateFrom.toString()}</p>
+                <p>End Date: {formState.dateTo && formState.dateTo.toString()}</p>
+              </div>
+              {/* <Calendar
+                className="react-calendar"
                 // Other props...
                 tileClassName={({ date, view }) => {
                   if (view === "month") {
@@ -258,7 +283,7 @@ function VenueInfo() {
                   );
                 }}
                 minDate={new Date()}
-              />
+              /> */}
               <form onSubmit={handleSubmit}>
                 <div className="flex gap-12">
                   <div className="flex flex-col">

@@ -8,6 +8,7 @@ import VenueEdit from "../VenueEdit";
 import BookingEdit from "../BookingEdit";
 import VenueBookings from "../VenueBookings";
 import useApiCall from "../../hooks/useApiCall";
+import CreateVenue from "../CreateVenue";
 
 function ProfileBookingVenuesInfo() {
   const { apiKey } = usePostApiKey();
@@ -106,6 +107,8 @@ function ProfileBookingVenuesInfo() {
     };
   }, []);
 
+  console.log("try---------------", venueBookingData);
+
   return (
     <div className="flex flex-col items-center">
       <div className="max-w-3xl flex justify-center">
@@ -126,23 +129,19 @@ function ProfileBookingVenuesInfo() {
       </div>
 
       <div className="flex justify-center">
-        <div className={`${isTravelersShown ? "hidden" : "flex"} flex-col`}>
+        <div className={`${isTravelersShown ? "hidden" : "flex"} flex-col mt-5`}>
           <p className="text-center">Current Active Bookings</p>
-          {/* {venueBookingData.bookings ? (
-            venueBookingData.bookings.length === 0 ? ( */}
           {validBookings ? (
             validBookings.length === 0 ? (
               <p>No bookings found.</p>
             ) : (
               <div
                 className={`flex flex-1 flex-col flex-wrap gap-7 md:flex-row md:gap-5 md:w-box700 lg:w-box820 xl:w-box1240 xxl:w-box1660 ${
-                  venueBookingData.bookings.length < 2 ? "md:justify-center" : "md:justify-normal"
-                } ${venueBookingData.bookings.length < 3 ? "xl:justify-center" : "xl:justify-normal"} ${
-                  venueBookingData.bookings.length < 4 ? "xxl:justify-center" : "xxl:justify-normal"
+                  validBookings.length < 2 ? "md:justify-center" : "md:justify-normal"
+                } ${validBookings.length < 3 ? "xl:justify-center" : "xl:justify-normal"} ${
+                  validBookings.length < 4 ? "xxl:justify-center" : "xxl:justify-normal"
                 }`}
               >
-                {console.log("venueBookingData.bookings.length", venueBookingData.bookings.length)}
-                {/* {venueBookingData.bookings.map((booked) => ( */}
                 {validBookings.map((booked) => (
                   <div key={booked.id} className="self-center w-box300 sm:w-box490 md:w-box340 lg:w-box400">
                     <Link to={`/venue/${booked.venue.id}`} className="bg-redish rounded-lg">
@@ -205,66 +204,73 @@ function ProfileBookingVenuesInfo() {
           )}
         </div>
       </div>
-      <div className={`${isVenueManagersShown ? "flex" : "hidden"} flex-col`}>
-        <p className="text-center">My Current Venues!</p>
-        {/* <div className="flex flex-1 flex-col flex-wrap justify-center gap-7   md:flex-row md:gap-5 md:justify-normal md:w-box700 lg:w-box820 xl:w-box1240 xxl:w-box1660"> */}
+      <div className={`${isVenueManagersShown ? "flex" : "hidden"} flex-col mt-5`}>
         {venueBookingData.bookings ? (
           venueBookingData.venues.length === 0 ? (
             <p>No venues found.</p>
           ) : (
-            <div
-              className={`flex flex-1 flex-col flex-wrap gap-7 md:flex-row md:gap-5 md:w-box700 lg:w-box820 xl:w-box1240 xxl:w-box1660 ${
-                venueBookingData.venues.length < 2 ? "md:justify-center" : "md:justify-normal"
-              } ${venueBookingData.venues.length < 3 ? "xl:justify-center" : "xl:justify-normal"} ${
-                venueBookingData.venues.length < 4 ? "xxl:justify-center" : "xxl:justify-normal"
-              }`}
-            >
-              {venueBookingData.venues.map((venue) => (
-                <div key={venue.id} className="self-center w-box300 sm:w-box490 md:w-box340 lg:w-box400">
-                  <Link to={`/venue/${venue.id}`} className="bg-redish rounded-lg">
-                    <div className="imgBox">{venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} />}</div>
-                    <div className="h-24 p-3">
-                      <div className="flex justify-between">
-                        <h2>{venue.name}</h2>
-                        <p>⭐{venue.rating}</p>
-                      </div>
-                      <div className="flex justify-between">
-                        <div>
-                          <h3>{venue.location.country}</h3>
-                          <p>{venue.location.city}</p>
+            <div>
+              <CreateVenue setVenueBookingData={setVenueBookingData} />
+              <div
+                className={`flex flex-1 flex-col flex-wrap gap-7 md:flex-row md:gap-5 md:w-box700 lg:w-box820 xl:w-box1240 xxl:w-box1660 ${
+                  venueBookingData.venues.length < 2 ? "md:justify-center" : "md:justify-normal"
+                } ${venueBookingData.venues.length < 3 ? "xl:justify-center" : "xl:justify-normal"} ${
+                  venueBookingData.venues.length < 4 ? "xxl:justify-center" : "xxl:justify-normal"
+                }`}
+              >
+                {venueBookingData.venues.map((venue) => (
+                  <div key={venue.id} className="self-center overflow-hidden w-box300 sm:w-box490 md:w-box340 lg:w-box400">
+                    <Link to={`/venue/${venue.id}`} className="bg-redish rounded-lg">
+                      <div className="imgBox">{venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} />}</div>
+                      <div className="h-24 p-3">
+                        <div className="flex justify-between">
+                          <h2>{venue.name}</h2>
+                          <p>⭐{venue.rating}</p>
                         </div>
-                        <p className="self-end">{venue.price}</p>
+                        <div className="flex justify-between">
+                          <div>
+                            <h3>{venue.location.country}</h3>
+                            <p>{venue.location.city}</p>
+                          </div>
+                          <p className="self-end">{venue.price}</p>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                  <button
-                    className="btnStyle alternativeBtnStyle viewVenBtn w-box150 sm:w-box245 md:w-40 lg:w-box200"
-                    onClick={() => handleCreateVenueForm(venue.id)}
-                  >
-                    Edit Venue
-                  </button>
-                  {venueIdToShow === venue.id && isVenueEditFormShown && (
-                    <div className="overlay">
-                      <div ref={divRef} className="modulePosition">
-                        <VenueEdit setVenueBookingData={setVenueBookingData} fetchVenueBookingData={fetchVenueBookingData} venueId={venue.id} />
+                    </Link>
+                    <button
+                      className="btnStyle alternativeBtnStyle viewVenBtn w-box150 sm:w-box245 md:w-40 lg:w-box200"
+                      onClick={() => handleCreateVenueForm(venue.id)}
+                    >
+                      Edit Venue
+                    </button>
+                    {venueIdToShow === venue.id && isVenueEditFormShown && (
+                      <div className="overlay">
+                        <div ref={divRef} className="modulePosition w-box340 h-5/6 rounded-lg border-2 border-greyBlur sm:w-box610 lg:w-box900">
+                          <VenueEdit
+                            setVenueIdToShow={setVenueIdToShow}
+                            setIsVenueBookingsShown={setIsVenueBookingsShown}
+                            setVenueBookingData={setVenueBookingData}
+                            fetchVenueBookingData={fetchVenueBookingData}
+                            venueId={venue.id}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  <button
-                    className="btnStyle alternativeBtnStyle viewBokBtn border-r w-box150 sm:w-box245 md:w-40 lg:w-box200"
-                    onClick={() => handleSeeVenueBookings(venue.id)}
-                  >
-                    View Bookings
-                  </button>
-                  {venueIdToShow === venue.id && isVenueBookingsShown && (
-                    <div className="overlay">
-                      <div ref={divRef} className="modulePosition w-box340 rounded-lg border-2 border-greyBlur">
-                        <VenueBookings venueId={venue.id} />
+                    )}
+                    <button
+                      className="btnStyle alternativeBtnStyle viewBokBtn border-r w-box150 sm:w-box245 md:w-40 lg:w-box200"
+                      onClick={() => handleSeeVenueBookings(venue.id)}
+                    >
+                      View Bookings
+                    </button>
+                    {venueIdToShow === venue.id && isVenueBookingsShown && (
+                      <div className="overlay">
+                        <div ref={divRef} className="modulePosition w-box340 h-5/6 rounded-lg border-2 border-greyBlur sm:w-box610 lg:w-box900">
+                          <VenueBookings venueId={venue.id} />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           )
         ) : (

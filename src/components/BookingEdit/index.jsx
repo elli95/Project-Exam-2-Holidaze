@@ -58,7 +58,6 @@ function BookingEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookin
   const apiCall = useApiCall();
 
   const handleStartDateChange = (e) => {
-    // console.log("hello", new Date(e.target.value));
     setStartDate(new Date(e.target.value));
   };
 
@@ -69,7 +68,6 @@ function BookingEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookin
   let editVenueFilter;
   if (profileData && profileData.bookings) {
     editVenueFilter = profileData.bookings.filter((venue) => venue.id === venueId);
-    // console.log("editVenueFilter", editVenueFilter[0]);
   }
 
   useEffect(() => {
@@ -151,11 +149,11 @@ function BookingEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookin
     console.log("handleConfirm:", confirmHandler);
   };
 
-  console.log("handleConfirm2:", confirmHandler);
-  console.log("formState out:", formState);
+  // console.log("handleConfirm2:", confirmHandler);
+  // console.log("formState out:", formState);
 
   const handleConfirm = async (updatedFormState) => {
-    console.log("formState:", updatedFormState);
+    // console.log("formState:", updatedFormState);
     setShowModal(false);
     try {
       const updatedProfileData = await apiCall(
@@ -194,18 +192,6 @@ function BookingEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookin
       console.error("Failed to update profile:", error);
     }
   };
-  // console.log("formState", formState);
-
-  // const handleDelete = async () => {
-  //   console.log("hello :D");
-
-  // const ConfirmationDeleteModal = ({ onConfirm, onCancel }) => (
-  //   <div>
-  //     <p>Are you sure you want to delete the booking?</p>
-  //     <button onClick={onConfirm}>Yes</button>
-  //     <button onClick={onCancel}>No</button>
-  //   </div>
-  // );
 
   const handleDelete = async () => {
     console.log("hello :D");
@@ -224,7 +210,7 @@ function BookingEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookin
         "X-Noroff-API-Key": apiKey.key,
       });
 
-      if (!updatedProfileData.errors) {
+      if (!updatedProfileData) {
         fetchVenueBookingData();
       } else {
         console.log("Error:", updatedProfileData.errors[0].message);
@@ -250,7 +236,7 @@ function BookingEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookin
               <div className="imgBox">
                 {editVenueFilter[0].venue.media[0] && <img src={editVenueFilter[0].venue.media[0].url} alt={editVenueFilter[0].venue.media[0].alt} />}
               </div>
-              <div className=" p-3">
+              <div className="p-3">
                 <div className="flex justify-between">
                   <h2>{editVenueFilter[0].venue.name}</h2>
                   <p>⭐{editVenueFilter[0].venue.rating}</p>
@@ -347,7 +333,7 @@ function BookingEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookin
             </form>
             <div className="flex justify-center mt-5">
               <button type="delete" className="btnStyle alternativeBtnStyle w-form500" onClick={handleDelete}>
-                Delete Booking
+                Cancel Booking
               </button>
             </div>
             {/* {showModal && <ConfirmationModal onConfirm={handleDeleteConfirm} onCancel={handleCancel} />} */}

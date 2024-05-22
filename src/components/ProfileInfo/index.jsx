@@ -1,20 +1,43 @@
 import ProfileBookingVenuesInfo from "../ProfileBookingVenuesInfo";
 import ProfileInfoEdit from "../ProfileInfoEdit";
-import CreateVenue from "../CreateVenue";
+// import CreateVenue from "../CreateVenue";
 import useGETProfileData from "../../hooks/useGETProfileData";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function ProfileInfo() {
   const [profileData, setProfileData] = useState({});
   const { profileData: fetchedProfileData } = useGETProfileData();
+  const [isProfileEditShown, setIsProfileEditShown] = useState(false);
+
+  const divRef = useRef(null);
 
   useEffect(() => {
     setProfileData(fetchedProfileData);
   }, [fetchedProfileData]);
   console.log("profileData", profileData);
+
+  const handleSeeProfileBooking = () => {
+    setIsProfileEditShown(true);
+  };
+
+  const handleClickOutside = (event) => {
+    setTimeout(() => {
+      if (divRef.current && !divRef.current.contains(event.target)) {
+        setIsProfileEditShown(false);
+      }
+    }, 0);
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col items-center">
-      {!profileData.name ? (
+      {!profileData.avatar ? (
         <div className="loading"></div>
       ) : (
         <>
@@ -33,8 +56,18 @@ function ProfileInfo() {
           </div>
 
           <div className="flex flex-col justify-center gap-2.5 m-2.5">
-            <ProfileInfoEdit setProfileData={setProfileData} />
-            <CreateVenue />
+            <div className="flex justify-center">
+              <button className="btnStyle w-44" onClick={handleSeeProfileBooking}>
+                Edit Profile
+              </button>
+            </div>
+            {isProfileEditShown && (
+              <div className="overlay">
+                <div ref={divRef} className="modulePosition w-box340 h-5/6 rounded-lg border-2 border-greyBlur sm:w-box610 lg:w-box900">
+                  <ProfileInfoEdit setIsProfileEditShown={setIsProfileEditShown} setProfileData={setProfileData} />
+                </div>
+              </div>
+            )}
             <ProfileBookingVenuesInfo />
           </div>
         </>

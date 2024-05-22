@@ -5,11 +5,12 @@ import usePostApiKey from "../../hooks/usePostApiKey";
 import useApiCall from "../../hooks/useApiCall";
 import useVenues from "../../store/venueLocations";
 
-function CreateVenue() {
+function CreateVenue({ setVenueBookingData }) {
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
   const [isVenueFormShown, setIsVenueFormShown] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [formState, setFormState] = useState({
     name: "",
     description: "",
@@ -157,20 +158,39 @@ function CreateVenue() {
     console.log("Venue form submitted:", updatedFormState);
     setFormState(updatedFormState);
 
-    apiCall(
-      API_VENUES,
-      "POST",
-      {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        "X-Noroff-API-Key": apiKey.key,
-      },
-      updatedFormState
-    );
+    try {
+      const updatedProfileData = await apiCall(
+        API_VENUES,
+        "POST",
+        {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+          "X-Noroff-API-Key": apiKey.key,
+        },
+        updatedFormState
+      );
+      console.log("try", updatedProfileData);
+      if (updatedProfileData && !updatedProfileData.errors) {
+        setVenueBookingData((prevState) => {
+          let newState = { ...prevState };
+          if (!newState.venues) {
+            newState.venues = [];
+          }
+          newState.venues.push(updatedProfileData.data);
+          return newState;
+        });
+      } else {
+        console.log("Error:", updatedProfileData);
+        console.log("Error:", updatedProfileData.errors[0].message);
+        setErrorMessage("There was an error: " + updatedProfileData.errors[0].message);
+      }
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+    }
   };
 
   return (
-    <div className="self-center">
+    <div className="self-center mb-5">
       <div className="flex justify-center">
         <button className="btnStyle w-44" onClick={handleCreateVenueForm}>
           Create new Venue
@@ -299,6 +319,7 @@ function CreateVenue() {
                 Submit
               </button>
             </div>
+            {errorMessage && <span className="error flex justify-center pt-2.5 text-xl">{errorMessage}</span>}
           </form>
         </div>
       )}
