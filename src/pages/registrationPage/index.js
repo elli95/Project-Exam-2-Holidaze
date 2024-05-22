@@ -2,6 +2,9 @@ import { useState } from "react";
 import { API_REGISTER_URL } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import useVenues from "../../store/venueLocations";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 
 function RegistrationPage() {
   const { validateField } = useVenues();
@@ -9,7 +12,7 @@ function RegistrationPage() {
 
   const [shown, setShown] = useState(false);
   const type = shown ? "text" : "password";
-  const buttonText = shown ? "Hide password" : "Show Password";
+  const buttonText = shown ? <FontAwesomeIcon icon={faEyeSlash} /> : <FontAwesomeIcon icon={faEye} />;
 
   const [formState, setFormState] = useState({
     name: "",
@@ -139,10 +142,10 @@ function RegistrationPage() {
 
   return (
     <div className="registrationForm">
-      <div className="registrationFormContainer formStyle">
-        <h1>Contact form:</h1>
-        <form onSubmit={handleSubmit}>
-          <div>
+      <div className="registrationFormContainer formStyle justify-center items-center min-w-80 sm:w-box610 lg:w-box700">
+        <h1 className="text-3xl font-semibold py-2">Registration</h1>
+        <form onSubmit={handleSubmit} className="py-2.5">
+          <div className="w-72 sm:w-form500">
             <label htmlFor="name">Full name</label>
             <input
               type="text"
@@ -152,55 +155,75 @@ function RegistrationPage() {
               minLength={1}
               maxLength={20}
               aria-label="Full Name"
+              className="bg-greyBlur w-box280 sm:w-box490"
               required
             />
-            {/* <span className="error">{errors[fieldName]}</span> */}
             <span className="error">{errors.name}</span>
           </div>
-          <div>
+          <div className="w-72 sm:w-form500">
             <label htmlFor="email">Email</label>
             <input
               type="text"
               name="email"
-              // value={formState.email}
               placeholder="Your Email"
-              // onChange={handleInputChange}
               onBlur={handleBlur}
               aria-label="Email"
+              className="bg-greyBlur w-box280 sm:w-box490"
               required
             />
             <span className="error">{errors.email}</span>
           </div>
-          <div>
+          <div className="w-72 sm:w-form500">
             <label htmlFor="bio">Bio</label>
-            <input
+            <textarea
               type="text"
               name="bio"
-              // value={formState.bio}
               placeholder="Bio description"
-              // onChange={handleInputChange}
               onBlur={handleBlur}
               minLength={3}
+              maxLength={160}
               aria-label="Bio"
+              className="bg-greyBlur w-box280 h-36 sm:h-24 sm:w-box490"
               required
             />
             <span className="error">{errors.bio}</span>
           </div>
-          <div>
+          <div className="w-72 sm:w-form500">
             <label htmlFor="avatar.url">Venue avatar url</label>
-            <input type="text" name="avatar.url" placeholder="User avatar url" onBlur={handleBlur} aria-label="User avatar url" />
+            <input
+              type="text"
+              name="avatar.url"
+              placeholder="User avatar url"
+              onBlur={handleBlur}
+              aria-label="User avatar url"
+              className="bg-greyBlur w-box280 sm:w-box490"
+            />
             <span className="error">{errors.avatar.url}</span>
           </div>
-          <div>
+          <div className="w-72 sm:w-form500">
             <label htmlFor="avatar.alt">Venue avatar alternative text</label>
-            <input type="text" name="avatar.alt" placeholder="User avatar alternative text" minLength={3} aria-label="User avatar alternative text" />
+            <input
+              type="text"
+              name="avatar.alt"
+              placeholder="User avatar alternative text"
+              minLength={3}
+              aria-label="User avatar alternative text"
+              className="bg-greyBlur w-box280 sm:w-box490"
+            />
           </div>
-          <div>
+          <div className="w-72 sm:w-form500">
             <label htmlFor="banner.url">Profile banner url</label>
-            <input type="text" name="banner.url" placeholder="Profile banner url" onBlur={handleBlur} aria-label="Profile banner url" />
+            <input
+              type="text"
+              name="banner.url"
+              placeholder="Profile banner url"
+              onBlur={handleBlur}
+              aria-label="Profile banner url"
+              className="bg-greyBlur w-box280 sm:w-box490"
+            />
             <span className="error">{errors.banner.url}</span>
           </div>
-          <div>
+          <div className="w-72 sm:w-form500">
             <label htmlFor="banner.alt">Profile banner alternative text</label>
             <input
               type="text"
@@ -208,40 +231,44 @@ function RegistrationPage() {
               placeholder="Profile banner alternative text"
               minLength={3}
               aria-label="Profile banner alternative text"
+              className="bg-greyBlur w-box280 sm:w-box490"
             />
           </div>
-          <div>
+          <div className="w-72 sm:w-form500">
             <label htmlFor="password">Password</label>
-            <input
-              type={type}
-              name="password"
-              // value={formState.password}
-              placeholder="Password content"
-              // onChange={handleInputChange}
-              minLength={8}
-              onBlur={handleBlur}
-              aria-label="Password"
-              required
-            />
-            <button type="button" onClick={() => setShown(!shown)}>
-              {buttonText}
-            </button>
+            <div className="PasswordInput">
+              <input
+                type={type}
+                name="password"
+                placeholder="Password content"
+                minLength={8}
+                onBlur={handleBlur}
+                aria-label="Password"
+                className="bg-greyBlur"
+                required
+              />
+              <button type="button" className="w-7 text-xl" onClick={() => setShown(!shown)}>
+                {buttonText}
+              </button>
+            </div>
             <span className="error">{errors.password}</span>
           </div>
-          <div className="flex flex-row">
+          <div className="checkboxStyle">
             <label htmlFor="venueManager">Venue manager</label>
             <input type="hidden" name="venueManager" value="0" />
-            <input
-              type="checkbox"
-              name="venueManager"
-              // onChange={handleInputChange}
-            />
+            <input type="checkbox" name="venueManager" />
           </div>
-          <button type="submit" className="btnStyle">
+          <button type="submit" className="btnStyle w-32">
             Submit
           </button>
-          {errorMessage && <span className="error">{errorMessage}</span>}
+          {errorMessage && <span className="error self-center">{errorMessage}</span>}
         </form>
+        <div className="items-center p-3.5">
+          <h2>Already have a user?</h2>
+          <Link to="/login">
+            <h2 className="hover:underline">Login today!</h2>
+          </Link>
+        </div>
       </div>
     </div>
   );
