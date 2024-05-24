@@ -48,11 +48,11 @@ function ProfileBooking() {
     }
   }, [bookingData]);
 
-  useEffect(() => {
-    if (validBookings) {
-      console.log("--------validBookings", validBookings);
-    }
-  }, [validBookings.dateFrom]);
+  // useEffect(() => {
+  //   if (validBookings) {
+  //     console.log("--------validBookings", validBookings);
+  //   }
+  // }, [validBookings.dateFrom]);
 
   const handleCreateVenueForm = (id) => {
     if (venueIdToShow === id) {

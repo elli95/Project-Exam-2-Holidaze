@@ -1,43 +1,35 @@
-import { API_VENUES } from "../../shared/apis";
+// import { API_VENUES } from "../../shared/apis";
 // import useFetchApi from "../../hooks/useFetchApi";
 import { useEffect, useState, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import usePostApiKey from "../../hooks/usePostApiKey";
-import useLocalStorage from "../../hooks/useLocalStorage";
-import useApiCall from "../../hooks/useApiCall";
+import { Link, useLocation } from "react-router-dom";
+// import usePostApiKey from "../../hooks/usePostApiKey";
+// import useLocalStorage from "../../hooks/useLocalStorage";
+// import useApiCall from "../../hooks/useApiCall";
+import useAllVenuesApiCall from "../../hooks/useAllVenuesApiCall";
 
 function SearchField() {
   // const { venues, isError } = useFetchApi(API_VENUES);
-  const [venues, setVenue] = useState([]);
+  // const [venues, setVenue] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const { apiKey } = usePostApiKey();
-  const { accessToken } = useLocalStorage();
-  const apiCall = useApiCall();
+  // const { apiKey } = usePostApiKey();
+  // const { accessToken } = useLocalStorage();
+  // const apiCall = useApiCall();
   const inputRef = useRef();
   const listRef = useRef();
 
-  const navigate = useNavigate();
+  const { allVenues } = useAllVenuesApiCall();
+  // const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    setTimeout(() => {
-      apiCall(API_VENUES, "GET", {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        "X-Noroff-API-Key": apiKey.key,
-      })
-        .then((data) => setVenue(data.data))
-        .catch((error) => console.error("Error fetching data:", error));
-    }, 500);
-    // Samme Kode!!
-  }, []);
 
   const inputValueChange = (input) => {
     const newValue = input.target.value;
     setInputValue(newValue);
   };
 
-  const filteredVenues = venues.filter((venueData) => venueData.name.toLowerCase().includes(inputValue.toLowerCase()));
+  // useEffect(() => {
+  const filteredVenues = allVenues.filter((venueData) => venueData.name.toLowerCase().includes(inputValue.toLowerCase()));
+  // }, []);
+  console.log("filteredVenues", filteredVenues);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -79,6 +71,7 @@ function SearchField() {
           ))}
         </ul>
       )}
+      {/* {!inputValue && <div className="loading"></div>} */}
     </div>
   );
 }
