@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import useAllVenuesApiCall from "../../hooks/useAllVenuesApiCall";
@@ -21,40 +21,7 @@ function VenueFilter({ setFilteredVenues }) {
 
   const { allVenues, isLoading } = useAllVenuesApiCall();
 
-  useEffect(() => {
-    if (!isLoading && !filtersCleared) {
-      applyFilters();
-    }
-  }, [allVenues, filters, isLoading, filtersCleared]);
-
-  const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    const parsedValue = type === "radio" ? parseFloat(value) : value;
-    const [fieldName, nestedFieldName] = name.split(".");
-
-    if (nestedFieldName) {
-      setFilters((prevState) => ({
-        ...prevState,
-        [fieldName]: {
-          ...prevState[fieldName],
-          [nestedFieldName]: type === "checkbox" ? checked : parsedValue,
-        },
-      }));
-    } else {
-      setFilters((prevState) => ({
-        ...prevState,
-        [name]: type === "checkbox" ? checked : parsedValue,
-      }));
-    }
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setFiltersCleared(false);
-    applyFilters();
-  };
-
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     if (!isLoading) {
       const filteredData = allVenues.filter((item) => {
         for (let key in filters) {
@@ -95,6 +62,45 @@ function VenueFilter({ setFilteredVenues }) {
 
       setFilteredVenues(uniqueFilteredData);
     }
+  }, [allVenues, isLoading, setFilteredVenues, filters]);
+
+  // useEffect(() => {
+  //   if (!isLoading && !filtersCleared) {
+  //     applyFilters();
+  //   }
+  // }, [allVenues, filters, isLoading, filtersCleared]);
+  useEffect(() => {
+    if (!isLoading && !filtersCleared) {
+      applyFilters();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allVenues, filters, isLoading, filtersCleared, applyFilters]);
+
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    const parsedValue = type === "radio" ? parseFloat(value) : value;
+    const [fieldName, nestedFieldName] = name.split(".");
+
+    if (nestedFieldName) {
+      setFilters((prevState) => ({
+        ...prevState,
+        [fieldName]: {
+          ...prevState[fieldName],
+          [nestedFieldName]: type === "checkbox" ? checked : parsedValue,
+        },
+      }));
+    } else {
+      setFilters((prevState) => ({
+        ...prevState,
+        [name]: type === "checkbox" ? checked : parsedValue,
+      }));
+    }
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setFiltersCleared(false);
+    applyFilters();
   };
 
   const handleClearFilter = () => {
