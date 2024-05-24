@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useApiCall from "../../hooks/useApiCall";
 import { API_VENUES } from "../../shared/apis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,25 +21,21 @@ function VenueFilter({ setFilteredVenues }) {
 
   const apiCall = useApiCall();
 
-  useEffect(() => {
-    const fetchAllPages = async (url) => {
-      try {
-        const data = await apiCall(url, "GET", {
-          "Content-Type": "application/json",
-        });
+  const fetchAllPages = async (url) => {
+    try {
+      const data = await apiCall(url, "GET", {
+        "Content-Type": "application/json",
+      });
 
-        setVenues((prevVenues) => [...prevVenues, ...data.data]);
+      setVenues((prevVenues) => [...prevVenues, ...data.data]);
 
-        if (!data.meta.isLastPage) {
-          await fetchAllPages(`${API_VENUES}?page=${data.meta.nextPage}`);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      if (!data.meta.isLastPage) {
+        await fetchAllPages(`${API_VENUES}?page=${data.meta.nextPage}`);
       }
-    };
-
-    fetchAllPages(`${API_VENUES}?page=1`);
-  }, [apiCall]);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -64,6 +60,7 @@ function VenueFilter({ setFilteredVenues }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    fetchAllPages(`${API_VENUES}?page=1`);
     const filteredData = venues.filter((item) => {
       for (let key in filters) {
         if (key === "wifi" || key === "parking" || key === "pets" || key === "breakfast") {

@@ -1,10 +1,27 @@
-import { API_VENUES } from "../../shared/apis";
+// import { API_VENUES } from "../../shared/apis";
 // import useFetchApi from "../../hooks/useFetchApi";
 import { useEffect, useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useApiCall from "../../hooks/useApiCall";
+
+const searchCall = async (apiCall, accessToken, apiKey, setVenue) => {
+  // try {
+  //   const searchCallData = await apiCall(API_VENUES, "GET", {
+  //     "Content-Type": "application/json",
+  //     Authorization: `Bearer ${accessToken}`,
+  //     "X-Noroff-API-Key": apiKey.key,
+  //   });
+  //   if (searchCallData.errors) {
+  //     console.log("Error:", searchCallData.errors[0].message);
+  //   } else {
+  //     setVenue(searchCallData.data);
+  //   }
+  // } catch (error) {
+  //   console.error("Failed to fetch venue data:", error);
+  // }
+};
 
 function SearchField() {
   // const { venues, isError } = useFetchApi(API_VENUES);
@@ -20,17 +37,8 @@ function SearchField() {
   const location = useLocation();
 
   useEffect(() => {
-    setTimeout(() => {
-      apiCall(API_VENUES, "GET", {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        "X-Noroff-API-Key": apiKey.key,
-      })
-        .then((data) => setVenue(data.data))
-        .catch((error) => console.error("Error fetching data:", error));
-    }, 500);
-    // Samme Kode!!
-  }, [apiCall, accessToken, apiKey.key]);
+    searchCall(apiCall, accessToken, apiKey, setVenue);
+  }, [apiCall, accessToken, apiKey, setVenue]);
 
   const inputValueChange = (input) => {
     const newValue = input.target.value;
