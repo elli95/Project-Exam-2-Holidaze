@@ -117,7 +117,7 @@ function VenueFilter({ setFilteredVenues }) {
     setFilteredVenues([]);
   };
 
-  console.log("filterdData filters:", filters);
+  //console.log("filterdData filters:", filters);
 
   return (
     <div className="flex justify-center venueEdit">

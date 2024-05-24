@@ -2,7 +2,7 @@ import ProfileInfo from "../../components/ProfileInfo";
 
 function ProfilePage() {
   return (
-    <div>
+    <div className="mainDiv">
       <ProfileInfo />
     </div>
   );

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 function PageNotFound() {
   return (
-    <div>
+    <div className="mainDiv">
       <h1>Oops! 🙈</h1>
       <h2>We're sorry, but the page you're looking for could not be found. It might have been moved, renamed, or it may no longer exist.</h2>
       <h2>Here are some helpful links to get you back on track:</h2>

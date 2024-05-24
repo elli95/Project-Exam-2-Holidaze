@@ -14,18 +14,40 @@ function VenueBookings({ venueId, handleCloseBtn }) {
   const { accessToken } = useLocalStorage();
   const apiCall = useApiCall();
 
+  // useEffect(() => {
+  //   apiCall(API_VENUES + "/?_bookings=true", "GET", {
+  //     "Content-Type": "application/json",
+  //     Authorization: `Bearer ${accessToken}`,
+  //     "X-Noroff-API-Key": apiKey.key,
+  //   })
+  //     .then((data) => {
+  //       setVenue(data.data);
+  //       console.log("data11", data);
+  //     })
+  //     .catch((error) => console.error("Error fetching data:", error));
+  //   // Samme Kode!!
+  // }, []);
+
   useEffect(() => {
-    apiCall(API_VENUES + "/?_bookings=true", "GET", {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-      "X-Noroff-API-Key": apiKey.key,
-    })
-      .then((data) => {
-        setVenue(data.data);
-        console.log("data11", data);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
-    // Samme Kode!!
+    const fetchAllPages = async (url) => {
+      try {
+        const data = await apiCall(url, "GET", {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+          "X-Noroff-API-Key": apiKey.key,
+        });
+
+        setVenue((prevVenues) => [...prevVenues, ...data.data]);
+
+        if (!data.meta.isLastPage) {
+          await fetchAllPages(`${API_VENUES}?page=${data.meta.nextPage}`);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchAllPages(`${API_VENUES}/?_bookings=true&page=1`);
   }, []);
 
   let venueBookingsFilter;
@@ -39,48 +61,48 @@ function VenueBookings({ venueId, handleCloseBtn }) {
   // }
   // console.log("venueBookingsFilter2venueBookingsFilter2", venueBookingsFilter2);
   // console.log("venueBookingsFilterVenues", venues);
-  // console.log("venueBookingsFilter", venueBookingsFilter, venueId);
+  console.log("venueBookingsFilter", venueBookingsFilter);
 
   return (
     <div>
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-2.5">
         <button className="btnStyle" onClick={handleCloseBtn}>
           Close
         </button>
       </div>
       {!venueBookingsFilter[0] ? (
-        <div className="loading"></div>
-      ) : venueBookingsFilter[0]._count.bookings === 0 ? (
-        <p>No bookings found.</p>
+        <div className="loading flex justify-center"></div>
+      ) : venueBookingsFilter[0]._count.bookings === 0 || !venueBookingsFilter[0].bookings ? (
+        <p className="flex justify-center text-2xl">No bookings found.</p>
       ) : (
-        <div>
+        <div className="flex flex-col justify-center sm:flex-row sm:flex-wrap sm:items-center gap-2.5">
           {venueBookingsFilter[0].bookings.map((booked) => {
             return (
-              <div key={booked.id} className="border-2">
-                <h2>
-                  <strong>User:</strong>
-                  {booked.customer.name}
-                </h2>
-                <p>
-                  <strong>Email:</strong>
-                  {booked.customer.email}
-                </p>
-                <p>
-                  <strong>Guests:</strong>
-                  {booked.guests}
-                </p>
-                <p>
-                  <strong>Created:</strong>
-                  {new Date(booked.created).toLocaleDateString()}
-                </p>
-                <p>
-                  <strong>From:</strong>
-                  {new Date(booked.dateFrom).toLocaleDateString()}
-                </p>
-                <p>
-                  <strong>To:</strong>
-                  {new Date(booked.dateTo).toLocaleDateString()}
-                </p>
+              <div key={booked.id} className="border-2 textBreakStyle  text-lg sm:w-box340">
+                <div className="flex justify-between  bg-greyBlur px-1 flex-wrap">
+                  <h2>User:</h2>
+                  <p>{booked.customer.name}</p>
+                </div>
+                <div className="flex justify-between px-1 flex-wrap">
+                  <h2>Email:</h2>
+                  <p>{booked.customer.email}</p>
+                </div>
+                <div className="flex justify-between bg-greyBlur px-1 flex-wrap">
+                  <h2>Guests:</h2>
+                  <p>{booked.guests}</p>
+                </div>
+                <div className="flex justify-between px-1 flex-wrap">
+                  <h2>Created:</h2>
+                  <p>{new Date(booked.created).toLocaleDateString()}</p>
+                </div>
+                <div className="flex justify-between px-1 flex-wrap">
+                  <h2>From:</h2>
+                  <p>{new Date(booked.dateFrom).toLocaleDateString()}</p>
+                </div>
+                <div className="flex justify-between bg-greyBlur px-1 flex-wrap">
+                  <h2>To:</h2>
+                  <p>{new Date(booked.dateTo).toLocaleDateString()}</p>
+                </div>
               </div>
             );
           })}

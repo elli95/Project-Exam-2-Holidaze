@@ -1,5 +1,3 @@
-// import { API_VENUES } from "../../shared/apis";
-// import useFetchApi from "../../hooks/useFetchApi";
 import { useParams } from "react-router-dom";
 import useVenues from "../../store/venueLocations";
 import { useEffect, useState } from "react";
@@ -9,20 +7,19 @@ import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useApiCall from "../../hooks/useApiCall";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAnglesRight, faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
+import { faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
 
 function VenueInfo() {
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
   const { id } = useParams();
-  // const { venues, fetchVenues, validateField } = useVenues();
   const { validateField } = useVenues();
-  // const [venues, setVenues] = useState(null);
   const [venue, setVenue] = useState(null);
   // const [selectedDate, setSelectedDate] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [result, setResult] = useState(null);
+  const [selectedImage, setSelectedImage] = useState();
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [formState, setFormState] = useState({
@@ -43,47 +40,61 @@ function VenueInfo() {
   const apiCall = useApiCall();
 
   console.log("formState", formState);
+
+  // useEffect(() => {
+  //   setSelectedImage(venue.media[0].url);
+  // }, [venue]);
+
   const onDateChange = (value) => {
     if (selecting) {
       setFormState({
         dateFrom: value,
-        dateTo: null,
+        dateTo: "",
       });
+      setStartDate(value);
       setSelecting(false);
     } else {
       setFormState({
         ...formState,
         dateTo: value,
       });
+      setEndDate(value);
       setSelecting(true);
     }
   };
 
   useEffect(() => {
-    if (startDate !== null && endDate !== null) {
-      const oneDay = 24 * 60 * 60 * 1000;
-      const daysDifference = Math.round(Math.abs((endDate - startDate) / oneDay) + 1);
-      // console.log("daysDifference:", daysDifference);
-      const value = venue.price;
-      const calculatedResult = daysDifference * value;
-      // console.log("calculateResult:", calculatedResult);
-      setResult(calculatedResult);
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      if (!isNaN(start) && !isNaN(end)) {
+        const oneDay = 24 * 60 * 60 * 1000;
+        const daysDifference = Math.round(Math.abs((end - start) / oneDay) + 1);
+        // console.log("daysDifference:", daysDifference);
+        const value = venue ? venue.price : 0;
+        const calculatedResult = daysDifference * value;
+        // console.log("calculatedResult:", calculatedResult);
+        setResult(calculatedResult);
+      }
     }
   }, [startDate, endDate, venue]);
 
-  const handleStartDateChange = (e) => {
-    setStartDate(new Date(e.target.value));
-  };
-
-  const handleEndDateChange = (e) => {
-    setEndDate(new Date(e.target.value));
-  };
+  useEffect(() => {
+    if (startDate && endDate) {
+      const oneDay = 24 * 60 * 60 * 1000;
+      const daysDifference = Math.round(Math.abs((endDate - startDate) / oneDay) + 1);
+      console.log("daysDifference:", daysDifference);
+      const value = venue ? venue.price : 0;
+      const calculatedResult = daysDifference * value;
+      console.log("calculatedResult:", calculatedResult);
+      setResult(calculatedResult);
+    }
+  }, [startDate, endDate, venue]);
 
   async function findVenue(apiCall, id, page = 1) {
     const data = await apiCall(API_VENUES + `?_bookings=true&_owner=true&page=${page}`, "GET", {
       "Content-Type": "application/json",
     });
-    // console.log("data", data);
     const foundVenue = data.data.find((venue) => venue.id.toString() === id);
     console.log("foundVenue", foundVenue);
     if (foundVenue) {
@@ -97,7 +108,8 @@ function VenueInfo() {
 
   useEffect(() => {
     findVenue(apiCall, id).then((foundVenue) => {
-      // console.log("foundVenue", foundVenue);
+      console.log("foundVenue", foundVenue);
+      setSelectedImage(foundVenue.media[0].url);
       setVenue(foundVenue);
     });
   }, [id]);
@@ -118,7 +130,8 @@ function VenueInfo() {
     switch (name) {
       case "dateFrom":
       case "dateTo":
-        newErrors[name] = validateField(value, "date") ? "" : "You must choose an available date";
+        const date = new Date(value);
+        newErrors[name] = !isNaN(date.getTime()) ? "" : "You must choose an available date";
         break;
       case "guests":
         newErrors[name] = validateField(value, "numbersOnly") ? "" : "Enter a valid number of guests";
@@ -135,32 +148,36 @@ function VenueInfo() {
 
     const updatedFormState = {
       ...formState,
-      dateFrom: new Date(event.target.elements.dateFrom.value),
-      dateTo: new Date(event.target.elements.dateTo.value),
+      dateFrom: new Date(formState.dateFrom),
+      dateTo: new Date(formState.dateTo),
       guests: Number(event.target.elements.guests.value),
       venueId: venue.id,
     };
-    // console.log("updatedFormState", updatedFormState);
+    console.log("updatedFormState", updatedFormState);
     setFormState(updatedFormState);
 
-    apiCall(
-      API_BOOKINGS,
-      "POST",
-      {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        "X-Noroff-API-Key": apiKey.key,
-      },
-      updatedFormState
-    )
-      .then((data) => {
-        if (data.errors) {
-          setErrorMessage(data.errors[0].message);
-        } else {
-          setSuccessMessage("Your order has been registered. You can now find it on your profile page.");
-        }
-      })
-      .catch((error) => console.error("Error fetching data:", error));
+    // apiCall(
+    //   API_BOOKINGS,
+    //   "POST",
+    //   {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${accessToken}`,
+    //     "X-Noroff-API-Key": apiKey.key,
+    //   },
+    //   updatedFormState
+    // )
+    //   .then((data) => {
+    //     if (data.errors) {
+    //       setErrorMessage(data.errors[0].message);
+    //     } else {
+    //       setSuccessMessage("Your order has been registered. You can now find it on your profile page.");
+    //     }
+    //   })
+    //   .catch((error) => console.error("Error fetching data:", error));
+  };
+
+  const handleThumbnailClick = (url) => {
+    setSelectedImage(url);
   };
 
   return (
@@ -169,14 +186,29 @@ function VenueInfo() {
         <div className="loading"></div>
       ) : (
         <div className="venueSection textBreakStyle flex-col pt-8" key={venue.id}>
-          <div className="overflow-hidden self-center max-h-56 w-5/6 md:h-96  ">
-            {venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} className="object-contain" />}
+          <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
+            <img src={selectedImage} alt="Selected" className="object-contain w-full h-full" />
           </div>
-          {/* <div className="flex flex-col gap-7 lg:gap-0 lg:flex-row "> */}
+          {venue.media.length > 1 && (
+            <div className="flex justify-center flex-wrap gap-2.5">
+              {venue.media.map((mediaItem, index) => (
+                <img
+                  key={index}
+                  src={mediaItem.url}
+                  alt={mediaItem.alt}
+                  className="object-contain imgCover h-16 w-16 mx-2 cursor-pointer border-2 border-transparent hover:border-blue-500"
+                  onClick={() => handleThumbnailClick(mediaItem.url)}
+                />
+              ))}
+            </div>
+          )}
+          {/* <div className="overflow-hidden self-center max-h-56 w-5/6 md:h-96  ">
+            {venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} className="object-contain" />}
+          </div> */}
           <div className="flex flex-col gap-7 lg:gap-0 lg:grid lg:grid-cols-2 ">
             <div className="flex flex-col justify-center items-center self-center min-h-128 lg:border-r-2 lg:px-5 xl:px-12">
               <div className="flex justify-around items-center w-64 sm:w-box510 sm:justify-start sm:gap-48">
-                <h2 className="text-2xl font-bold break-words">{venue.name}</h2>
+                <h2 className="text-2xl font-bold break-words lg:w-box340">{venue.name}</h2>
                 <p className="text-end w-11 text-lg">⭐{venue.rating}</p>
               </div>
               <div className="flex flex-col items-center gap-4 w-64 sm:flex-row sm:justify-evenly sm:gap-20">
@@ -267,45 +299,7 @@ function VenueInfo() {
             </div>
             <div className="flex flex-col items-center self-center gap-5 lg:border-l-2 lg:px-5 xl:px-12">
               <h2 className="text-2xl font-bold">Book Venue</h2>
-              {/* <Calendar
-                className="react-calendar"
-                // Other props...
-                tileClassName={({ date, view }) => {
-                  if (view === "month") {
-                    // Check if the date falls within the selected range
-                    if (startDate && endDate) {
-                      const selectedRange = {
-                        from: new Date(startDate),
-                        to: new Date(endDate),
-                      };
-                      selectedRange.from.setHours(0, 0, 0, 0);
-                      selectedRange.to.setHours(23, 59, 59, 999);
-
-                      if (date >= selectedRange.from && date <= selectedRange.to) {
-                        console.log("startDate", startDate);
-                        console.log("endDate", endDate);
-                        return "highlightBooking";
-                      }
-                    }
-                    // Check if the date falls within any booking range
-                    for (const booking of bookedDates) {
-                      if (date >= booking.from && date <= booking.to) {
-                        return "highlight";
-                      }
-                    }
-                  }
-                  return "available"; // Default class for other dates
-                }}
-                tileDisabled={({ date }) => {
-                  // Disable interaction with booked dates and dates outside the selected range
-                  return (
-                    bookedDates.some((booking) => date >= booking.from && date <= booking.to) ||
-                    (startDate && endDate && (date < startDate || date > endDate))
-                  );
-                }}
-                minDate={new Date()}
-              /> */}
-              <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
+              <form onSubmit={handleSubmit} className="flex flex-col venueEdit gap-2.5">
                 <div>
                   <p className="text-xl font-semibold">Choose a date</p>
                   <Calendar
@@ -313,7 +307,6 @@ function VenueInfo() {
                     value={formState.dateFrom}
                     tileClassName={({ date, view }) => {
                       if (view === "month") {
-                        // Check if the date falls within the selected range
                         if (startDate && endDate) {
                           const selectedRange = {
                             from: new Date(startDate),
@@ -328,48 +321,42 @@ function VenueInfo() {
                             return "highlightBooking";
                           }
                         }
-                        // Check if the date falls within any booking range
                         for (const booking of bookedDates) {
                           if (date >= booking.from && date <= booking.to) {
                             return "highlight";
                           }
                         }
                       }
-                      return "available"; // Default class for other dates
+                      return "available";
                     }}
-                    tileDisabled={({ date }) => {
-                      // Disable interaction with booked dates and dates outside the selected range
-                      return (
-                        bookedDates.some((booking) => date >= booking.from && date <= booking.to) ||
-                        (startDate && endDate && (date < startDate || date > endDate))
-                      );
-                    }}
+                    // tileDisabled={({ date }) => {
+                    //   return (
+                    //     bookedDates.some((booking) => date >= booking.from && date <= booking.to) ||
+                    //     (startDate && endDate && (date < startDate || date > endDate))
+                    //   );
+                    // }}
                     minDate={new Date()}
                   />
-                  <p>Start Date: {formState.dateFrom && formState.dateFrom.toString()}</p>
-                  <p>End Date: {formState.dateTo && formState.dateTo.toString()}</p>
                 </div>
-                {/* <div className="flex gap-12">
-                  <div className="flex flex-col">
-                    <label>Start Date:</label>
-                    <input type="date" name="dateFrom" onBlur={handleBlur} onChange={handleStartDateChange} />
-                    <span className="error">{errors.dateFrom}</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <label>End Date:</label>
-                    <input type="date" name="dateTo" onBlur={handleBlur} onChange={handleEndDateChange} />
-                    <span className="error">{errors.dateTo}</span>
-                  </div>
-                </div> */}
-                <div className="flex text-lg">
-                  <label>Guests:</label>
-                  <input type="number" name="guests" min="1" max={venue.maxGuests} pattern="[0-9]*" onBlur={handleBlur}></input>
-                  <span className="error">{errors.guests}</span>
-                </div>
-                <p className="text-xl font-semibold">Total: {result}</p>
-                <button type="submit" className="btnStyle">
-                  Book Venue
-                </button>
+                {localStorage.length > 0 && (
+                  <>
+                    <div className="flex text-lg self-center items-center gap-2.5">
+                      <label>Guests:</label>
+                      <select name="guests" onBlur={handleBlur}>
+                        {[...Array(venue.maxGuests)].map((_, index) => (
+                          <option key={index + 1} value={index + 1}>
+                            {index + 1}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="error">{errors.guests}</span>
+                    </div>
+                    <p className="text-xl font-semibold">Total: {result}</p>
+                    <button type="submit" className="btnStyle">
+                      Book Venue
+                    </button>
+                  </>
+                )}
                 {successMessage && <span className="error">{successMessage}</span>}
                 {errorMessage && <span className="error">{errorMessage}</span>}
               </form>

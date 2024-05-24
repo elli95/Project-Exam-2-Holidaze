@@ -31,7 +31,7 @@ function Venues() {
       "X-Noroff-API-Key": apiKey.key,
     })
       .then((data) => {
-        console.log("aaaaaa", data);
+        //console.log("aaaaaa", data);
         setVenue(data.data);
         setMeta(data.meta);
       })
@@ -53,7 +53,9 @@ function Venues() {
         <button onClick={() => paginate(number)} className={`btnStyle ${currentPage === number ? "bg-green" : ""} `}>
           {number}
         </button>
-        {console.log(currentPage)}
+        {
+          //console.log(currentPage)
+        }
       </li>
     );
 
@@ -117,7 +119,7 @@ function Venues() {
     }
   };
 
-  console.log("Venues updates?:", filteredVenues);
+  //console.log("Venues updates?:", filteredVenues);
 
   return (
     <div>

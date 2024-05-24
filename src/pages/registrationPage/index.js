@@ -18,15 +18,15 @@ function RegistrationPage() {
   const [formState, setFormState] = useState({
     name: "",
     email: "",
-    bio: "",
+    // bio: "",
     avatar: {
       url: "",
       alt: "",
     },
-    banner: {
-      url: "",
-      alt: "",
-    },
+    // banner: {
+    //   url: "",
+    //   alt: "",
+    // },
     password: "",
     venueManager: "",
   });
@@ -34,13 +34,13 @@ function RegistrationPage() {
   const [errors, setErrors] = useState({
     name: "",
     email: "",
-    bio: "",
+    // bio: "",
     avatar: {
       url: "",
     },
-    banner: {
-      url: "",
-    },
+    // banner: {
+    //   url: "",
+    // },
     password: "",
   });
 
@@ -52,7 +52,7 @@ function RegistrationPage() {
 
     switch (name) {
       case "name":
-      case "bio":
+        // case "bio":
         newErrors[name] = validateField(value, "inputLength") ? "" : "You must enter at least 1 characters";
         break;
       case "password":
@@ -66,9 +66,9 @@ function RegistrationPage() {
       case "avatar.url":
         newErrors.avatar.url = validateField(value, "imgUrl") ? "" : "Please enter a valid URL";
         break;
-      case "banner.url":
-        newErrors.banner.url = validateField(value, "imgUrl") ? "" : "Please enter a valid URL";
-        break;
+      // case "banner.url":
+      //   newErrors.banner.url = validateField(value, "imgUrl") ? "" : "Please enter a valid URL";
+      //   break;
       default:
         break;
     }
@@ -89,29 +89,29 @@ function RegistrationPage() {
       avatarAlt = "This is a goldfish";
     }
 
-    let bannerUrl = event.target.elements["banner.url"].value;
-    let bannerAlt = event.target.elements["banner.alt"].value;
-    if (!bannerUrl) {
-      bannerUrl =
-        "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-    }
-    if (!bannerAlt) {
-      bannerAlt = "A wall of books";
-    }
+    // let bannerUrl = event.target.elements["banner.url"].value;
+    // let bannerAlt = event.target.elements["banner.alt"].value;
+    // if (!bannerUrl) {
+    //   bannerUrl =
+    //     "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    // }
+    // if (!bannerAlt) {
+    //   bannerAlt = "A wall of books";
+    // }
 
     const updatedFormState = {
       ...formState,
       name: event.target.elements.name.value,
       email: event.target.elements.email.value,
-      bio: event.target.elements.bio.value,
+      // bio: event.target.elements.bio.value,
       avatar: {
         url: avatarUrl,
         alt: avatarAlt,
       },
-      banner: {
-        url: bannerUrl,
-        alt: bannerAlt,
-      },
+      // banner: {
+      //   url: bannerUrl,
+      //   alt: bannerAlt,
+      // },
       password: event.target.elements.password.value,
       venueManager: event.target.querySelector('input[name="venueManager"]').checked,
     };
@@ -144,141 +144,155 @@ function RegistrationPage() {
   };
 
   return (
-    <div className="registrationForm">
-      <div className="registrationFormContainer formStyle justify-center items-center min-w-80 sm:w-box610 lg:w-box700">
-        <h1 className="text-3xl font-semibold py-2">Registration</h1>
-        <form onSubmit={handleSubmit} className="py-2.5">
-          <div className="w-72 sm:w-form500">
-            <label htmlFor="name">Full name</label>
-            <input
-              type="text"
-              name="name"
-              placeholder="Your full name"
-              onBlur={handleBlur}
-              minLength={1}
-              maxLength={20}
-              aria-label="Full Name"
-              className="bg-greyBlur w-box280 sm:w-box490"
-              required
-            />
-            <span className="error">{errors.name}</span>
-          </div>
-          <div className="w-72 sm:w-form500">
-            <label htmlFor="email">Email</label>
-            <input
-              type="text"
-              name="email"
-              placeholder="Your Email"
-              onBlur={handleBlur}
-              aria-label="Email"
-              className="bg-greyBlur w-box280 sm:w-box490"
-              required
-            />
-            <span className="error">{errors.email}</span>
-          </div>
-          <div className="w-72 sm:w-form500">
-            <label htmlFor="bio">Bio</label>
-            <textarea
-              type="text"
-              name="bio"
-              placeholder="Bio description"
-              onBlur={handleBlur}
-              minLength={3}
-              maxLength={160}
-              aria-label="Bio"
-              className="bg-greyBlur w-box280 h-36 sm:h-24 sm:w-box490"
-              required
-            />
-            <span className="error">{errors.bio}</span>
-          </div>
-          <div className="w-72 sm:w-form500">
-            <label htmlFor="avatar.url">Venue avatar url</label>
-            <input
-              type="text"
-              name="avatar.url"
-              placeholder="User avatar url"
-              onBlur={handleBlur}
-              aria-label="User avatar url"
-              className="bg-greyBlur w-box280 sm:w-box490"
-            />
-            <span className="error">{errors.avatar.url}</span>
-          </div>
-          <div className="w-72 sm:w-form500">
-            <label htmlFor="avatar.alt">Venue avatar alternative text</label>
-            <input
-              type="text"
-              name="avatar.alt"
-              placeholder="User avatar alternative text"
-              minLength={3}
-              aria-label="User avatar alternative text"
-              className="bg-greyBlur w-box280 sm:w-box490"
-            />
-          </div>
-          <div className="w-72 sm:w-form500">
-            <label htmlFor="banner.url">Profile banner url</label>
-            <input
-              type="text"
-              name="banner.url"
-              placeholder="Profile banner url"
-              onBlur={handleBlur}
-              aria-label="Profile banner url"
-              className="bg-greyBlur w-box280 sm:w-box490"
-            />
-            <span className="error">{errors.banner.url}</span>
-          </div>
-          <div className="w-72 sm:w-form500">
-            <label htmlFor="banner.alt">Profile banner alternative text</label>
-            <input
-              type="text"
-              name="banner.alt"
-              placeholder="Profile banner alternative text"
-              minLength={3}
-              aria-label="Profile banner alternative text"
-              className="bg-greyBlur w-box280 sm:w-box490"
-            />
-          </div>
-          <div className="w-72 sm:w-form500">
-            <label htmlFor="password">Password</label>
-            <div className="PasswordInput">
+    <div className="mainDiv imgCover regImg">
+      <div className="registrationForm">
+        <div className="registrationFormContainer formStyle justify-center items-center min-w-80 sm:w-box610 lg:w-box700">
+          <h1 className="text-3xl font-semibold py-2">Registration</h1>
+          <form onSubmit={handleSubmit} className="py-2.5">
+            <div className="w-72 sm:w-form500">
+              <label htmlFor="name" className="text-xl">
+                Full name
+              </label>
               <input
-                type={type}
-                name="password"
-                placeholder="Password content"
-                minLength={8}
+                type="text"
+                name="name"
+                placeholder="Your full name"
                 onBlur={handleBlur}
-                aria-label="Password"
-                className="bg-greyBlur"
+                minLength={1}
+                maxLength={20}
+                aria-label="Full Name"
+                className="text-lg bg-greyBlur w-box280 sm:w-box490"
                 required
               />
-              <button type="button" className="w-7 text-xl" onClick={() => setShown(!shown)}>
-                {buttonText}
-              </button>
+              <span className="error">{errors.name}</span>
             </div>
-            <span className="error">{errors.password}</span>
-          </div>
-          <div className="checkboxStyle">
-            <label htmlFor="venueManager">Venue manager</label>
-            <input type="hidden" name="venueManager" value="0" />
-            <input type="checkbox" name="venueManager" />
-          </div>
-          <button type="submit" className="btnStyle w-32">
-            Submit
-          </button>
-          {successMessage && (
-            <div className="items-center p-3.5">
-              <h2>Your user is registered</h2>
-              <Link to="/login">
-                <h2 className="hover:underline">you can now login on the login page.</h2>
-              </Link>
+            <div className="w-72 sm:w-form500">
+              <label htmlFor="email" className="text-xl">
+                Email
+              </label>
+              <input
+                type="text"
+                name="email"
+                placeholder="Your Email"
+                onBlur={handleBlur}
+                aria-label="Email"
+                className="text-lg bg-greyBlur w-box280 sm:w-box490"
+                required
+              />
+              <span className="error">{errors.email}</span>
             </div>
-          )}
-          {errorMessage && <span className="error self-center">{errorMessage}</span>}
-        </form>
-        <div className="items-center p-3.5">
-          <h2>Already have a user?</h2>
-          <Link to="/login">
-            <h2 className="hover:underline">Login today!</h2>
-          </Link>
+            {/* <div className="w-72 sm:w-form500">
+              <label htmlFor="bio">Bio</label>
+              <textarea
+                type="text"
+                name="bio"
+                placeholder="Bio description"
+                onBlur={handleBlur}
+                minLength={3}
+                maxLength={160}
+                aria-label="Bio"
+                className="bg-greyBlur w-box280 h-36 sm:h-24 sm:w-box490"
+                required
+              />
+              <span className="error">{errors.bio}</span>
+            </div> */}
+            <div className="w-72 sm:w-form500">
+              <label htmlFor="avatar.url" className="text-xl">
+                Avatar url
+              </label>
+              <input
+                type="text"
+                name="avatar.url"
+                placeholder="User avatar url"
+                onBlur={handleBlur}
+                aria-label="User avatar url"
+                className="text-lg bg-greyBlur w-box280 sm:w-box490"
+              />
+              <span className="error">{errors.avatar.url}</span>
+            </div>
+            <div className="w-72 sm:w-form500">
+              <label htmlFor="avatar.alt" className="text-xl">
+                Avatar alternative text
+              </label>
+              <input
+                type="text"
+                name="avatar.alt"
+                placeholder="User avatar alternative text"
+                minLength={3}
+                aria-label="User avatar alternative text"
+                className="text-lg bg-greyBlur w-box280 sm:w-box490"
+              />
+            </div>
+            {/* <div className="w-72 sm:w-form500">
+              <label htmlFor="banner.url">Profile banner url</label>
+              <input
+                type="text"
+                name="banner.url"
+                placeholder="Profile banner url"
+                onBlur={handleBlur}
+                aria-label="Profile banner url"
+                className="bg-greyBlur w-box280 sm:w-box490"
+              />
+              <span className="error">{errors.banner.url}</span>
+            </div>
+            <div className="w-72 sm:w-form500">
+              <label htmlFor="banner.alt">Profile banner alternative text</label>
+              <input
+                type="text"
+                name="banner.alt"
+                placeholder="Profile banner alternative text"
+                minLength={3}
+                aria-label="Profile banner alternative text"
+                className="bg-greyBlur w-box280 sm:w-box490"
+              />
+            </div> */}
+            <div className="w-72 sm:w-form500">
+              <label htmlFor="password" className="text-xl">
+                Password
+              </label>
+              <div className="PasswordInput">
+                <input
+                  type={type}
+                  name="password"
+                  placeholder="Password content"
+                  minLength={8}
+                  onBlur={handleBlur}
+                  aria-label="Password"
+                  className="text-lg bg-greyBlur"
+                  required
+                />
+                <button type="button" className="w-7 text-xl" onClick={() => setShown(!shown)}>
+                  {buttonText}
+                </button>
+              </div>
+              <span className="error">{errors.password}</span>
+            </div>
+            <div className="checkboxStyle">
+              <label htmlFor="venueManager" className="text-xl">
+                Venue manager
+              </label>
+              <input type="hidden" name="venueManager" value="0" />
+              <input type="checkbox" name="venueManager" className="text-xl" />
+            </div>
+            <button type="submit" className="btnStyle text-xl w-32">
+              Submit
+            </button>
+            {successMessage && (
+              <div className="items-center text-xl p-3.5">
+                <h2>Your user is registered</h2>
+                <Link to="/login">
+                  <h2 className="hover:underline">you can now login on the login page.</h2>
+                </Link>
+              </div>
+            )}
+            {errorMessage && <span className="error text-xl self-center">{errorMessage}</span>}
+          </form>
+          <div className="items-center text-xl p-3.5">
+            <h2>Already have a user?</h2>
+            <Link to="/login">
+              <h2 className="hover:underline">Login today!</h2>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

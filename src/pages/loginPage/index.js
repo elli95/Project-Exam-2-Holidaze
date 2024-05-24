@@ -84,52 +84,58 @@ function LoginPage() {
   };
 
   return (
-    <div className="loginForm">
-      <div className="loginFormContainer formStyle justify-center items-center min-w-80 min-h-96 sm:w-box610 lg:w-box700">
-        <h1 className="text-3xl font-semibold pt-2">Login</h1>
-        <form onSubmit={handleSubmit} className="py-2.5">
-          <div className="w-72 sm:w-form500">
-            <label htmlFor="email">Email</label>
-            <input
-              type="text"
-              name="email"
-              placeholder="Your Email"
-              onBlur={handleBlur}
-              aria-label="Email"
-              className="bg-greyBlur w-box280 sm:w-box490"
-              required
-            />
-            <span className="error">{errors.email}</span>
-          </div>
-          <div className="w-72 sm:w-form500">
-            <label htmlFor="password">Password</label>
-            <div className="PasswordInput">
+    <div className="mainDiv imgCover logImg">
+      <div className="loginForm">
+        <div className="loginFormContainer formStyle justify-center items-center min-w-80 min-h-96 sm:w-box610 lg:w-box700">
+          <h1 className="text-3xl font-semibold pt-2">Login</h1>
+          <form onSubmit={handleSubmit} className="py-2.5">
+            <div className="w-72 sm:w-form500">
+              <label htmlFor="email" className="text-xl">
+                Email
+              </label>
               <input
-                type={type}
-                name="password"
-                placeholder="Password"
-                minLength={8}
+                type="text"
+                name="email"
+                placeholder="Your Email"
                 onBlur={handleBlur}
-                aria-label="Password"
-                className="bg-greyBlur"
+                aria-label="Email"
+                className="text-lg bg-greyBlur w-box280 sm:w-box490"
                 required
               />
-              <button type="button" className="w-7 text-xl" onClick={() => setShown(!shown)}>
-                {buttonText}
-              </button>
+              <span className="error text-lg">{errors.email}</span>
             </div>
-            <span className="error">{errors.password}</span>
+            <div className="w-72 sm:w-form500">
+              <label htmlFor="password" className="text-xl">
+                Password
+              </label>
+              <div className="PasswordInput">
+                <input
+                  type={type}
+                  name="password"
+                  placeholder="Password"
+                  minLength={8}
+                  onBlur={handleBlur}
+                  aria-label="Password"
+                  className="text-lg bg-greyBlur"
+                  required
+                />
+                <button type="button" className="w-7 text-xl" onClick={() => setShown(!shown)}>
+                  {buttonText}
+                </button>
+              </div>
+              <span className="error text-lg">{errors.password}</span>
+            </div>
+            <button type="submit" className="btnStyle text-xl w-32">
+              Submit
+            </button>
+            {errorMessage && <span className="error text-xl self-center">{errorMessage}</span>}
+          </form>
+          <div className="items-center text-xl p-3.5">
+            <h2>Don't have a user?</h2>
+            <Link to="/registration">
+              <h2 className="hover:underline">Register a one today!</h2>
+            </Link>
           </div>
-          <button type="submit" className="btnStyle w-32">
-            Submit
-          </button>
-          {errorMessage && <span className="error self-center">{errorMessage}</span>}
-        </form>
-        <div className="items-center p-3.5">
-          <h2>Don't have a user?</h2>
-          <Link to="/registration">
-            <h2 className="hover:underline">Register a one today!</h2>
-          </Link>
         </div>
       </div>
     </div>

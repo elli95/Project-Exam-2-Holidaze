@@ -80,9 +80,11 @@ function ProfileInfo() {
             <h1 className="text-center font-bold">{profileData.name}</h1>
             <p className="italic">{profileData.email}</p>
           </div>
-          <div className="border-solid border-t-2 border-b-2 max-w-md shadow-lg shadow-black w-270 sm:w-375">
-            <p className="my-2.5">{profileData.bio}</p>{" "}
-          </div>
+          {profileData.bio && (
+            <div className="border-solid border-t-2 border-b-2 max-w-md shadow-lg shadow-black w-270 sm:w-375">
+              <p className="my-2.5">{profileData.bio}</p>
+            </div>
+          )}
 
           <div className="flex flex-col justify-center gap-2.5 m-2.5">
             <div className="flex justify-center">

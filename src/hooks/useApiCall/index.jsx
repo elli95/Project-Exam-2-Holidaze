@@ -22,11 +22,11 @@ function useApiCall() {
           const text = await response.text();
           if (text.length) {
             const data = JSON.parse(text);
-            console.log("Api call was successful!", data);
+            //console.log("Api call was successful!", data);
             return data;
           }
         } else {
-          console.log("Api call was successful!");
+          //console.log("Api call was successful!");
         }
       } else {
         const text = await response.text();

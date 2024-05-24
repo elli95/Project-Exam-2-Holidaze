@@ -40,7 +40,9 @@ const useVenues = create((set) => ({
         const validCharacters = /^[A-Za-z0-9_]+$/;
         return value.length >= 8 && validCharacters.test(value);
       case "date":
-        return !isNaN(Date.parse(value));
+        const date = new Date(value);
+        return !isNaN(date.getTime());
+      // return !isNaN(Date.parse(value));
       case "numbersOnly":
         return /^\d+$/.test(value);
       default:
