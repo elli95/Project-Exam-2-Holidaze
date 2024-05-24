@@ -43,7 +43,6 @@ function Venues() {
 
     return (
       <nav>
-        <h2>h1</h2>
         <ul className="flex flex-wrap gap-2">
           {pageNumbers.map((number) => {
             if (currentPage === 1) {
