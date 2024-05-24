@@ -49,42 +49,44 @@
 // export default useVenueApiCall;
 
 import { useEffect, useState } from "react";
-import useLocalStorage from "../../hooks/useLocalStorage";
+// import useLocalStorage from "../../hooks/useLocalStorage";
 import { API_VENUES } from "../../shared/apis";
-import usePostApiKey from "../usePostApiKey";
+// import usePostApiKey from "../usePostApiKey";
 
 function useVenueApiCall(currentPage, itemsPerPage) {
-  const { apiKey } = usePostApiKey();
-  const accessToken = useLocalStorage();
+  //   const { apiKey } = usePostApiKey();
+  //   const accessToken = useLocalStorage();
   const [venues, setVenue] = useState([]);
   const [meta, setMeta] = useState({});
 
   useEffect(() => {
-    if (accessToken.accessToken.length > 0 && apiKey.key) {
-      async function fetchVenueData() {
-        try {
-          const response = await fetch(`${API_VENUES}?sort=created&_bookings=true&_owner=true&page=${currentPage}&limit=${itemsPerPage}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken.accessToken}`,
-              "X-Noroff-API-Key": apiKey.key,
-            },
-          });
-          if (!response.ok) {
-            throw new Error("Failed to fetch venue data");
-          } else {
-            const data = await response.json();
-            setVenue(data.data);
-            setMeta(data.meta);
-          }
-        } catch (error) {
-          console.error("Error fetching API key:", error);
+    // if (accessToken.accessToken.length > 0 && apiKey.key) {
+    async function fetchVenueData() {
+      try {
+        const response = await fetch(`${API_VENUES}?sort=created&_bookings=true&_owner=true&page=${currentPage}&limit=${itemsPerPage}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            //   Authorization: `Bearer ${accessToken.accessToken}`,
+            //   "X-Noroff-API-Key": apiKey.key,
+          },
+        });
+        console.log(" key:", response);
+        if (!response.ok) {
+          throw new Error("Failed to fetch venue data");
+        } else {
+          const data = await response.json();
+          setVenue(data.data);
+          setMeta(data.meta);
         }
+      } catch (error) {
+        console.error("Error fetching API key:", error);
       }
-      fetchVenueData();
     }
-  }, [accessToken.accessToken, apiKey.key, currentPage, itemsPerPage]);
+    fetchVenueData();
+    // }
+    //   }, [accessToken.accessToken, apiKey.key, currentPage, itemsPerPage]);
+  }, [currentPage, itemsPerPage]);
 
   return { venues, meta };
 }
