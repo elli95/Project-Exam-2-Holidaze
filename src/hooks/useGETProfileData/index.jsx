@@ -2,24 +2,36 @@ import usePostApiKey from "../usePostApiKey";
 import { API_PROFILES } from "../../shared/apis";
 import { useEffect, useState } from "react";
 import useLocalStorage from "../useLocalStorage";
-import useApiCall from "../useApiCall";
 
 function useGETProfileData() {
   const { apiKey } = usePostApiKey();
   const { accessToken, userInfo } = useLocalStorage();
   const [profileData, setProfileData] = useState({});
-  const apiCall = useApiCall();
 
   useEffect(() => {
     if (apiKey.key !== undefined && accessToken.length > 0) {
-      apiCall(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", "GET", {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        "X-Noroff-API-Key": apiKey.key,
-      })
-        .then((data) => setProfileData(data.data))
-        .catch((error) => console.error("Error fetching data:", error));
-      // Samme Kode!!
+      async function fetchApiKey() {
+        try {
+          const response = await fetch(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+              "X-Noroff-API-Key": apiKey.key,
+            },
+          });
+          console.log("response:", response);
+          if (!response.ok) {
+            console.error("Error:", response.error[0].message);
+          } else {
+            const data = await response.json();
+            setProfileData(data.data);
+          }
+        } catch (error) {
+          console.error("Error fetching API key:", error);
+        }
+      }
+      fetchApiKey();
     }
   }, [userInfo.name, apiKey.key, accessToken]);
 
