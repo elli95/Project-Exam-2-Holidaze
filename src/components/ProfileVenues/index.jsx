@@ -21,13 +21,31 @@ function ProfileVenues() {
 
   const divRef = useRef(null);
   // const apiCall = useApiCall();
-
+  console.log("profileData....profileData", profileData);
+  console.log("venueBookingData....venueBookingData", venueBookingData);
   useEffect(() => {
-    if (profileData && profileData._venues) {
-      // Assuming the structure of profileData is { ..., _venues: [...], ... }
-      setVenueBookingData(profileData._venues);
+    if (profileData) {
+      // fetchVenueBookingData();
+      setVenueBookingData(profileData);
     }
   }, [profileData]);
+  // function fetchVenueBookingData() {
+  //   if (apiKey.key !== undefined && accessToken.length > 0) {
+  //     apiCall(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", "GET", {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${accessToken}`,
+  //       "X-Noroff-API-Key": apiKey.key,
+  //     })
+  //       .then((data) => {
+  //         setVenueBookingData(data.data);
+  //       })
+  //       .catch((error) => console.error("Error fetching data:", error));
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   fetchVenueBookingData();
+  // }, [apiKey.key, accessToken]);
 
   const handleSeeCreateVenue = (id) => {
     if (venueIdToShow === id) {
@@ -100,7 +118,7 @@ function ProfileVenues() {
                   <div className="overlay">
                     <div ref={divRef} className="modulePosition w-box340 h-5/6 rounded-lg border-2 border-greyBlur sm:w-box610 lg:w-box900">
                       <CreateVenue
-                        setVenueBookingData={setVenueBookingData}
+                        // setVenueBookingData={setVenueBookingData}
                         handleCloseBtn={handleCloseBtn}
                         setIsCreateVenueShown={setIsCreateVenueShown}
                       />

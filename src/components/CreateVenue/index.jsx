@@ -194,14 +194,14 @@ function CreateVenue({ setVenueBookingData, handleCloseBtn, setIsCreateVenueShow
       );
       // console.log("try", updatedProfileData);
       if (updatedProfileData && !updatedProfileData.errors) {
-        setVenueBookingData((prevState) => {
-          let newState = { ...prevState };
-          if (!newState.venues) {
-            newState.venues = [];
-          }
-          newState.venues.push(updatedProfileData.data);
-          return newState;
-        });
+        // setVenueBookingData((prevState) => {
+        //   let newState = { ...prevState };
+        //   if (!newState.venues) {
+        //     newState.venues = [];
+        //   }
+        //   newState.venues.push(updatedProfileData.data);
+        //   return newState;
+        // });
         setIsCreateVenueShown(false);
       } else {
         console.log("Error:", updatedProfileData);

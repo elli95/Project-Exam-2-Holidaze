@@ -64,6 +64,7 @@ function ProfileInfo() {
     setIsProfileEditShown(false);
   };
 
+  console.log("isSectionABShown", isSectionAShown, isSectionBShown);
   return (
     <div className="flex flex-col items-center">
       {!profileData.avatar ? (
