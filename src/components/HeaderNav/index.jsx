@@ -19,26 +19,26 @@ function HeaderNav() {
     setIsNavShown(!isNavShown);
   };
 
-  // const accessToken = accessToken();
   const isLoggedIn = accessToken.length > 0;
 
   const handleLogoutClick = () => {
     clearLocalStorage();
-    window.location.reload(false);
+    // window.location.reload(false);
+    window.location.href = "/";
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 flex justify-around items-center text-3xl p-3 bg-tahiti">
+    <header className="headerImg imgCover fixed z-20 inset-x-0 top-0 flex justify-around items-center text-3xl p-3">
       <Link to="/">
-        <h1 className="text-5xl">Holidaze</h1>
+        <h1 className="text-5xl text-white">Holidaze</h1>
       </Link>
       <FontAwesomeIcon icon={faMagnifyingGlass} onClick={handleSearchClick} className="lg:hidden" />
-      <div className={`flex ${isSearchShown ? "show" : "hidden"} absolute inset-x-0 top-16 p-2.5 justify-center bg-tahiti  lg:flex lg:static lg:p-0`}>
+      <div className={`flex ${isSearchShown ? "show" : "hidden"} absolute rounded  inset-x-0 top-16 p-2.5 justify-center lg:flex lg:static lg:p-0`}>
         <SearchField />
       </div>
       <FontAwesomeIcon icon={faBars} onClick={handleNavClick} className="md:hidden" />
-      <nav className={`flex ${isNavShown ? "show" : "hidden"} absolute inset-x-0 top-16 p-20 justify-center bg-tahiti  md:flex md:static md:p-0`}>
-        <ul className="flex flex-col text-center gap-10 md:flex-row">
+      <nav className={`flex ${isNavShown ? "show" : "hidden"} absolute inset-x-0 top-16 p-20 justify-center md:flex md:static md:p-0`}>
+        <ul className="flex flex-col text-white text-center gap-10 md:flex-row">
           <li>
             <Link to="/">Home</Link>
           </li>

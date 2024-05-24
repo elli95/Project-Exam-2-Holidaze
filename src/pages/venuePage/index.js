@@ -1,11 +1,9 @@
-// import VenueCalendar from "../../components/VenueCalendar";
 import VenueInfo from "../../components/VenueInfo";
 
 function VenuePage() {
   return (
-    <div>
+    <div className="mainDiv">
       <VenueInfo />
-      {/* <VenueCalendar /> */}
     </div>
   );
 }

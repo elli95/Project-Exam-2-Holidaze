@@ -1,6 +1,50 @@
 /* @tailwind base;
 @tailwind components;
 @tailwind utilities; */
+/* main {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin: 52px 0px 0px 0px;
+  min-height: 100vh;
+} */
+.mainDiv {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin: 52px 0px 0px 0px;
+  min-height: 100vh;
+  background-image: url(../../images/mink-mingle-AlEyuIKuSmc-unsplash.jpg);
+}
+
+/*Img style*/
+.footerImg,
+.headerImg {
+  background-image: url(../../images/joshua-bartell-6vvIBTvL90A-unsplash.webp);
+}
+
+.headerImg {
+  position: fixed !important;
+}
+
+/* .mainDivHome {
+  background-image: url(../../images/mink-mingle-AlEyuIKuSmc-unsplash.jpg);
+} */
+
+.imgCover {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.regImg {
+  background-image: url("../../images/tron-le-JsuBKjHGDMM-unsplash.jpg");
+}
+
+.logImg {
+  background-image: url("../../images/allphoto-bangkok-hgPWK6SNfPo-unsplash.jpg");
+}
 
 img {
   height: 100%;
@@ -9,20 +53,12 @@ img {
 
 .imgBox {
   overflow: hidden;
-  height: 160px;
-  border-radius: 7px 7px 0px 0px;
+  height: 180px;
+  border-radius: 4px 4px 0px 0px;
 }
 
 .imgBox img {
   object-fit: cover;
-}
-
-main {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-  margin: 80px 0px 0px 0px;
-  min-height: 100vh;
 }
 
 /*animation*/
@@ -47,12 +83,184 @@ main {
   }
 }
 
+/*Meta icon style*/
+
+.metaIconTrue,
+.metaIconFalse {
+  display: inline-block;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 2px 8px;
+  position: relative;
+  font-size: 1.3rem;
+}
+
+.metaIconTrue {
+  background: #5ae25a;
+  border: 2px solid #259a25;
+}
+
+.metaIconFalse {
+  background-color: lightgray;
+  border: 2px solid red;
+}
+
+.metaIconFalse::after {
+  content: "X";
+  color: rgba(255, 0, 0, 0.47);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 45px;
+  font-weight: 100;
+  text-align: center;
+  line-height: 29px;
+}
+
 /* button style */
 .btnStyle {
-  padding: 6px 30px;
-  background-color: rgb(66, 219, 66);
-  border-radius: 10px;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border: 1px solid black;
+  border-radius: 0.25rem;
   align-self: center;
+}
+
+.btnStyle:hover {
+  color: #ffffff;
+  background-color: #000000;
+}
+
+.alternativeBtnStyle {
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  background: #f1f1f1;
+}
+
+.alternativeBtnStyle:hover {
+  color: #ffffff;
+  background-color: #666;
+}
+
+.viewVenBtn {
+  border-right: 1px solid #666;
+}
+
+.viewBokBtn {
+  border-left: 1px solid #666;
+}
+
+.confirmBtn:hover {
+  color: unset;
+  background-color: #3ee230;
+  border: 1px solid #00fe00;
+}
+
+.denyBtn:hover {
+  color: unset;
+  background-color: #f57575;
+  border: 1px solid #f55473;
+}
+
+/*Checkbox style*/
+
+.checkboxStyle {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  gap: inherit !important;
+}
+
+/* .switch {
+  width: 34px;
+  height: 34px;
+  color: #05ff26;
+} */
+
+/*Form style*/
+
+.formStyle {
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 8px;
+  margin: 10px 0px;
+  box-shadow: 0px 5px 5px #6a6a6a;
+}
+
+.formStyle form div {
+  display: flex;
+  flex-direction: column;
+  /* padding: 0px 5px; */
+}
+
+.formStyle form div input,
+.formStyle form div textarea,
+.venueEdit input,
+.venueEdit textarea {
+  border: 2px solid gray;
+  border-radius: 5px;
+  padding: 0.5rem;
+  /* width: 280px; */
+  align-self: center;
+}
+
+.formStyle form div input:hover,
+.formStyle form div textarea:hover {
+  border: 2px solid black;
+}
+
+/*Module Style*/
+.overlay,
+.overlayCheck,
+.overlayCheckVenue {
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.overlay,
+.overlayCheck {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+.overlayCheckVenue {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: sticky;
+  height: 100vh;
+}
+
+.overlay {
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.overlayCheck,
+.overlayCheckVenue {
+  backdrop-filter: blur(0px);
+  background-color: rgba(0, 0, 0, 0.23);
+}
+
+.modulePosition,
+.modulePositionVenue {
+  background: white;
+  padding: 30px 20px;
+}
+
+.modulePosition {
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: auto;
 }
 
 /* Homepage */
@@ -62,14 +270,33 @@ main {
   flex-wrap: wrap;
   justify-content: center;
   gap: 50px;
-  max-width: 1350px;
+  max-width: 1510px;
 }
 
 .venueSection a {
   display: flex;
   flex-direction: column;
-  width: 300px;
-  /* border: 2px solid black; */
+  width: 340px;
+  height: 360px;
+}
+
+.homePageInfoCard,
+.venueSection a,
+.venueFilterBox {
+  filter: drop-shadow(0px 5px 4px #000000);
+}
+
+.homePageInfoCard {
+  background-color: #ffffff;
+}
+
+.venueSection a,
+.venueFilterBox {
+  background-color: #e1e1e1;
+}
+
+.venueSection a:hover {
+  filter: drop-shadow(0px 10px 10px #4b4b4b);
 }
 
 .highlight {
@@ -78,6 +305,12 @@ main {
 
 .highlightBooking {
   background-color: rgb(94, 17, 217); /* Customize the styling as desired */
+}
+
+/*Venue page*/
+.textBreakStyle div h2,
+.textBreakStyle div p {
+  word-break: break-word;
 }
 
 /* Login & Registration page */
@@ -92,18 +325,200 @@ main {
 .loginForm form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 30px;
 }
 
+.registrationFormContainer,
+.loginFormContainer,
 .registrationFormContainer div,
 .loginFormContainer div {
   display: flex;
   flex-direction: column;
+  background-color: white;
 }
 
 .registrationFormContainer input,
 .loginFormContainer input {
   border: 1px solid rgb(126, 125, 125);
   border-radius: 5px;
-  background-color: rgb(237, 237, 237);
+  /* background-color: rgb(237, 237, 237); */
+}
+
+.PasswordInput {
+  padding: unset !important;
+  flex-direction: row !important;
+  gap: 10px !important;
+}
+
+.PasswordInput input {
+  width: 265px !important;
+}
+
+/*Profile page*/
+/* .venueEdit {
+} */
+
+/*media*/
+@media (min-width: 640px) {
+  .PasswordInput input {
+    width: 452px !important;
+  }
+}
+
+/*react calendar*/
+.react-calendar {
+  width: 350px;
+  max-width: 100%;
+  background: white;
+  border: 1px solid #a0a096;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.125em;
+}
+
+.react-calendar--doubleView {
+  width: 700px;
+}
+
+.react-calendar--doubleView .react-calendar__viewContainer {
+  display: flex;
+  margin: -0.5em;
+}
+
+.react-calendar--doubleView .react-calendar__viewContainer > * {
+  width: 50%;
+  margin: 0.5em;
+}
+
+.react-calendar,
+.react-calendar *,
+.react-calendar *:before,
+.react-calendar *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.react-calendar button {
+  margin: 0;
+  border: 0;
+  outline: none;
+}
+
+.react-calendar button:enabled:hover {
+  cursor: pointer;
+}
+
+.react-calendar__navigation {
+  display: flex;
+  height: 44px;
+  margin-bottom: 1em;
+}
+
+.react-calendar__navigation button {
+  min-width: 44px;
+  background: none;
+}
+
+.react-calendar__navigation button:disabled {
+  background-color: #f0f0f0;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: #e6e6e6;
+}
+
+.react-calendar__month-view__weekdays {
+  text-align: center;
+  text-transform: uppercase;
+  font: inherit;
+  font-size: 0.75em;
+  font-weight: bold;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  padding: 0.5em;
+}
+
+.react-calendar__month-view__weekNumbers .react-calendar__tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  font-size: 0.75em;
+  font-weight: bold;
+}
+
+.react-calendar__month-view__days__day--weekend {
+  color: #d10000;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth,
+.react-calendar__decade-view__years__year--neighboringDecade,
+.react-calendar__century-view__decades__decade--neighboringCentury {
+  color: #757575;
+}
+
+.react-calendar__year-view .react-calendar__tile,
+.react-calendar__decade-view .react-calendar__tile,
+.react-calendar__century-view .react-calendar__tile {
+  padding: 2em 0.5em;
+}
+
+.react-calendar__tile {
+  max-width: 100%;
+  padding: 10px 6.6667px;
+  background: none;
+  text-align: center;
+  line-height: 16px;
+  font: inherit;
+  font-size: 0.833em;
+}
+
+.react-calendar__tile:disabled {
+  background-color: #f0f0f0;
+  color: #ababab;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth:disabled,
+.react-calendar__decade-view__years__year--neighboringDecade:disabled,
+.react-calendar__century-view__decades__decade--neighboringCentury:disabled {
+  color: #cdcdcd;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: #e6e6e6;
+}
+
+.react-calendar__tile--now {
+  background: #ffff76;
+}
+
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+  background: #ffffa9;
+}
+
+.react-calendar__tile--hasActive {
+  background: #76baff;
+}
+
+.react-calendar__tile--hasActive:enabled:hover,
+.react-calendar__tile--hasActive:enabled:focus {
+  background: #a9d4ff;
+}
+
+.react-calendar__tile--active {
+  background: #006edc;
+  color: white;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background: #1087ff;
+}
+
+.react-calendar--selectRange .react-calendar__tile--hover {
+  background-color: #e6e6e6;
 }
