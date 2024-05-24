@@ -5,7 +5,7 @@ import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useApiCall from "../../hooks/useApiCall";
 
-function VenueBookings({ venueId }) {
+function VenueBookings({ venueId, handleCloseBtn }) {
   // const { venues } = useFetchApi(API_VENUES + "/?_bookings=true");
 
   const [venues, setVenue] = useState([]);
@@ -43,6 +43,11 @@ function VenueBookings({ venueId }) {
 
   return (
     <div>
+      <div className="flex justify-end">
+        <button className="btnStyle" onClick={handleCloseBtn}>
+          Close
+        </button>
+      </div>
       {!venueBookingsFilter[0] ? (
         <div className="loading"></div>
       ) : venueBookingsFilter[0]._count.bookings === 0 ? (

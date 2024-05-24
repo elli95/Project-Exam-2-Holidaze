@@ -5,11 +5,14 @@ import usePostApiKey from "../../hooks/usePostApiKey";
 import useApiCall from "../../hooks/useApiCall";
 import useVenues from "../../store/venueLocations";
 
-function CreateVenue({ setVenueBookingData }) {
+function CreateVenue({ setVenueBookingData, handleCloseBtn, setIsCreateVenueShown }) {
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
-  const [isVenueFormShown, setIsVenueFormShown] = useState(false);
+
+  const [showModal, setShowModal] = useState(false);
+  // const [confirmHandler, setConfirmHandler] = useState(null);
+
   const [errorMessage, setErrorMessage] = useState("");
   const [formState, setFormState] = useState({
     name: "",
@@ -82,10 +85,6 @@ function CreateVenue({ setVenueBookingData }) {
 
   const apiCall = useApiCall();
 
-  const handleCreateVenueForm = () => {
-    setIsVenueFormShown(!isVenueFormShown);
-  };
-
   const handleAddImage = () => {
     setFormState({
       ...formState,
@@ -101,7 +100,26 @@ function CreateVenue({ setVenueBookingData }) {
     }
   };
 
-  const handleSubmit = async (event) => {
+  const ConfirmationModal = ({ onConfirm, onCancel }) => {
+    return (
+      <div className="overlayCheckVenue w-box300 sm:w-box565 md:w-form580 lg:w-box850">
+        <div className="modulePositionVenue rounded-lg w-box245 sm:w-auto">
+          <div className="flex flex-col justify-center ">
+            <p className="text-xl text-center">Create new Venue?</p>
+            <div className="flex gap-5 justify-evenly pt-5">
+              <button className="btnStyle confirmBtn w-24 bg-green" onClick={onConfirm}>
+                Yes
+              </button>
+              <button className="btnStyle denyBtn w-24 bg-redish" onClick={onCancel}>
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     const media = [];
@@ -157,6 +175,11 @@ function CreateVenue({ setVenueBookingData }) {
     };
     console.log("Venue form submitted:", updatedFormState);
     setFormState(updatedFormState);
+    setShowModal(true);
+  };
+
+  const handleConfirm = async () => {
+    setShowModal(false);
 
     try {
       const updatedProfileData = await apiCall(
@@ -167,9 +190,9 @@ function CreateVenue({ setVenueBookingData }) {
           Authorization: `Bearer ${accessToken}`,
           "X-Noroff-API-Key": apiKey.key,
         },
-        updatedFormState
+        formState
       );
-      console.log("try", updatedProfileData);
+      // console.log("try", updatedProfileData);
       if (updatedProfileData && !updatedProfileData.errors) {
         setVenueBookingData((prevState) => {
           let newState = { ...prevState };
@@ -179,6 +202,7 @@ function CreateVenue({ setVenueBookingData }) {
           newState.venues.push(updatedProfileData.data);
           return newState;
         });
+        setIsCreateVenueShown(false);
       } else {
         console.log("Error:", updatedProfileData);
         console.log("Error:", updatedProfileData.errors[0].message);
@@ -189,140 +213,228 @@ function CreateVenue({ setVenueBookingData }) {
     }
   };
 
+  const handleCancel = () => {
+    setShowModal(false);
+  };
+
   return (
-    <div className="self-center mb-5">
-      <div className="flex justify-center">
-        <button className="btnStyle w-44" onClick={handleCreateVenueForm}>
-          Create new Venue
+    <div>
+      <div className="flex justify-end">
+        <button className="btnStyle" onClick={handleCloseBtn}>
+          Close
         </button>
       </div>
-      {isVenueFormShown && (
-        <div className="flex flex-col items-center formStyle w-72 sm:w-formDiv35">
-          <h2 className="font-semibold text-lg">Create A Venue</h2>
-          <form onSubmit={handleSubmit} className="flex flex-col w-64 sm:w-form500">
-            <div>
-              <div className="gap-3">
-                <div>
-                  <label htmlFor="name">Venue name</label>
-                  <input type="text" name="name" placeholder="Venue name" aria-label="Venue Name" onBlur={handleBlur} required />
-                  <span className="error">{errors.name}</span>
-                </div>
-                <div>
-                  <label htmlFor="Venue description">Venue description</label>
-                  <textarea
+      {showModal && <ConfirmationModal onConfirm={handleConfirm} onCancel={handleCancel} />}
+
+      <div>
+        <form onSubmit={handleSubmit} className="flex flex-col venueEdit">
+          <div className="flex flex-col items-center gap-5">
+            <div className="flex flex-wrap justify-center gap-2.5">
+              <div className="flex flex-col">
+                <label htmlFor="name">Venue name</label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Venue name"
+                  aria-label="Venue Name"
+                  onBlur={handleBlur}
+                  className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                  required
+                />
+                <span className="error">{errors.name}</span>
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="Venue description">Venue description</label>
+                <input
+                  type="text"
+                  name="description"
+                  placeholder="Venue description"
+                  aria-label="Venue description"
+                  onBlur={handleBlur}
+                  className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                  required
+                />
+                <span className="error">{errors.description}</span>
+              </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="price">Venue price</label>
+                <input
+                  type="number"
+                  name="price"
+                  placeholder="Venue price"
+                  aria-label="Venue price"
+                  onBlur={handleBlur}
+                  className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                  required
+                />
+                <span className="error">{errors.price}</span>
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="maxGuests">Max guests</label>
+                <input
+                  type="number"
+                  name="maxGuests"
+                  aria-label="Max guests"
+                  onBlur={handleBlur}
+                  className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                  required
+                />
+                <span className="error">{errors.maxGuests}</span>
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="rating">Venue rating</label>
+                <input type="number" name="rating" aria-label="Venue rating" max={5} className="bg-greyBlur w-box280 sm:w-box490 pl-1" />
+              </div>
+            </div>
+            <div className="flex flex-col w-box280 sm:w-box490 gap-2.5">
+              <h2>Amenities</h2>
+              <div className="flex justify-between bg-greyBlur px-1">
+                <label htmlFor="meta.wifi">Wifi availability</label>
+                <input type="checkbox" name="meta.wifi" aria-label="Wifi availability" />
+              </div>
+              <div className="flex justify-between px-1">
+                <label htmlFor="meta.parking">Parking availability</label>
+                <input type="checkbox" name="meta.parking" aria-label="Parking availability" />
+              </div>
+              <div className="flex justify-between bg-greyBlur px-1">
+                <label htmlFor="meta.breakfast">Breakfast availability</label>
+                <input type="checkbox" name="meta.breakfast" aria-label="Breakfast availability" />
+              </div>
+              <div className="flex justify-between px-1">
+                <label htmlFor="meta.pets">Pets availability</label>
+                <input type="checkbox" name="meta.pets" aria-label="Pets availability" />
+              </div>
+            </div>
+            <div className="flex flex-col gap-2.5">
+              <h2>Venue location</h2>
+              <div className="flex flex-col">
+                <label htmlFor="location.address">Venue address</label>
+                <input
+                  type="text"
+                  name="location.address"
+                  placeholder="Venue address"
+                  minLength={3}
+                  aria-label="Venue address"
+                  className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="location.city">Venue city</label>
+                <input
+                  type="text"
+                  name="location.city"
+                  placeholder="Venue city"
+                  minLength={3}
+                  aria-label="Venue city"
+                  className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="location.zip">Venue zip</label>
+                <input
+                  type="number"
+                  name="location.zip"
+                  placeholder="Venue zip"
+                  minLength={3}
+                  aria-label="Venue zip"
+                  className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="location.country">Venue country</label>
+                <input
+                  type="text"
+                  name="location.country"
+                  placeholder="Venue country"
+                  minLength={3}
+                  aria-label="Venue country"
+                  className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="location.continent">Venue continent</label>
+                <input
+                  type="text"
+                  name="location.continent"
+                  placeholder="Venue continent"
+                  minLength={3}
+                  aria-label="Venue continent"
+                  className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="location.lat">Venue latitude</label>
+                <input
+                  type="number"
+                  name="location.lat"
+                  placeholder="Venue latitude"
+                  minLength={3}
+                  aria-label="Venue latitude"
+                  className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="location.lng">Venue longitude </label>
+                <input
+                  type="number"
+                  name="location.lng"
+                  placeholder="Venue longitude"
+                  minLength={3}
+                  aria-label="Venue longitude"
+                  className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-2.5">
+              <h2>Venue Media</h2>
+              {formState.media.map((mediaItem, index) => (
+                <div key={index} className={`flex flex-col ${index === 0 ? "pb-5" : ""}`}>
+                  <label htmlFor={`media.url.${index}`}>Venue media url</label>
+                  <input
                     type="text"
-                    name="description"
-                    placeholder="Venue description"
-                    aria-label="Venue description"
+                    name={`media.url.${index}`}
+                    placeholder="User media url"
+                    aria-label="User media url"
                     onBlur={handleBlur}
-                    className="h-48 "
-                    required
+                    className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                   />
-                  <span className="error">{errors.description}</span>
+                  <span className="error">{errors.media[index] && errors.media[index].url}</span>
+                  <label htmlFor={`media.alt.${index}`}>Venue media alt</label>
+                  <input
+                    type="text"
+                    name={`media.alt.${index}`}
+                    placeholder="User media alt"
+                    aria-label="User media alt"
+                    className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                  />
+                  {console.log("index before btn", index)}
+                  {index !== 0 && (
+                    <button
+                      type="button"
+                      className="btnStyle alternativeBtnStyle mt-2.5 w-box280 sm:w-box490"
+                      onClick={() => handleRemoveImage(index)}
+                    >
+                      Remove
+                    </button>
+                  )}
                 </div>
-                <div>
-                  <label htmlFor="price">Venue price</label>
-                  <input type="number" name="price" placeholder="Venue price" aria-label="Venue price" onBlur={handleBlur} required />
-                  <span className="error">{errors.price}</span>
-                </div>
-                <div className="flex flex-row">
-                  <label htmlFor="maxGuests">Max guests</label>
-                  <input type="number" name="maxGuests" min={1} max={100} aria-label="Max guests" onBlur={handleBlur} required />
-                  <span className="error">{errors.maxGuests}</span>
-                </div>
-                <div className="flex flex-row">
-                  <label htmlFor="rating">Venue rating</label>
-                  <input type="number" name="rating" aria-label="Venue rating" />
-                </div>
-              </div>
-              <div className="gap-3">
-                <h2 className="font-semibold">Venue media</h2>
-                {formState.media.map((mediaItem, index) => (
-                  <div key={index} className="gap-1.5">
-                    <div>
-                      <label htmlFor={`media.url.${index}`}>Venue media url</label>
-                      <input type="text" name={`media.url.${index}`} placeholder="User media url" aria-label="User media url" onBlur={handleBlur} />
-                      <span className="error">{errors.media[index] && errors.media[index].url}</span>
-                    </div>
-                    <div>
-                      <label htmlFor={`media.alt.${index}`}>Venue media alt</label>
-                      <input type="text" name={`media.alt.${index}`} placeholder="User media alt" aria-label="User media alt" />
-                    </div>
-                    {index !== 0 && (
-                      <div className="mt-3">
-                        <button type="button" className="btnStyle w-32 self-center" onClick={() => handleRemoveImage(index)}>
-                          Remove
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ))}
-                <div>
-                  <button type="button" className="btnStyle w-32 self-center" onClick={handleAddImage}>
-                    Add Image
-                  </button>
-                </div>
-              </div>
-              <div className="gap-3">
-                <h2 className="font-semibold">Amenities</h2>
-                <div className="checkboxStyle">
-                  <label htmlFor="meta.wifi">Wifi availability</label>
-                  <input type="checkbox" name="meta.wifi" aria-label="Wifi availability" />
-                </div>
-                <div className="checkboxStyle">
-                  <label htmlFor="meta.parking">Parking availability</label>
-                  <input type="checkbox" name="meta.parking" aria-label="Parking availability" />
-                </div>
-                <div className="checkboxStyle">
-                  <label htmlFor="meta.breakfast">Breakfast availability</label>
-                  <input type="checkbox" name="meta.breakfast" aria-label="Breakfast availability" />
-                </div>
-                <div className="checkboxStyle">
-                  <label htmlFor="meta.pets">Pets availability</label>
-                  <input type="checkbox" name="meta.pets" aria-label="Pets availability" />
-                </div>
-              </div>
-              <div className="gap-3">
-                <h2 className="font-semibold">Venue location</h2>
-                <div>
-                  <label htmlFor="location.address">Venue address</label>
-                  <input type="text" name="location.address" placeholder="Venue address" aria-label="Venue address" />
-                </div>
-                <div>
-                  <label htmlFor="location.city">Venue city</label>
-                  <input type="text" name="location.city" placeholder="Venue city" aria-label="Venue city" />
-                </div>
-                <div>
-                  <label htmlFor="location.zip">Venue zip</label>
-                  <input type="number" name="location.zip" placeholder="Venue zip" aria-label="Venue zip" />
-                </div>
-                <div>
-                  <label htmlFor="location.country">Venue country</label>
-                  <input type="text" name="location.country" placeholder="Venue country" aria-label="Venue country" />
-                </div>
-                <div>
-                  <label htmlFor="location.continent">Venue continent</label>
-                  <input type="text" name="location.continent" placeholder="Venue continent" aria-label="Venue continent" />
-                </div>
-                <div>
-                  <label htmlFor="location.lat">Venue latitude</label>
-                  <input type="number" name="location.lat" placeholder="Venue latitude" min={-90} max={90} aria-label="Venue latitude" />
-                </div>
-                <div>
-                  <label htmlFor="location.lng">Venue longitude </label>
-                  <input type="number" name="location.lng" placeholder="Venue longitude" min={-90} max={90} aria-label="Venue longitude" />
-                </div>
+              ))}
+              <div className="flex justify-center mt-4">
+                <button type="button" className="btnStyle" onClick={handleAddImage}>
+                  Add Image
+                </button>
               </div>
             </div>
-            <div>
-              <button type="submit" className="btnStyle w-32 self-center mt-5">
-                Submit
-              </button>
-            </div>
-            {errorMessage && <span className="error flex justify-center pt-2.5 text-xl">{errorMessage}</span>}
-          </form>
-        </div>
-      )}
+          </div>
+          <div className="flex justify-center mt-4">
+            <button type="submit" className="btnStyle alternativeBtnStyle w-form500">
+              Submit
+            </button>
+          </div>
+        </form>
+        {errorMessage && <span className="error flex justify-center pt-2.5 text-xl">{errorMessage}</span>}
+      </div>
     </div>
   );
 }

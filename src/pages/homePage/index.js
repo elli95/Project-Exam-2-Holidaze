@@ -1,5 +1,6 @@
-import HomepagePostLogin from "../../components/HomepagePostLogin";
+// import HomepagePostLogin from "../../components/HomepagePostLogin";
 import HomepagePreLogin from "../../components/HomepagePreLogin";
+import Venues from "../../components/Venues";
 import useLocalStorage from "../../hooks/useLocalStorage";
 
 function HomePage() {
@@ -8,8 +9,11 @@ function HomePage() {
 
   return (
     <div>
+      <h1 className="flex justify-center text-center text-3xl md:text-4xl lg:text-5xl p-10">Start your journey with Holidaze</h1>
+
       {!isLoggedIn && <HomepagePreLogin />}
-      {isLoggedIn && <HomepagePostLogin />}
+      {/* {isLoggedIn && <HomepagePostLogin />} */}
+      <Venues />
     </div>
   );
 }

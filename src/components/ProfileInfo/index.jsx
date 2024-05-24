@@ -1,20 +1,32 @@
-import ProfileBookingVenuesInfo from "../ProfileBookingVenuesInfo";
+// import ProfileBookingVenuesInfo from "../ProfileBookingVenuesInfo";
 import ProfileInfoEdit from "../ProfileInfoEdit";
 // import CreateVenue from "../CreateVenue";
 import useGETProfileData from "../../hooks/useGETProfileData";
 import { useEffect, useRef, useState } from "react";
+import useBtnDividerEventHandlers from "../../hooks/useBtnDividerEventHandlers";
+import ProfileBooking from "../ProfileBooking";
+import ProfileVenues from "../ProfileVenues";
+// import useLocalStorage from "../../hooks/useLocalStorage";
 
 function ProfileInfo() {
   const [profileData, setProfileData] = useState({});
+  const [isUserManager, setIsUserManager] = useState();
   const { profileData: fetchedProfileData } = useGETProfileData();
   const [isProfileEditShown, setIsProfileEditShown] = useState(false);
 
   const divRef = useRef(null);
 
   useEffect(() => {
+    setIsUserManager(fetchedProfileData.venueManager);
     setProfileData(fetchedProfileData);
   }, [fetchedProfileData]);
   console.log("profileData", profileData);
+
+  useEffect(() => {
+    if (localStorage.length === 0) {
+      window.location.href = "/";
+    }
+  }, []);
 
   const handleSeeProfileBooking = () => {
     setIsProfileEditShown(true);
@@ -34,6 +46,23 @@ function ProfileInfo() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const {
+    isSectionAShown,
+    isSectionBShown,
+    isSectionAButtonDisabled,
+    isSectionBButtonDisabled,
+    setIsSectionAShown,
+    setIsSectionBShown,
+    setSectionAButtonDisabled,
+    setSectionBButtonDisabled,
+    handleSectionAClick,
+    handleSectionBClick,
+  } = useBtnDividerEventHandlers();
+
+  const handleCloseBtn = () => {
+    setIsProfileEditShown(false);
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -64,11 +93,42 @@ function ProfileInfo() {
             {isProfileEditShown && (
               <div className="overlay">
                 <div ref={divRef} className="modulePosition w-box340 h-5/6 rounded-lg border-2 border-greyBlur sm:w-box610 lg:w-box900">
-                  <ProfileInfoEdit setIsProfileEditShown={setIsProfileEditShown} setProfileData={setProfileData} />
+                  <ProfileInfoEdit
+                    setIsUserManager={setIsUserManager}
+                    setIsProfileEditShown={setIsProfileEditShown}
+                    setProfileData={setProfileData}
+                    setIsSectionAShown={setIsSectionAShown}
+                    setIsSectionBShown={setIsSectionBShown}
+                    setSectionAButtonDisabled={setSectionAButtonDisabled}
+                    setSectionBButtonDisabled={setSectionBButtonDisabled}
+                    handleCloseBtn={handleCloseBtn}
+                  />
                 </div>
               </div>
             )}
-            <ProfileBookingVenuesInfo />
+          </div>
+
+          {isUserManager && (
+            <div className="max-w-3xl flex justify-center">
+              <button
+                className={`${isSectionBButtonDisabled ? "bg-tahiti" : "bg-bermuda"} px-5 py-2 w-40 h-16 text-wrap rounded-l-lg border-2 sm:w-60`}
+                onClick={handleSectionAClick}
+                disabled={isSectionAButtonDisabled}
+              >
+                My Bookings
+              </button>
+              <button
+                className={`${isSectionAButtonDisabled ? "bg-tahiti" : "bg-bermuda"} px-5 py-2 w-40 h-16 text-wrap rounded-r-lg border-2 sm:w-60`}
+                onClick={handleSectionBClick}
+                disabled={isSectionBButtonDisabled}
+              >
+                My Venues
+              </button>
+            </div>
+          )}
+          <div>
+            {isSectionAShown && <ProfileBooking />}
+            {isSectionBShown && <ProfileVenues />}
           </div>
         </>
       )}

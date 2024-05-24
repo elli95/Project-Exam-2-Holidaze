@@ -5,8 +5,18 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 import { API_PROFILES } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import useVenues from "../../store/venueLocations";
+// import useBtnDividerEventHandlers from "../../hooks/useBtnDividerEventHandlers";
 
-function ProfileInfoEdit({ setProfileData, setIsProfileEditShown }) {
+function ProfileInfoEdit({
+  setProfileData,
+  setIsProfileEditShown,
+  setIsUserManager,
+  setIsSectionAShown,
+  setIsSectionBShown,
+  setSectionAButtonDisabled,
+  setSectionBButtonDisabled,
+  handleCloseBtn,
+}) {
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
@@ -16,6 +26,8 @@ function ProfileInfoEdit({ setProfileData, setIsProfileEditShown }) {
   // const [profileData, setProfileData] = useState();
 
   const { profileData } = useGETProfileData();
+
+  // const { setIsSectionAShown } = useBtnDividerEventHandlers();
 
   const [formState, setFormState] = useState({
     bio: "",
@@ -124,6 +136,13 @@ function ProfileInfoEdit({ setProfileData, setIsProfileEditShown }) {
           venueManager: updatedProfileData.data.venueManager,
         });
         setIsProfileEditShown(false);
+        setIsUserManager(updatedProfileData.data.venueManager);
+        if (updatedProfileData.data.venueManager === false) {
+          setIsSectionAShown(true);
+          setIsSectionBShown(false);
+          setSectionAButtonDisabled(true);
+          setSectionBButtonDisabled(false);
+        }
         console.log("try2", profileData);
       } else {
         console.log("Error:", updatedProfileData);
@@ -137,14 +156,19 @@ function ProfileInfoEdit({ setProfileData, setIsProfileEditShown }) {
 
   console.log("try333", profileData);
   return (
-    <div className="flex justify-center">
+    <div className="flex flex-col items-center justify-center">
+      <div className="self-end">
+        <button className="btnStyle" onClick={handleCloseBtn}>
+          Close
+        </button>
+      </div>
       {/* <div className="flex justify-center">
         <button className="btnStyle w-44" onClick={handleCreateVenueForm}>
           Edit Profile
         </button>
       </div> */}
       {/* {isVenueFormShown && ( */}
-      {!profileData.avatar ? (
+      {!profileData.name ? (
         <div className="loading"></div>
       ) : (
         <div className="flex flex-col items-center venueEdit w-72 sm:w-formDiv35">

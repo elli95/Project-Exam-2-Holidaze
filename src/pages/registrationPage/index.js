@@ -8,6 +8,7 @@ import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 
 function RegistrationPage() {
   const { validateField } = useVenues();
+  const [successMessage, setSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const [shown, setShown] = useState(false);
@@ -135,6 +136,8 @@ function RegistrationPage() {
       .then((data) => {
         if (data.errors) {
           setErrorMessage(data.errors[0].message);
+        } else {
+          setSuccessMessage(true);
         }
       })
       .catch((error) => console.error("Error fetching data:", error));
@@ -261,6 +264,14 @@ function RegistrationPage() {
           <button type="submit" className="btnStyle w-32">
             Submit
           </button>
+          {successMessage && (
+            <div className="items-center p-3.5">
+              <h2>Your user is registered</h2>
+              <Link to="/login">
+                <h2 className="hover:underline">you can now login on the login page.</h2>
+              </Link>
+            </div>
+          )}
           {errorMessage && <span className="error self-center">{errorMessage}</span>}
         </form>
         <div className="items-center p-3.5">

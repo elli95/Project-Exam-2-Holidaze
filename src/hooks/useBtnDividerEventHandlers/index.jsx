@@ -1,32 +1,37 @@
 import { useState } from "react";
 
 function useBtnDividerEventHandlers() {
-  const [isTravelersShown, setIsTravelersShown] = useState(false);
-  const [isVenueManagersShown, setIsVenueManagersShown] = useState(false);
-  const [isTravelersButtonDisabled, setTravelersButtonDisabled] = useState(true);
-  const [isVenueManagersButtonDisabled, setVenueManagersButtonDisabled] = useState(false);
-
-  const handleTravelersClick = () => {
-    setIsTravelersShown(!isTravelersShown);
-    setIsVenueManagersShown(!isVenueManagersShown);
-    setTravelersButtonDisabled(true);
-    setVenueManagersButtonDisabled(false);
+  const [isSectionAShown, setIsSectionAShown] = useState(true);
+  const [isSectionBShown, setIsSectionBShown] = useState(false);
+  const [isSectionAButtonDisabled, setSectionAButtonDisabled] = useState(true);
+  const [isSectionBButtonDisabled, setSectionBButtonDisabled] = useState(false);
+  // setIsTravelersShown
+  // setIsVenueManagersShown
+  const handleSectionAClick = () => {
+    setIsSectionAShown(!isSectionAShown);
+    setIsSectionBShown(!isSectionBShown);
+    setSectionAButtonDisabled(true);
+    setSectionBButtonDisabled(false);
   };
 
-  const handleVenueManagersClick = () => {
-    setIsVenueManagersShown(!isVenueManagersShown);
-    setIsTravelersShown(!isTravelersShown);
-    setTravelersButtonDisabled(false);
-    setVenueManagersButtonDisabled(true);
+  const handleSectionBClick = () => {
+    setIsSectionBShown(!isSectionBShown);
+    setIsSectionAShown(!isSectionAShown);
+    setSectionAButtonDisabled(false);
+    setSectionBButtonDisabled(true);
   };
 
   return {
-    isTravelersShown,
-    isVenueManagersShown,
-    isTravelersButtonDisabled,
-    isVenueManagersButtonDisabled,
-    handleTravelersClick,
-    handleVenueManagersClick,
+    isSectionAShown,
+    isSectionBShown,
+    isSectionAButtonDisabled,
+    isSectionBButtonDisabled,
+    setIsSectionAShown,
+    setIsSectionBShown,
+    setSectionAButtonDisabled,
+    setSectionBButtonDisabled,
+    handleSectionAClick,
+    handleSectionBClick,
   };
 }
 

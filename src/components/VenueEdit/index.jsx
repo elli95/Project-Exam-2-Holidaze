@@ -6,7 +6,7 @@ import { API_VENUES } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import useVenues from "../../store/venueLocations";
 
-function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingData, fetchVenueBookingData, venueId }) {
+function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingData, fetchVenueBookingData, venueId, handleCloseBtn }) {
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
@@ -139,7 +139,6 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingD
           </div>
         </div>
       </div>
-      // </div>
     );
   };
 
@@ -287,12 +286,17 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingD
 
   return (
     <div>
+      <div className="flex justify-end">
+        <button className="btnStyle" onClick={handleCloseBtn}>
+          Close
+        </button>
+      </div>
       {showModal && <ConfirmationModal onConfirm={confirmHandler} onCancel={handleCancel} />}
       <div>
         {!editVenueFilter ? (
           <div className="loading"></div>
         ) : (
-          <div className="relative">
+          <div>
             <form onSubmit={handleSubmit} className="flex flex-col venueEdit">
               <div className="flex flex-col items-center gap-5">
                 <div className="flex flex-wrap justify-center gap-2.5">

@@ -9,8 +9,8 @@ img {
 
 .imgBox {
   overflow: hidden;
-  height: 160px;
-  border-radius: 7px 7px 0px 0px;
+  height: 180px;
+  border-radius: 4px 4px 0px 0px;
 }
 
 .imgBox img {
@@ -234,14 +234,24 @@ main {
   flex-wrap: wrap;
   justify-content: center;
   gap: 50px;
-  max-width: 1350px;
+  max-width: 1510px;
 }
 
 .venueSection a {
   display: flex;
   flex-direction: column;
-  width: 300px;
-  /* border: 2px solid black; */
+  width: 340px;
+  height: 360px;
+}
+
+.venueSection a,
+.venueFilterBox {
+  background-color: #e1e1e1;
+  filter: drop-shadow(0px 5px 4px #000000);
+}
+
+.venueSection a:hover {
+  filter: drop-shadow(0px 10px 10px #4b4b4b);
 }
 
 .highlight {
@@ -250,6 +260,12 @@ main {
 
 .highlightBooking {
   background-color: rgb(94, 17, 217); /* Customize the styling as desired */
+}
+
+/*Venue page*/
+.textBreakStyle div h2,
+.textBreakStyle div p {
+  word-break: break-word;
 }
 
 /* Login & Registration page */

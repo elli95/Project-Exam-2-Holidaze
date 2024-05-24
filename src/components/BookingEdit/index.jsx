@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
 
 // function BookingEdit({ setVenueBookingData = () => {}, fetchVenueBookingData = () => {}, venueId }) {
-function BookingEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingData, fetchVenueBookingData, venueId }) {
+function BookingEdit({ setVenueIdToShow, setBookingData, fetchBookingData, venueId, handleCloseBtn }) {
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
@@ -110,7 +110,7 @@ function BookingEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookin
   }
 
   const ConfirmationModal = ({ onConfirm, onCancel }) => {
-    const message = actionType === "submit" ? "Are you sure you want to edit this booking?" : "Are you sure you want to delete this booking?";
+    const message = actionType === "submit" ? "Are you sure you want to edit this booking?" : "Are you sure you want to cancel this booking?";
     return (
       <div className="overlayCheck">
         <div className="modulePosition flex flex-col justify-center rounded-lg">
@@ -168,7 +168,7 @@ function BookingEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookin
       );
       console.log("try", updatedProfileData);
       if (!updatedProfileData.errors) {
-        setVenueBookingData((prevState) => ({
+        setBookingData((prevState) => ({
           ...prevState,
           bookings: prevState.bookings.map((booking) =>
             booking.id === updatedProfileData.data.id
@@ -182,7 +182,7 @@ function BookingEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookin
           ),
         }));
         setVenueIdToShow(null);
-        setIsVenueBookingsShown(false);
+        // setIsBookingsShown(false);
       } else {
         console.log("Error:", updatedProfileData);
         console.log("Error:", updatedProfileData.errors[0].message);
@@ -211,7 +211,7 @@ function BookingEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookin
       });
 
       if (!updatedProfileData) {
-        fetchVenueBookingData();
+        fetchBookingData();
       } else {
         console.log("Error:", updatedProfileData.errors[0].message);
         setErrorMessage("There was an error: " + updatedProfileData.errors[0].message);
@@ -226,10 +226,15 @@ function BookingEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookin
   };
 
   return (
-    <div>
-      <div>
+    <div className="flex flex-col justify-center">
+      <div className="self-end">
+        <button className="btnStyle" onClick={handleCloseBtn}>
+          Close
+        </button>
+      </div>
+      <div className="flex justify-center">
         {!editVenueFilter ? (
-          <div className="loading"></div>
+          <div className="loading flex self-center"></div>
         ) : (
           <div>
             <div>

@@ -20,13 +20,15 @@ function SearchField() {
   const location = useLocation();
 
   useEffect(() => {
-    apiCall(API_VENUES, "GET", {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-      "X-Noroff-API-Key": apiKey.key,
-    })
-      .then((data) => setVenue(data.data))
-      .catch((error) => console.error("Error fetching data:", error));
+    setTimeout(() => {
+      apiCall(API_VENUES, "GET", {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        "X-Noroff-API-Key": apiKey.key,
+      })
+        .then((data) => setVenue(data.data))
+        .catch((error) => console.error("Error fetching data:", error));
+    }, 500);
     // Samme Kode!!
   }, []);
 
@@ -63,15 +65,15 @@ function SearchField() {
         placeholder="Search"
         value={inputValue}
         onChange={inputValueChange}
-        className="rounded-lg p-2 max-h-10 text-xl w-80 h-10 lg:w-96"
+        className="rounded-lg p-2 max-h-10 text-xl w-80 h-10 lg:w-96 z-20 relative"
       ></input>
       {inputValue && (
-        <ul ref={listRef}>
+        <ul ref={listRef} className="flex flex-col absolute pt-5 p-2.5 top-12 bg-grayShade w-80 h-box565 lg:w-96 overflow-auto z-10 rounded">
           {filteredVenues.map((venue) => (
-            <Link key={venue.id} to={`/venue/${venue.id}`}>
-              <li key={venue.id}>
-                <div>{venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} className="max-w-8" />}</div>
-                {venue.name}
+            <Link key={venue.id} to={`/venue/${venue.id}`} className="hover:bg-grayShadeHover p-2.5">
+              <li key={venue.id} className="flex overflow-hidden whitespace-nowrap gap-2.5 items-center">
+                <div>{venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} className="w-12 h-12 rounded" />}</div>
+                <p className="w-12">{venue.name}</p>
               </li>
             </Link>
           ))}
