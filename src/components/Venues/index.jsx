@@ -3,7 +3,7 @@ import { API_VENUES } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faAnglesLeft, faAnglesRight, faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
 import VenueFilter from "../VenueFilter";
@@ -16,7 +16,7 @@ function Venues() {
   const [meta, setMeta] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(40);
-  const textRef = useRef(null);
+  // const textRef = useRef(null);
 
   const apiCall = useApiCall();
 
@@ -38,7 +38,7 @@ function Venues() {
       // .then((data) => setVenue(data.data))
       .catch((error) => console.error("Error fetching data:", error));
     // Samme Kode!!
-  }, [currentPage]);
+  }, [apiCall, currentPage, itemsPerPage, accessToken, apiKey.key]);
 
   const Pagination = ({ itemsPerPage, totalItems, paginate }) => {
     const pageNumbers = [];
@@ -107,17 +107,18 @@ function Venues() {
             } else {
               return null;
             }
+            return null;
           })}
         </ul>
       </nav>
     );
   };
 
-  const handleMouseLeave = () => {
-    if (textRef.current) {
-      textRef.current.scrollLeft = 0;
-    }
-  };
+  // const handleMouseLeave = () => {
+  //   if (textRef.current) {
+  //     textRef.current.scrollLeft = 0;
+  //   }
+  // };
 
   //console.log("Venues updates?:", filteredVenues);
 

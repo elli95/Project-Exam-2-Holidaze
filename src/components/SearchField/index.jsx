@@ -1,7 +1,7 @@
 import { API_VENUES } from "../../shared/apis";
 // import useFetchApi from "../../hooks/useFetchApi";
 import { useEffect, useState, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useApiCall from "../../hooks/useApiCall";
@@ -16,7 +16,7 @@ function SearchField() {
   const inputRef = useRef();
   const listRef = useRef();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
@@ -30,7 +30,7 @@ function SearchField() {
         .catch((error) => console.error("Error fetching data:", error));
     }, 500);
     // Samme Kode!!
-  }, []);
+  }, [apiCall, accessToken, apiKey.key]);
 
   const inputValueChange = (input) => {
     const newValue = input.target.value;

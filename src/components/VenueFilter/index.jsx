@@ -39,7 +39,7 @@ function VenueFilter({ setFilteredVenues }) {
     };
 
     fetchAllPages(`${API_VENUES}?page=1`);
-  }, []);
+  }, [apiCall]);
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;

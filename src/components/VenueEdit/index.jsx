@@ -93,13 +93,20 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingD
 
   const apiCall = useApiCall();
 
-  const handleAddImage = () => {
-    setFormState({
-      ...formState,
-      media: [...formState.media, { url: "", alt: "" }],
-    });
-  };
-
+  // const handleAddImage = () => {
+  //   setFormState({
+  //     ...formState,
+  //     media: [...formState.media, { url: "", alt: "" }],
+  //   });
+  // };
+  const handleAddImage =
+    (() => {
+      setFormState((prevState) => ({
+        ...prevState,
+        media: [...prevState.media, { url: "", alt: "" }],
+      }));
+    },
+    []);
   const runCount = useRef(0);
 
   useEffect(() => {
@@ -107,7 +114,7 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingD
       handleAddImage(editVenueFilter[0].media[runCount.current]);
       runCount.current += 1;
     }
-  }, [editVenueFilter]);
+  }, [editVenueFilter, handleAddImage]);
 
   const handleRemoveImage = (index) => {
     console.log("index after btn", index);

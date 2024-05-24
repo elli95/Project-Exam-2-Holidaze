@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import useApiCall from "../../hooks/useApiCall";
 import BookingEdit from "../BookingEdit";
@@ -18,23 +18,42 @@ function ProfileBooking() {
   const divRef = useRef(null);
   const apiCall = useApiCall();
 
-  function fetchBookingData() {
+  const fetchBookingData = useCallback(async () => {
     if (apiKey.key !== undefined && accessToken.length > 0) {
-      apiCall(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", "GET", {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        "X-Noroff-API-Key": apiKey.key,
-      })
-        .then((data) => {
-          setBookingData(data.data);
-        })
-        .catch((error) => console.error("Error fetching data:", error));
+      try {
+        const data = await apiCall(`${API_PROFILES}/${userInfo.name}/?_bookings=true&_venues=true`, "GET", {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+          "X-Noroff-API-Key": apiKey.key,
+        });
+        setBookingData(data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
-  }
+  }, [apiCall, apiKey.key, accessToken, userInfo.name]);
 
   useEffect(() => {
     fetchBookingData();
-  }, [apiKey.key, accessToken]);
+  }, [fetchBookingData]);
+
+  // function fetchBookingData() {
+  //   if (apiKey.key !== undefined && accessToken.length > 0) {
+  //     apiCall(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", "GET", {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${accessToken}`,
+  //       "X-Noroff-API-Key": apiKey.key,
+  //     })
+  //       .then((data) => {
+  //         setBookingData(data.data);
+  //       })
+  //       .catch((error) => console.error("Error fetching data:", error));
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   fetchBookingData();
+  // }, [apiKey.key, accessToken]);
 
   useEffect(() => {
     if (bookingData && bookingData.bookings) {
@@ -52,7 +71,7 @@ function ProfileBooking() {
     if (validBookings) {
       console.log("--------validBookings", validBookings);
     }
-  }, [validBookings.dateFrom]);
+  }, [validBookings]);
 
   const handleCreateVenueForm = (id) => {
     if (venueIdToShow === id) {

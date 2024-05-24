@@ -48,7 +48,7 @@ function VenueBookings({ venueId, handleCloseBtn }) {
     };
 
     fetchAllPages(`${API_VENUES}/?_bookings=true&page=1`);
-  }, []);
+  }, [apiCall, accessToken, apiKey.key]);
 
   let venueBookingsFilter;
   if (venues) {

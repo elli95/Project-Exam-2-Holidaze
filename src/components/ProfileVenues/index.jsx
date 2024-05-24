@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useApiCall from "../../hooks/useApiCall";
 import { API_PROFILES } from "../../shared/apis";
 import usePostApiKey from "../../hooks/usePostApiKey";
@@ -20,23 +20,41 @@ function ProfileVenues() {
   const divRef = useRef(null);
   const apiCall = useApiCall();
 
-  function fetchVenueBookingData() {
+  const fetchVenueBookingData = useCallback(async () => {
     if (apiKey.key !== undefined && accessToken.length > 0) {
-      apiCall(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", "GET", {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        "X-Noroff-API-Key": apiKey.key,
-      })
-        .then((data) => {
-          setVenueBookingData(data.data);
-        })
-        .catch((error) => console.error("Error fetching data:", error));
+      try {
+        const data = await apiCall(`${API_PROFILES}/${userInfo.name}/?_bookings=true&_venues=true`, "GET", {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+          "X-Noroff-API-Key": apiKey.key,
+        });
+        setVenueBookingData(data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
-  }
+  }, [apiCall, apiKey.key, accessToken, userInfo.name]);
 
   useEffect(() => {
     fetchVenueBookingData();
-  }, [apiKey.key, accessToken]);
+  }, [fetchVenueBookingData]);
+  // useEffect(() => {
+  //   const fetchVenueBookingData = async () => {
+  //     if (apiKey.key !== undefined && accessToken.length > 0) {
+  //       apiCall(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", "GET", {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${accessToken}`,
+  //         "X-Noroff-API-Key": apiKey.key,
+  //       })
+  //         .then((data) => {
+  //           setVenueBookingData(data.data);
+  //         })
+  //         .catch((error) => console.error("Error fetching data:", error));
+  //     }
+  //   };
+
+  //   fetchVenueBookingData();
+  // }, [apiCall, apiKey.key, accessToken, userInfo.name]);
 
   const handleSeeCreateVenue = (id) => {
     if (venueIdToShow === id) {
@@ -155,6 +173,22 @@ function ProfileVenues() {
                               setIsVenueBookingsShown={setIsVenueBookingsShown}
                               setVenueBookingData={setVenueBookingData}
                               fetchVenueBookingData={fetchVenueBookingData}
+                              // fetchVenueBookingData={() => {
+                              //   const fetchVenueBookingData = async () => {
+                              //     if (apiKey.key !== undefined && accessToken.length > 0) {
+                              //       apiCall(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", "GET", {
+                              //         "Content-Type": "application/json",
+                              //         Authorization: `Bearer ${accessToken}`,
+                              //         "X-Noroff-API-Key": apiKey.key,
+                              //       })
+                              //         .then((data) => {
+                              //           setVenueBookingData(data.data);
+                              //         })
+                              //         .catch((error) => console.error("Error fetching data:", error));
+                              //     }
+                              //   };
+                              //   fetchVenueBookingData();
+                              // }}
                               venueId={venue.id}
                               handleCloseBtn={handleCloseBtn}
                             />

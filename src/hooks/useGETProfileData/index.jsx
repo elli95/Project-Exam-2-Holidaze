@@ -21,7 +21,7 @@ function useGETProfileData() {
         .catch((error) => console.error("Error fetching data:", error));
       // Samme Kode!!
     }
-  }, [userInfo.name, apiKey.key, accessToken]);
+  }, [userInfo.name, apiKey.key, accessToken, apiCall]);
 
   return { profileData, setProfileData };
 }
