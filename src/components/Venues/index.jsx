@@ -14,6 +14,7 @@ function Venues() {
 
   // const { venues, meta } = useVenueApiCall(currentPage, itemsPerPage);
   console.log("venues123123123", venues);
+  console.log("filteredVenues123123123", filteredVenues);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 

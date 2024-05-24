@@ -63,7 +63,7 @@ function useVenueApiCall(currentPage, itemsPerPage) {
     if (accessToken.accessToken.length > 0 && apiKey.key) {
       async function fetchVenueData() {
         try {
-          const response = await fetch(`${API_VENUES}?sort=created&page=${currentPage}&limit=${itemsPerPage}`, {
+          const response = await fetch(`${API_VENUES}?sort=created&_bookings=true&_owner=true&page=${currentPage}&limit=${itemsPerPage}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",

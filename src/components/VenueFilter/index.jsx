@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import useApiCall from "../../hooks/useApiCall";
-import { API_VENUES } from "../../shared/apis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+import useAllVenuesApiCall from "../../hooks/useAllVenuesApiCall";
 
 function VenueFilter({ setFilteredVenues }) {
-  const [venues, setVenues] = useState([]);
+  // const [venues, setVenues] = useState([]);
   const [filters, setFilters] = useState({
     title: "",
     location: {
@@ -18,28 +17,15 @@ function VenueFilter({ setFilteredVenues }) {
     pets: false,
     breakfast: false,
   });
+  const [filtersCleared, setFiltersCleared] = useState(true);
 
-  const apiCall = useApiCall();
+  const { allVenues, isLoading } = useAllVenuesApiCall();
 
   useEffect(() => {
-    const fetchAllPages = async (url) => {
-      try {
-        const data = await apiCall(url, "GET", {
-          "Content-Type": "application/json",
-        });
-
-        setVenues((prevVenues) => [...prevVenues, ...data.data]);
-
-        if (!data.meta.isLastPage) {
-          await fetchAllPages(`${API_VENUES}?page=${data.meta.nextPage}`);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchAllPages(`${API_VENUES}?page=1`);
-  }, []);
+    if (!isLoading && !filtersCleared) {
+      applyFilters();
+    }
+  }, [allVenues, filters, isLoading, filtersCleared]);
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -64,40 +50,51 @@ function VenueFilter({ setFilteredVenues }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const filteredData = venues.filter((item) => {
-      for (let key in filters) {
-        if (key === "wifi" || key === "parking" || key === "pets" || key === "breakfast") {
-          if (filters[key] && item.meta[key] !== filters[key]) {
-            return false;
-          }
-        } else if (key === "location") {
-          const { city, country } = filters.location;
-          if (
-            (city && city.trim() && item.location && item.location.city && item.location.city.toLowerCase() !== city.toLowerCase()) ||
-            (city && city.trim() && item.location.city === null) ||
-            (city && item.location.city.length === 0) ||
-            (country && country.trim() && item.location && item.location.country && item.location.country.toLowerCase() !== country.toLowerCase()) ||
-            (country && country.trim() && item.location.country === null) ||
-            (country && item.location.country.length === 0)
-          ) {
-            return false;
-          }
-        } else if (key === "rating") {
-          if (filters.rating && item.rating !== filters.rating) {
-            return false;
-          }
-        } else {
-          if (filters[key] && (!item[key] || String(item[key]).toLowerCase().indexOf(String(filters[key]).toLowerCase()) === -1)) {
-            return false;
+    setFiltersCleared(false);
+    applyFilters();
+  };
+
+  const applyFilters = () => {
+    if (!isLoading) {
+      const filteredData = allVenues.filter((item) => {
+        for (let key in filters) {
+          if (key === "wifi" || key === "parking" || key === "pets" || key === "breakfast") {
+            if (filters[key] && item.meta[key] !== filters[key]) {
+              return false;
+            }
+          } else if (key === "location") {
+            const { city, country } = filters.location;
+            if (
+              (city && city.trim() && item.location && item.location.city && item.location.city.toLowerCase() !== city.toLowerCase()) ||
+              (city && city.trim() && item.location.city === null) ||
+              (city && item.location.city.length === 0) ||
+              (country &&
+                country.trim() &&
+                item.location &&
+                item.location.country &&
+                item.location.country.toLowerCase() !== country.toLowerCase()) ||
+              (country && country.trim() && item.location.country === null) ||
+              (country && item.location.country.length === 0)
+            ) {
+              return false;
+            }
+          } else if (key === "rating") {
+            if (filters.rating && item.rating !== filters.rating) {
+              return false;
+            }
+          } else {
+            if (filters[key] && (!item[key] || String(item[key]).toLowerCase().indexOf(String(filters[key]).toLowerCase()) === -1)) {
+              return false;
+            }
           }
         }
-      }
-      return true;
-    });
+        return true;
+      });
 
-    const uniqueFilteredData = filteredData.filter((item, index, self) => index === self.findIndex((t) => t.id === item.id));
+      const uniqueFilteredData = filteredData.filter((item, index, self) => index === self.findIndex((t) => t.id === item.id));
 
-    setFilteredVenues(uniqueFilteredData);
+      setFilteredVenues(uniqueFilteredData);
+    }
   };
 
   const handleClearFilter = () => {
@@ -115,6 +112,7 @@ function VenueFilter({ setFilteredVenues }) {
     });
     document.getElementById("filterForm").reset();
     setFilteredVenues([]);
+    setFiltersCleared(true);
   };
 
   //console.log("filterdData filters:", filters);

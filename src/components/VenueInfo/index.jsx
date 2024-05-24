@@ -2,12 +2,13 @@ import { useParams } from "react-router-dom";
 import useVenues from "../../store/venueLocations";
 import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
-import { API_BOOKINGS, API_VENUES } from "../../shared/apis";
+import { API_BOOKINGS } from "../../shared/apis";
 import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useApiCall from "../../hooks/useApiCall";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
+import useVenueApiCall from "../../hooks/useVenueApiCall";
 
 function VenueInfo() {
   const { apiKey } = usePostApiKey();
@@ -22,6 +23,11 @@ function VenueInfo() {
   const [selectedImage, setSelectedImage] = useState();
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(40);
+  const { venues, meta } = useVenueApiCall(currentPage, itemsPerPage);
+
   const [formState, setFormState] = useState({
     dateFrom: "",
     dateTo: "",
@@ -63,21 +69,21 @@ function VenueInfo() {
     }
   };
 
-  useEffect(() => {
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      if (!isNaN(start) && !isNaN(end)) {
-        const oneDay = 24 * 60 * 60 * 1000;
-        const daysDifference = Math.round(Math.abs((end - start) / oneDay) + 1);
-        // console.log("daysDifference:", daysDifference);
-        const value = venue ? venue.price : 0;
-        const calculatedResult = daysDifference * value;
-        // console.log("calculatedResult:", calculatedResult);
-        setResult(calculatedResult);
-      }
-    }
-  }, [startDate, endDate, venue]);
+  // useEffect(() => {
+  //   if (startDate && endDate) {
+  //     const start = new Date(startDate);
+  //     const end = new Date(endDate);
+  //     if (!isNaN(start) && !isNaN(end)) {
+  //       const oneDay = 24 * 60 * 60 * 1000;
+  //       const daysDifference = Math.round(Math.abs((end - start) / oneDay) + 1);
+  //       // console.log("daysDifference:", daysDifference);
+  //       const value = venue ? venue.price : 0;
+  //       const calculatedResult = daysDifference * value;
+  //       // console.log("calculatedResult:", calculatedResult);
+  //       setResult(calculatedResult);
+  //     }
+  //   }
+  // }, [startDate, endDate, venue]);
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -91,28 +97,18 @@ function VenueInfo() {
     }
   }, [startDate, endDate, venue]);
 
-  async function findVenue(apiCall, id, page = 1) {
-    const data = await apiCall(API_VENUES + `?_bookings=true&_owner=true&page=${page}`, "GET", {
-      "Content-Type": "application/json",
-    });
-    const foundVenue = data.data.find((venue) => venue.id.toString() === id);
-    console.log("foundVenue", foundVenue);
-    if (foundVenue) {
-      return foundVenue;
-    } else if (data.meta.isLastPage) {
-      return null;
-    } else {
-      return findVenue(apiCall, id, data.meta.nextPage);
-    }
-  }
+  /*------------*/
 
   useEffect(() => {
-    findVenue(apiCall, id).then((foundVenue) => {
-      console.log("foundVenue", foundVenue);
-      setSelectedImage(foundVenue.media[0].url);
+    const foundVenue = venues.find((venue) => venue.id.toString() === id);
+    console.log("venues venues venues", venues, foundVenue);
+    if (foundVenue) {
+      setSelectedImage(foundVenue.media[0]?.url);
       setVenue(foundVenue);
-    });
-  }, [id]);
+    } else if (meta.nextPage && !meta.isLastPage) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  }, [venues, id, meta]);
 
   if (!venue) {
     return <div className="loading"></div>;
@@ -156,24 +152,24 @@ function VenueInfo() {
     console.log("updatedFormState", updatedFormState);
     setFormState(updatedFormState);
 
-    // apiCall(
-    //   API_BOOKINGS,
-    //   "POST",
-    //   {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${accessToken}`,
-    //     "X-Noroff-API-Key": apiKey.key,
-    //   },
-    //   updatedFormState
-    // )
-    //   .then((data) => {
-    //     if (data.errors) {
-    //       setErrorMessage(data.errors[0].message);
-    //     } else {
-    //       setSuccessMessage("Your order has been registered. You can now find it on your profile page.");
-    //     }
-    //   })
-    //   .catch((error) => console.error("Error fetching data:", error));
+    apiCall(
+      API_BOOKINGS,
+      "POST",
+      {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        "X-Noroff-API-Key": apiKey.key,
+      },
+      updatedFormState
+    )
+      .then((data) => {
+        if (data.errors) {
+          setErrorMessage(data.errors[0].message);
+        } else {
+          setSuccessMessage("Your order has been registered. You can now find it on your profile page.");
+        }
+      })
+      .catch((error) => console.error("Error fetching data:", error));
   };
 
   const handleThumbnailClick = (url) => {
