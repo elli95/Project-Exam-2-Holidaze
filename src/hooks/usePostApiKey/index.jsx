@@ -50,7 +50,7 @@ function usePostApiKey() {
       //     console.error("Error:", error.message);
       //   });
     }
-  }, [accessToken.accessToken, apiCall]);
+  }, [accessToken.accessToken]);
 
   return { apiKey };
 }

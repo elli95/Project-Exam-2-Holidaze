@@ -23,7 +23,7 @@ function HomepagePreLogin() {
             <button
               className={`${
                 isSectionBButtonDisabled ? "bg-tahiti" : "bg-bermuda"
-              } flex items-center justify-center text-lg px-5 py-2 w-1/2 h-16 text-wrap rounded-l-lg border-2 sm:w-60`}
+              } flex items-center justify-center text-lg sm:px-5 py-2 w-1/2 h-16 text-wrap rounded-l-lg border-2 sm:w-60`}
               onClick={handleSectionAClick}
               disabled={isSectionAButtonDisabled}
             >
@@ -32,7 +32,7 @@ function HomepagePreLogin() {
             <button
               className={`${
                 isSectionAButtonDisabled ? "bg-tahiti" : "bg-bermuda"
-              } flex items-center justify-center text-lg px-5 py-2 w-1/2 h-16 text-wrap rounded-r-lg border-2 sm:w-60`}
+              } flex items-center justify-center text-lg sm:px-5 py-2 w-1/2 h-16 text-wrap rounded-r-lg border-2 sm:w-60`}
               onClick={handleSectionBClick}
               disabled={isSectionBButtonDisabled}
             >

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useGETProfileData from "../../hooks/useGETProfileData";
 import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";

@@ -3,7 +3,7 @@ import { API_VENUES } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faAnglesLeft, faAnglesRight, faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
 import VenueFilter from "../VenueFilter";
@@ -15,45 +15,30 @@ function Venues() {
   const { accessToken } = useLocalStorage();
   const [meta, setMeta] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  const [prevPage, setPrevPage] = useState(null);
   const [itemsPerPage] = useState(40);
-  const [errorMessage, setErrorMessage] = useState("");
-  // const textRef = useRef(null);
+  const textRef = useRef(null);
 
   const apiCall = useApiCall();
 
   const displayVenues = filteredVenues.length > 0 ? filteredVenues : venues;
 
-  useEffect(() => {
-    if (currentPage !== prevPage) {
-      // Check if the current page is different from the previous page
-      const fetchVenueData = async () => {
-        try {
-          const venueCall = await apiCall(`${API_VENUES}?sort=created&page=${currentPage}&limit=${itemsPerPage}`, "GET", {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-            "X-Noroff-API-Key": apiKey.key,
-          });
-          console.log("aaaaaa", venueCall);
-          if (venueCall.errors) {
-            console.log("Error:", venueCall.errors[0].message);
-            setErrorMessage("There was an error: " + venueCall.errors[0].message);
-          } else {
-            setVenue(venueCall.data);
-            setMeta(venueCall.meta);
-          }
-        } catch (error) {
-          console.error("Failed to fetch venue data:", error);
-          setErrorMessage("Failed to fetch venue data");
-        }
-      };
-
-      fetchVenueData(); // Call fetchVenueData only when currentPage changes
-      setPrevPage(currentPage); // Update the previous page
-    }
-  }, [apiCall, currentPage, itemsPerPage, accessToken, apiKey.key, prevPage]);
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  useEffect(() => {
+    apiCall(`${API_VENUES}?sort=created&page=${currentPage}&limit=${itemsPerPage}`, "GET", {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+      "X-Noroff-API-Key": apiKey.key,
+    })
+      .then((data) => {
+        //console.log("aaaaaa", data);
+        setVenue(data.data);
+        setMeta(data.meta);
+      })
+      // .then((data) => setVenue(data.data))
+      .catch((error) => console.error("Error fetching data:", error));
+    // Samme Kode!!
+  }, [currentPage]);
 
   const Pagination = ({ itemsPerPage, totalItems, paginate }) => {
     const pageNumbers = [];
@@ -65,9 +50,12 @@ function Venues() {
 
     const renderButton = (number) => (
       <li key={number}>
-        <button onClick={() => paginate(number)} className={`btnStyle ${currentPage === number ? "bg-green" : ""} `}>
+        <button onClick={() => paginate(number)} className={`btnStyle ${currentPage === number ? "bg-green" : "bg-white"} `}>
           {number}
         </button>
+        {
+          //console.log(currentPage)
+        }
       </li>
     );
 
@@ -119,12 +107,17 @@ function Venues() {
             } else {
               return null;
             }
-            return null;
           })}
         </ul>
       </nav>
     );
   };
+
+  // const handleMouseLeave = () => {
+  //   if (textRef.current) {
+  //     textRef.current.scrollLeft = 0;
+  //   }
+  // };
 
   //console.log("Venues updates?:", filteredVenues);
 
@@ -186,12 +179,15 @@ function Venues() {
           ))
         )}
       </div>
+      {/* {!meta ? (
+        <div className="loading"></div>
+      ) : ( */}
       {!filteredVenues.length > 0 && (
         <div className="flex justify-center p-5">
           <Pagination itemsPerPage={itemsPerPage} totalItems={meta.totalCount} paginate={paginate} />
         </div>
       )}
-      {errorMessage && <span className="error flex justify-center pt-2.5 text-xl">{errorMessage}</span>}
+      {/* // )} */}
     </div>
   );
 }

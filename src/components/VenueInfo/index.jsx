@@ -63,105 +63,6 @@ function VenueInfo() {
     }
   };
 
-  // const findVenue =
-  //   (async (apiCall, id, page = 1) => {
-  //     const data = await apiCall(API_VENUES + `?_bookings=true&_owner=true&page=${page}`, "GET", {
-  //       "Content-Type": "application/json",
-  //     });
-  //     const foundVenue = data.data.find((venue) => venue.id.toString() === id);
-  //     console.log("foundVenue", foundVenue);
-  //     if (foundVenue) {
-  //       return foundVenue;
-  //     } else if (data.meta.isLastPage) {
-  //       return null;
-  //     } else {
-  //       return findVenue(apiCall, id, data.meta.nextPage);
-  //     }
-  //   },
-  //   [apiCall, id]);
-
-  // useEffect(() => {
-  //   const findVenue = async (apiCall, id, page = 1) => {
-  //     try {
-  //       const data = await apiCall(API_VENUES + `?_bookings=true&_owner=true&page=${page}`, "GET", {
-  //         "Content-Type": "application/json",
-  //       });
-  //       const foundVenue = data.data.find((venue) => venue.id.toString() === id);
-  //       console.log("foundVenue", foundVenue);
-  //       if (foundVenue) {
-  //         return foundVenue;
-  //       } else if (data.meta.isLastPage) {
-  //         return null;
-  //       } else {
-  //         return findVenue(apiCall, id, data.meta.nextPage);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-  // }, [apiCall]);
-
-  useEffect(() => {
-    if (venue) {
-      // setSelectedImage(venue.media[0].url);
-      return;
-    }
-    const findVenue = async (apiCall, id, page = 1) => {
-      try {
-        const data = await apiCall(API_VENUES + `?_bookings=true&_owner=true&page=${page}`, "GET", {
-          "Content-Type": "application/json",
-        });
-        console.log("aaaaaa", data);
-        if (data) {
-          const foundVenue = data.data.find((venue) => venue.id.toString() === id);
-          if (foundVenue) {
-            setSelectedImage(foundVenue.media[0].url);
-            return foundVenue;
-          } else if (data.meta.isLastPage) {
-            return null;
-          } else {
-            return findVenue(apiCall, id, data.meta.nextPage);
-          }
-        } else {
-          console.log("Error:", data.errors[0].message);
-          setErrorMessage("There was an error: " + data.errors[0].message);
-        }
-      } catch (error) {
-        console.error("Failed to fetch venue data:", error);
-        setErrorMessage("Failed to fetch venue data");
-      }
-    };
-
-    findVenue(apiCall, id).then((foundVenue) => {
-      console.log("foundVenue", foundVenue);
-      // setSelectedImage(foundVenue.media[0].url);
-      setVenue(foundVenue);
-    });
-  }, [apiCall, id, venue]);
-
-  // useEffect(() => {
-  //   findVenue(apiCall, id).then((foundVenue) => {
-  //     console.log("foundVenue", foundVenue);
-  //     setSelectedImage(foundVenue.media[0].url);
-  //     setVenue(foundVenue);
-  //   });
-  // }, [apiCall, id]);
-
-  // useEffect(() => {
-  //   VenueInfo();
-  // }, [VenueInfo]);
-
-  // useEffect(() => {
-  //   function VenueInfo() {
-  //     findVenue(apiCall, id).then((foundVenue) => {
-  //       console.log("foundVenue", foundVenue);
-  //       setSelectedImage(foundVenue.media[0].url);
-  //       setVenue(foundVenue);
-  //     });
-  //   }
-  //   VenueInfo();
-  // }, [findVenue, apiCall, id]);
-
   useEffect(() => {
     if (startDate && endDate) {
       const start = new Date(startDate);
@@ -178,40 +79,40 @@ function VenueInfo() {
     }
   }, [startDate, endDate, venue]);
 
-  // useEffect(() => {
-  //   if (startDate && endDate) {
-  //     const oneDay = 24 * 60 * 60 * 1000;
-  //     const daysDifference = Math.round(Math.abs((endDate - startDate) / oneDay) + 1);
-  //     console.log("daysDifference:", daysDifference);
-  //     const value = venue ? venue.price : 0;
-  //     const calculatedResult = daysDifference * value;
-  //     console.log("calculatedResult:", calculatedResult);
-  //     setResult(calculatedResult);
-  //   }
-  // }, [startDate, endDate, venue]);
+  useEffect(() => {
+    if (startDate && endDate) {
+      const oneDay = 24 * 60 * 60 * 1000;
+      const daysDifference = Math.round(Math.abs((endDate - startDate) / oneDay) + 1);
+      console.log("daysDifference:", daysDifference);
+      const value = venue ? venue.price : 0;
+      const calculatedResult = daysDifference * value;
+      console.log("calculatedResult:", calculatedResult);
+      setResult(calculatedResult);
+    }
+  }, [startDate, endDate, venue]);
 
-  // async function findVenue(apiCall, id, page = 1) {
-  //   const data = await apiCall(API_VENUES + `?_bookings=true&_owner=true&page=${page}`, "GET", {
-  //     "Content-Type": "application/json",
-  //   });
-  //   const foundVenue = data.data.find((venue) => venue.id.toString() === id);
-  //   console.log("foundVenue", foundVenue);
-  //   if (foundVenue) {
-  //     return foundVenue;
-  //   } else if (data.meta.isLastPage) {
-  //     return null;
-  //   } else {
-  //     return findVenue(apiCall, id, data.meta.nextPage);
-  //   }
-  // }
+  async function findVenue(apiCall, id, page = 1) {
+    const data = await apiCall(API_VENUES + `?_bookings=true&_owner=true&page=${page}`, "GET", {
+      "Content-Type": "application/json",
+    });
+    const foundVenue = data.data.find((venue) => venue.id.toString() === id);
+    console.log("foundVenue", foundVenue);
+    if (foundVenue) {
+      return foundVenue;
+    } else if (data.meta.isLastPage) {
+      return null;
+    } else {
+      return findVenue(apiCall, id, data.meta.nextPage);
+    }
+  }
 
-  // useEffect(() => {
-  //   findVenue(apiCall, id).then((foundVenue) => {
-  //     console.log("foundVenue", foundVenue);
-  //     setSelectedImage(foundVenue.media[0].url);
-  //     setVenue(foundVenue);
-  //   });
-  // }, [findVenue, apiCall, id]);
+  useEffect(() => {
+    findVenue(apiCall, id).then((foundVenue) => {
+      console.log("foundVenue", foundVenue);
+      setSelectedImage(foundVenue.media[0].url);
+      setVenue(foundVenue);
+    });
+  }, [id]);
 
   if (!venue) {
     return <div className="loading"></div>;
@@ -255,24 +156,24 @@ function VenueInfo() {
     console.log("updatedFormState", updatedFormState);
     setFormState(updatedFormState);
 
-    apiCall(
-      API_BOOKINGS,
-      "POST",
-      {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        "X-Noroff-API-Key": apiKey.key,
-      },
-      updatedFormState
-    )
-      .then((data) => {
-        if (data.errors) {
-          setErrorMessage(data.errors[0].message);
-        } else {
-          setSuccessMessage("Your order has been registered. You can now find it on your profile page.");
-        }
-      })
-      .catch((error) => console.error("Error fetching data:", error));
+    // apiCall(
+    //   API_BOOKINGS,
+    //   "POST",
+    //   {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${accessToken}`,
+    //     "X-Noroff-API-Key": apiKey.key,
+    //   },
+    //   updatedFormState
+    // )
+    //   .then((data) => {
+    //     if (data.errors) {
+    //       setErrorMessage(data.errors[0].message);
+    //     } else {
+    //       setSuccessMessage("Your order has been registered. You can now find it on your profile page.");
+    //     }
+    //   })
+    //   .catch((error) => console.error("Error fetching data:", error));
   };
 
   const handleThumbnailClick = (url) => {
