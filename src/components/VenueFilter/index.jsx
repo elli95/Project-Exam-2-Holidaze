@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import useAllVenuesApiCall from "../../hooks/useAllVenuesApiCall";
@@ -21,11 +21,11 @@ function VenueFilter({ setFilteredVenues }) {
 
   const { allVenues, isLoading } = useAllVenuesApiCall();
 
-  // useEffect(() => {
-  //   if (!isLoading && !filtersCleared) {
-  //     applyFilters();
-  //   }
-  // }, [allVenues, filters, isLoading, filtersCleared, applyFilters]);
+  useEffect(() => {
+    if (!isLoading && !filtersCleared) {
+      applyFilters();
+    }
+  }, [allVenues, filters, isLoading, filtersCleared]);
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -55,9 +55,7 @@ function VenueFilter({ setFilteredVenues }) {
   };
 
   const applyFilters = () => {
-    // if (!isLoading && !filtersCleared) {
-    // applyFilters();
-    if (!isLoading && !filtersCleared) {
+    if (!isLoading) {
       const filteredData = allVenues.filter((item) => {
         for (let key in filters) {
           if (key === "wifi" || key === "parking" || key === "pets" || key === "breakfast") {

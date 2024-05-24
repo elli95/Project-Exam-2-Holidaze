@@ -1,42 +1,33 @@
 import { useEffect, useRef, useState } from "react";
-import useApiCall from "../../hooks/useApiCall";
-import { API_PROFILES } from "../../shared/apis";
-import usePostApiKey from "../../hooks/usePostApiKey";
-import useLocalStorage from "../../hooks/useLocalStorage";
+// import useApiCall from "../../hooks/useApiCall";
+// import { API_PROFILES } from "../../shared/apis";
+// import usePostApiKey from "../../hooks/usePostApiKey";
+// import useLocalStorage from "../../hooks/useLocalStorage";
 import CreateVenue from "../CreateVenue";
 import { Link } from "react-router-dom";
 import VenueEdit from "../VenueEdit";
 import VenueBookings from "../VenueBookings";
+import useGETProfileData from "../../hooks/useGETProfileData";
 
 function ProfileVenues() {
-  const { apiKey } = usePostApiKey();
-  const { accessToken, userInfo } = useLocalStorage();
+  // const { apiKey } = usePostApiKey();
+  // const { accessToken, userInfo } = useLocalStorage();
   const [venueBookingData, setVenueBookingData] = useState([]);
   const [isVenueEditFormShown, setIsVenueEditFormShown] = useState(false);
   const [isVenueBookingsShown, setIsVenueBookingsShown] = useState(false);
   const [isCreateVenueShown, setIsCreateVenueShown] = useState(false);
   const [venueIdToShow, setVenueIdToShow] = useState(null);
+  const { profileData } = useGETProfileData();
 
   const divRef = useRef(null);
-  const apiCall = useApiCall();
-
-  function fetchVenueBookingData() {
-    if (apiKey.key !== undefined && accessToken.length > 0) {
-      apiCall(API_PROFILES + "/" + userInfo.name + "/?_bookings=true&_venues=true", "GET", {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        "X-Noroff-API-Key": apiKey.key,
-      })
-        .then((data) => {
-          setVenueBookingData(data.data);
-        })
-        .catch((error) => console.error("Error fetching data:", error));
-    }
-  }
+  // const apiCall = useApiCall();
 
   useEffect(() => {
-    fetchVenueBookingData();
-  }, [apiKey.key, accessToken]);
+    if (profileData && profileData._venues) {
+      // Assuming the structure of profileData is { ..., _venues: [...], ... }
+      setVenueBookingData(profileData._venues);
+    }
+  }, [profileData]);
 
   const handleSeeCreateVenue = (id) => {
     if (venueIdToShow === id) {
@@ -154,7 +145,7 @@ function ProfileVenues() {
                               setVenueIdToShow={setVenueIdToShow}
                               setIsVenueBookingsShown={setIsVenueBookingsShown}
                               setVenueBookingData={setVenueBookingData}
-                              fetchVenueBookingData={fetchVenueBookingData}
+                              // fetchVenueBookingData={fetchVenueBookingData}
                               venueId={venue.id}
                               handleCloseBtn={handleCloseBtn}
                             />
