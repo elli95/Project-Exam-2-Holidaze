@@ -182,13 +182,7 @@ function VenueInfo() {
 
   return (
     <div>
-      {/* {!venue ? (
-        <div className="loading"></div>
-      ) : ( */}
-      <div className="venueSection textBreakStyle flex-col pt-8" key={venue.id}>
-        {/* <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
-            <img src={selectedImage} alt="Selected" className="object-contain w-full h-full" />
-          </div> */}
+      <div className="venueSection bg-grayShadeHover p-5 m-5 rounded textBreakStyle flex-col pt-8" key={venue.id}>
         {venue.media.length > 0 ? (
           <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
             <img src={selectedImage} alt="Selected" className="object-contain w-full h-full" />
@@ -215,11 +209,8 @@ function VenueInfo() {
             ))}
           </div>
         )}
-        {/* <div className="overflow-hidden self-center max-h-56 w-5/6 md:h-96  ">
-            {venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} className="object-contain" />}
-          </div> */}
         <div className="flex flex-col gap-7 lg:gap-0">
-          <div className="flex flex-col justify-center items-center self-center min-h-128 border-b-2 lg:px-5 xl:px-12">
+          <div className="flex flex-col justify-center items-center self-center min-h-128 lg:px-5 xl:px-12">
             <div className="flex justify-around items-center w-64 sm:w-box510 sm:justify-start sm:gap-48">
               <h2 className="text-2xl font-bold break-words lg:w-box340">{venue.name}</h2>
               <p className="text-end w-11 text-lg">⭐{venue.rating}</p>
@@ -369,7 +360,7 @@ function VenueInfo() {
                     <span className="error">{errors.guests}</span>
                   </div>
                   <p className="text-xl font-semibold">Total: {result}</p>
-                  <button type="submit" className="btnStyle">
+                  <button type="submit" className="bg-white btnStyle">
                     Book Venue
                   </button>
                 </>
@@ -380,7 +371,6 @@ function VenueInfo() {
           </div>
         </div>
       </div>
-      {/* )} */}
     </div>
   );
 }
