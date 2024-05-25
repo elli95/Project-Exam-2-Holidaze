@@ -28,16 +28,24 @@ function HeaderNav() {
   };
 
   return (
-    <header className="headerImg imgCover fixed z-20 inset-x-0 top-0 flex justify-around items-center text-3xl p-3">
+    <header className="headerImg imgCover fixed z-20 inset-x-0 top-0 flex justify-around items-center text-3xl p-3 bg-black">
       <Link to="/">
         <h1 className="text-5xl text-white">Holidaze</h1>
       </Link>
-      <FontAwesomeIcon icon={faMagnifyingGlass} onClick={handleSearchClick} className="lg:hidden" />
-      <div className={`flex ${isSearchShown ? "show" : "hidden"} absolute rounded  inset-x-0 top-16 p-2.5 justify-center lg:flex lg:static lg:p-0`}>
+      <FontAwesomeIcon icon={faMagnifyingGlass} onClick={handleSearchClick} className="lg:hidden text-white" />
+      <div
+        className={`flex ${
+          isSearchShown ? "show" : "hidden"
+        } absolute headerImg headerSearch imgCover rounded bg-black inset-x-0 top-16 p-2.5 justify-center  lg:flex lg:static lg:p-0`}
+      >
         <SearchField />
       </div>
-      <FontAwesomeIcon icon={faBars} onClick={handleNavClick} className="md:hidden" />
-      <nav className={`flex ${isNavShown ? "show" : "hidden"} absolute inset-x-0 top-16 p-20 justify-center md:flex md:static md:p-0`}>
+      <FontAwesomeIcon icon={faBars} onClick={handleNavClick} className="md:hidden text-white" />
+      <nav
+        className={`flex ${
+          isNavShown ? "show" : "hidden"
+        } absolute headerImg headerMenu imgCover bg-black inset-x-0 top-16 p-20 justify-center md:flex md:static md:p-0`}
+      >
         <ul className="flex flex-col text-white text-center gap-10 md:flex-row">
           <li>
             <Link to="/">Home</Link>

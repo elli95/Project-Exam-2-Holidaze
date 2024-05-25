@@ -19,13 +19,14 @@
 
 /*Img style*/
 .footerImg,
-.headerImg {
+.headerImg,
+.noHeaderImg {
   background-image: url(../../images/joshua-bartell-6vvIBTvL90A-unsplash.webp);
 }
 
-.headerImg {
+/* .headerImg {
   position: fixed !important;
-}
+} */
 
 /* .mainDivHome {
   background-image: url(../../images/mink-mingle-AlEyuIKuSmc-unsplash.jpg);
@@ -359,9 +360,30 @@ img {
 } */
 
 /*media*/
+
+@media (max-width: 1024px) {
+  .headerImg {
+    position: fixed !important;
+  }
+}
+
 @media (min-width: 640px) {
   .PasswordInput input {
     width: 452px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .headerMenu {
+    position: initial !important;
+    background: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .headerSearch {
+    position: initial !important;
+    background: none;
   }
 }
 
