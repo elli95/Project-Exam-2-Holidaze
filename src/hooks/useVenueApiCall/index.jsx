@@ -56,6 +56,7 @@ import { API_VENUES } from "../../shared/apis";
 function useVenueApiCall(currentPage, itemsPerPage) {
   //   const { apiKey } = usePostApiKey();
   //   const accessToken = useLocalStorage();
+  const [errorMessageVenues, setErrorMessageVenuese] = useState("");
   const [venues, setVenue] = useState([]);
   const [meta, setMeta] = useState({});
 
@@ -71,16 +72,19 @@ function useVenueApiCall(currentPage, itemsPerPage) {
             //   "X-Noroff-API-Key": apiKey.key,
           },
         });
-        console.log(" key:", response);
+        console.log(" response:", response);
         if (!response.ok) {
-          throw new Error("Failed to fetch venue data");
+          const data = await response.json();
+          console.error("There was an error:", data.errors);
+          setErrorMessageVenuese("Sorry, there was an error: " + data.errors[0].message);
         } else {
           const data = await response.json();
           setVenue(data.data);
           setMeta(data.meta);
         }
       } catch (error) {
-        console.error("Error fetching API key:", error);
+        console.error("Error fetching Venues:", error);
+        // setErrorMessage("There was an error: " + error);
       }
     }
     fetchVenueData();
@@ -88,7 +92,7 @@ function useVenueApiCall(currentPage, itemsPerPage) {
     //   }, [accessToken.accessToken, apiKey.key, currentPage, itemsPerPage]);
   }, [currentPage, itemsPerPage]);
 
-  return { venues, meta };
+  return { errorMessageVenues, venues, meta };
 }
 
 export default useVenueApiCall;

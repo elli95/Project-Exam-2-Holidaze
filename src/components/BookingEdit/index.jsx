@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
 
 // function BookingEdit({ setVenueBookingData = () => {}, fetchVenueBookingData = () => {}, venueId }) {
-function BookingEdit({ setVenueIdToShow, setBookingData, fetchBookingData, venueId, handleCloseBtn }) {
+function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, onDeleteBooking }) {
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
@@ -168,20 +168,12 @@ function BookingEdit({ setVenueIdToShow, setBookingData, fetchBookingData, venue
       );
       console.log("try", updatedProfileData);
       if (!updatedProfileData.errors) {
-        setBookingData((prevState) => ({
-          ...prevState,
-          bookings: prevState.bookings.map((booking) =>
-            booking.id === updatedProfileData.data.id
-              ? {
-                  ...booking,
-                  dateFrom: updatedProfileData.data.dateFrom,
-                  dateTo: updatedProfileData.data.dateTo,
-                  guests: updatedProfileData.data.guests,
-                }
-              : booking
-          ),
-        }));
-        setVenueIdToShow(null);
+        setBooking((prevVenues) =>
+          prevVenues.map((venue) => (venue.id === updatedProfileData.data.id ? { ...venue, ...updatedProfileData.data } : venue))
+        );
+        handleCloseBtn();
+        // setVenueIdToShow(null);
+        // setIsVenueBookingsShown(false);
         // setIsBookingsShown(false);
       } else {
         console.log("Error:", updatedProfileData);
@@ -211,7 +203,10 @@ function BookingEdit({ setVenueIdToShow, setBookingData, fetchBookingData, venue
       });
 
       if (!updatedProfileData) {
-        fetchBookingData();
+        onDeleteBooking(venueId);
+        setVenueIdToShow(null);
+        // setIsCreateBookingShown(false);
+        // fetchBookingData();
       } else {
         console.log("Error:", updatedProfileData.errors[0].message);
         setErrorMessage("There was an error: " + updatedProfileData.errors[0].message);
@@ -317,7 +312,14 @@ function BookingEdit({ setVenueIdToShow, setBookingData, fetchBookingData, venue
               </div>
               <div className="flex justify-center my-2.5 gap-2">
                 <label>Guests:</label>
-                <input
+                <select type="number" name="guests" onBlur={handleBlur} defaultValue={editVenueFilter[0].guests} className="bg-greyBlur w-20 pl-1">
+                  {[...Array(editVenueFilter[0].venue.maxGuests)].map((_, index) => (
+                    <option key={index + 1} value={index + 1}>
+                      {index + 1}
+                    </option>
+                  ))}
+                </select>
+                {/* <input
                   type="number"
                   name="guests"
                   min="1"
@@ -326,7 +328,7 @@ function BookingEdit({ setVenueIdToShow, setBookingData, fetchBookingData, venue
                   defaultValue={editVenueFilter[0].guests}
                   onBlur={handleBlur}
                   className="bg-greyBlur w-20 pl-1"
-                ></input>
+                ></input> */}
                 <span className="error">{errors.guests}</span>
               </div>
               <p className="flex justify-center">Total: {result}</p>

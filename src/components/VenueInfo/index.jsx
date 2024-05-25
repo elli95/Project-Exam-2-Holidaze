@@ -26,7 +26,7 @@ function VenueInfo() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(40);
-  const { venues, meta } = useVenueApiCall(currentPage, itemsPerPage);
+  const { errorMessageVenues, venues, meta } = useVenueApiCall(currentPage, itemsPerPage);
 
   const [formState, setFormState] = useState({
     dateFrom: "",
@@ -110,6 +110,10 @@ function VenueInfo() {
     }
   }, [venues, id, meta]);
 
+  if (errorMessageVenues.length > 0) {
+    return <div>{errorMessageVenues && <span className="error flex justify-center pt-2.5 text-xl">{errorMessageVenues}</span>}</div>;
+  }
+
   if (!venue) {
     return <div className="loading"></div>;
   }
@@ -178,206 +182,205 @@ function VenueInfo() {
 
   return (
     <div>
-      {!venue ? (
+      {/* {!venue ? (
         <div className="loading"></div>
-      ) : (
-        <div className="venueSection textBreakStyle flex-col pt-8" key={venue.id}>
-          {/* <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
+      ) : ( */}
+      <div className="venueSection textBreakStyle flex-col pt-8" key={venue.id}>
+        {/* <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
             <img src={selectedImage} alt="Selected" className="object-contain w-full h-full" />
           </div> */}
-          {venue.media.length > 0 ? (
-            <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
-              <img src={selectedImage} alt="Selected" className="object-contain w-full h-full" />
-            </div>
-          ) : (
-            <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
+        {venue.media.length > 0 ? (
+          <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
+            <img src={selectedImage} alt="Selected" className="object-contain w-full h-full" />
+          </div>
+        ) : (
+          <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
+            <img
+              src="https://images.unsplash.com/photo-1579547945413-497e1b99dac0"
+              alt="Venue Manager Avatar"
+              className="object-contain w-full h-full"
+            />
+          </div>
+        )}
+        {venue.media.length > 1 && (
+          <div className="flex justify-center flex-wrap gap-2.5">
+            {venue.media.map((mediaItem, index) => (
               <img
-                src="https://images.unsplash.com/photo-1579547945413-497e1b99dac0"
-                alt="Venue Manager Avatar"
-                className="object-contain w-full h-full"
+                key={index}
+                src={mediaItem.url}
+                alt={mediaItem.alt}
+                className="object-contain imgCover h-16 w-16 mx-2 cursor-pointer border-2 border-transparent hover:border-blue-500"
+                onClick={() => handleThumbnailClick(mediaItem.url)}
               />
-            </div>
-          )}
-          {venue.media.length > 1 && (
-            <div className="flex justify-center flex-wrap gap-2.5">
-              {venue.media.map((mediaItem, index) => (
-                <img
-                  key={index}
-                  src={mediaItem.url}
-                  alt={mediaItem.alt}
-                  className="object-contain imgCover h-16 w-16 mx-2 cursor-pointer border-2 border-transparent hover:border-blue-500"
-                  onClick={() => handleThumbnailClick(mediaItem.url)}
-                />
-              ))}
-            </div>
-          )}
-          {/* <div className="overflow-hidden self-center max-h-56 w-5/6 md:h-96  ">
+            ))}
+          </div>
+        )}
+        {/* <div className="overflow-hidden self-center max-h-56 w-5/6 md:h-96  ">
             {venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} className="object-contain" />}
           </div> */}
-          <div className="flex flex-col gap-7 lg:gap-0">
-            <div className="flex flex-col justify-center items-center self-center min-h-128 border-b-2 lg:px-5 xl:px-12">
-              <div className="flex justify-around items-center w-64 sm:w-box510 sm:justify-start sm:gap-48">
-                <h2 className="text-2xl font-bold break-words lg:w-box340">{venue.name}</h2>
-                <p className="text-end w-11 text-lg">⭐{venue.rating}</p>
-              </div>
-              <div className="flex flex-col items-center gap-4 w-64 sm:flex-row sm:justify-evenly sm:gap-20">
-                <div className="flex flex-col gap-2.5 min-w-60 ">
-                  <div className="flex justify-between px-1 text-lg">
-                    <p>Guests:</p>
-                    <p>{venue.maxGuests}</p>
-                  </div>
-                  <div className="flex justify-between bg-greyBlur px-1 text-lg">
-                    <p>Price per day:</p>
-                    <p> {venue.price}</p>
-                  </div>
-                  <div className="flex flex-col gap-2.5 min-w-48 pt-2.5">
-                    <h2 className="text-xl font-semibold">Location:</h2>
-                    <div className="flex justify-between bg-greyBlur px-1 text-lg flex-wrap">
-                      <p>Address:</p>
-                      <p>{venue.location.address}</p>
-                    </div>
-                    <div className="flex justify-between px-1 text-lg flex-wrap">
-                      <p>City:</p>
-                      <p>{venue.location.city}</p>
-                    </div>
-                    <div className="flex justify-between bg-greyBlur px-1 text-lg flex-wrap">
-                      <p>Zip:</p>
-                      <p>{venue.location.zip}</p>
-                    </div>
-                    <div className="flex justify-between px-1 text-lg flex-wrap">
-                      <p>Country:</p>
-                      <p>{venue.location.country}</p>
-                    </div>
-                    <div className="flex justify-between bg-greyBlur px-1 text-lg flex-wrap">
-                      <p>Continent:</p>
-                      <p>{venue.location.continent}</p>
-                    </div>
-                  </div>
+        <div className="flex flex-col gap-7 lg:gap-0">
+          <div className="flex flex-col justify-center items-center self-center min-h-128 border-b-2 lg:px-5 xl:px-12">
+            <div className="flex justify-around items-center w-64 sm:w-box510 sm:justify-start sm:gap-48">
+              <h2 className="text-2xl font-bold break-words lg:w-box340">{venue.name}</h2>
+              <p className="text-end w-11 text-lg">⭐{venue.rating}</p>
+            </div>
+            <div className="flex flex-col items-center gap-4 w-64 sm:flex-row sm:justify-evenly sm:gap-20">
+              <div className="flex flex-col gap-2.5 min-w-60 ">
+                <div className="flex justify-between px-1 text-lg">
+                  <p>Guests:</p>
+                  <p>{venue.maxGuests}</p>
                 </div>
-                <div className="flex flex-col items-center min-w-48">
-                  <h2 className="text-xl font-semibold">Amenities:</h2>
-                  <div className="flex flex-wrap gap-2.5 justify-center pt-2.5">
-                    {venue.meta.wifi && (
-                      <div className="flex flex-col items-center w-24 text-lg">
-                        <h3 title="Wifi included" className="metaIconTrue">
-                          <FontAwesomeIcon icon={faWifi} />
-                        </h3>
-                        <p>Wifi</p>
-                      </div>
-                    )}
-                    {venue.meta.parking && (
-                      <div className="flex flex-col items-center w-24 text-lg">
-                        <h3 title="Parking available" className="metaIconTrue">
-                          <FontAwesomeIcon icon={faSquareParking} />
-                        </h3>
-                        <p>Parking</p>
-                      </div>
-                    )}
-                    {venue.meta.breakfast && (
-                      <div className="flex flex-col items-center w-24 text-lg">
-                        <h3 title="Breakfast included" className="metaIconTrue">
-                          <FontAwesomeIcon icon={faMugHot} />
-                        </h3>
-                        <p>Breakfast</p>
-                      </div>
-                    )}
-                    {venue.meta.pets && (
-                      <div className="flex flex-col items-center w-24 text-lg">
-                        <h3 title="Pets permitted" className="metaIconTrue">
-                          <FontAwesomeIcon icon={faPaw} />
-                        </h3>
-                        <p>Pets</p>
-                      </div>
-                    )}
+                <div className="flex justify-between bg-greyBlur px-1 text-lg">
+                  <p>Price per day:</p>
+                  <p> {venue.price}</p>
+                </div>
+                <div className="flex flex-col gap-2.5 min-w-48 pt-2.5">
+                  <h2 className="text-xl font-semibold">Location:</h2>
+                  <div className="flex justify-between bg-greyBlur px-1 text-lg flex-wrap">
+                    <p>Address:</p>
+                    <p>{venue.location.address}</p>
+                  </div>
+                  <div className="flex justify-between px-1 text-lg flex-wrap">
+                    <p>City:</p>
+                    <p>{venue.location.city}</p>
+                  </div>
+                  <div className="flex justify-between bg-greyBlur px-1 text-lg flex-wrap">
+                    <p>Zip:</p>
+                    <p>{venue.location.zip}</p>
+                  </div>
+                  <div className="flex justify-between px-1 text-lg flex-wrap">
+                    <p>Country:</p>
+                    <p>{venue.location.country}</p>
+                  </div>
+                  <div className="flex justify-between bg-greyBlur px-1 text-lg flex-wrap">
+                    <p>Continent:</p>
+                    <p>{venue.location.continent}</p>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col p-6 gap-2.5 max-w-box565">
-                <h2 className="text-xl font-semibold">Description</h2>
-                <p className="break-all text-lg">{venue.description}</p>
-                <div className="min-w-48 sm:self-baseline">
-                  <h2 className="text-xl font-semibold">Venue manager:</h2>
-                  <div className="flex items-center justify-start gap-2.5">
-                    <div className="h-12 w-12 overflow-hidden">
-                      {venue.owner.avatar ? (
-                        <img src={venue.owner.avatar.url} alt={venue.owner.avatar.alt} className="rounded-full object-cover" />
-                      ) : (
-                        <img src="https://images.unsplash.com/photo-1579547945413-497e1b99dac0" alt="Venue" className="rounded-full object-cover" />
-                      )}
-                      {/* {venue.owner.avatar && <img src={venue.owner.avatar.url} alt={venue.owner.avatar.alt} className="rounded-full object-cover" />} */}
+              <div className="flex flex-col items-center min-w-48">
+                <h2 className="text-xl font-semibold">Amenities:</h2>
+                <div className="flex flex-wrap gap-2.5 justify-center pt-2.5">
+                  {venue.meta.wifi && (
+                    <div className="flex flex-col items-center w-24 text-lg">
+                      <h3 title="Wifi included" className="metaIconTrue">
+                        <FontAwesomeIcon icon={faWifi} />
+                      </h3>
+                      <p>Wifi</p>
                     </div>
-                    <p className="text-lg">{venue.owner.name}</p>
-                  </div>
+                  )}
+                  {venue.meta.parking && (
+                    <div className="flex flex-col items-center w-24 text-lg">
+                      <h3 title="Parking available" className="metaIconTrue">
+                        <FontAwesomeIcon icon={faSquareParking} />
+                      </h3>
+                      <p>Parking</p>
+                    </div>
+                  )}
+                  {venue.meta.breakfast && (
+                    <div className="flex flex-col items-center w-24 text-lg">
+                      <h3 title="Breakfast included" className="metaIconTrue">
+                        <FontAwesomeIcon icon={faMugHot} />
+                      </h3>
+                      <p>Breakfast</p>
+                    </div>
+                  )}
+                  {venue.meta.pets && (
+                    <div className="flex flex-col items-center w-24 text-lg">
+                      <h3 title="Pets permitted" className="metaIconTrue">
+                        <FontAwesomeIcon icon={faPaw} />
+                      </h3>
+                      <p>Pets</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-            <div className="flex flex-col items-center self-center gap-5 lg:pt-5 lg:px-5 xl:px-12">
-              <h2 className="text-2xl font-bold">Book Venue</h2>
-              <form onSubmit={handleSubmit} className="flex flex-col venueEdit gap-2.5">
-                <div>
-                  <p className="text-xl font-semibold">Choose a date</p>
-                  <Calendar
-                    onChange={onDateChange}
-                    value={formState.dateFrom}
-                    tileClassName={({ date, view }) => {
-                      if (view === "month") {
-                        if (startDate && endDate) {
-                          const selectedRange = {
-                            from: new Date(startDate),
-                            to: new Date(endDate),
-                          };
-                          selectedRange.from.setHours(0, 0, 0, 0);
-                          selectedRange.to.setHours(23, 59, 59, 999);
-
-                          if (date >= selectedRange.from && date <= selectedRange.to) {
-                            console.log("startDate", startDate);
-                            console.log("endDate", endDate);
-                            return "highlightBooking";
-                          }
-                        }
-                        for (const booking of bookedDates) {
-                          if (date >= booking.from && date <= booking.to) {
-                            return "highlight";
-                          }
-                        }
-                      }
-                      return "available";
-                    }}
-                    // tileDisabled={({ date }) => {
-                    //   return (
-                    //     bookedDates.some((booking) => date >= booking.from && date <= booking.to) ||
-                    //     (startDate && endDate && (date < startDate || date > endDate))
-                    //   );
-                    // }}
-                    minDate={new Date()}
-                  />
+            <div className="flex flex-col p-6 gap-2.5 max-w-box565">
+              <h2 className="text-xl font-semibold">Description</h2>
+              <p className="break-all text-lg">{venue.description}</p>
+              <div className="min-w-48 sm:self-baseline">
+                <h2 className="text-xl font-semibold">Venue manager:</h2>
+                <div className="flex items-center justify-start gap-2.5">
+                  <div className="h-12 w-12 overflow-hidden">
+                    {venue.owner.avatar ? (
+                      <img src={venue.owner.avatar.url} alt={venue.owner.avatar.alt} className="rounded-full object-cover" />
+                    ) : (
+                      <img src="https://images.unsplash.com/photo-1579547945413-497e1b99dac0" alt="Venue" className="rounded-full object-cover" />
+                    )}
+                  </div>
+                  <p className="text-lg">{venue.owner.name}</p>
                 </div>
-                {localStorage.length > 0 && (
-                  <>
-                    <div className="flex text-lg self-center items-center gap-2.5">
-                      <label>Guests:</label>
-                      <select name="guests" onBlur={handleBlur}>
-                        {[...Array(venue.maxGuests)].map((_, index) => (
-                          <option key={index + 1} value={index + 1}>
-                            {index + 1}
-                          </option>
-                        ))}
-                      </select>
-                      <span className="error">{errors.guests}</span>
-                    </div>
-                    <p className="text-xl font-semibold">Total: {result}</p>
-                    <button type="submit" className="btnStyle">
-                      Book Venue
-                    </button>
-                  </>
-                )}
-                {successMessage && <span className="error">{successMessage}</span>}
-                {errorMessage && <span className="error">{errorMessage}</span>}
-              </form>
+              </div>
             </div>
           </div>
+          <div className="flex flex-col items-center self-center gap-5 lg:pt-5 lg:px-5 xl:px-12">
+            <h2 className="text-2xl font-bold">Book Venue</h2>
+            <form onSubmit={handleSubmit} className="flex flex-col venueEdit gap-2.5">
+              <div>
+                <p className="text-xl font-semibold">Choose a date</p>
+                <Calendar
+                  onChange={onDateChange}
+                  value={formState.dateFrom}
+                  tileClassName={({ date, view }) => {
+                    if (view === "month") {
+                      if (startDate && endDate) {
+                        const selectedRange = {
+                          from: new Date(startDate),
+                          to: new Date(endDate),
+                        };
+                        selectedRange.from.setHours(0, 0, 0, 0);
+                        selectedRange.to.setHours(23, 59, 59, 999);
+
+                        if (date >= selectedRange.from && date <= selectedRange.to) {
+                          console.log("startDate", startDate);
+                          console.log("endDate", endDate);
+                          return "highlightBooking";
+                        }
+                      }
+                      for (const booking of bookedDates) {
+                        if (date >= booking.from && date <= booking.to) {
+                          return "highlightBooked";
+                        }
+                      }
+                    }
+                    return "available";
+                  }}
+                  tileDisabled={({ date }) => {
+                    return (
+                      bookedDates.some((booking) => date >= booking.from && date <= booking.to) ||
+                      (startDate && endDate && (date < startDate || date > endDate))
+                    );
+                  }}
+                  minDate={new Date()}
+                />
+              </div>
+              {localStorage.length > 0 && (
+                <>
+                  <div className="flex text-lg self-center items-center gap-2.5">
+                    <label>Guests:</label>
+                    <select name="guests" onBlur={handleBlur}>
+                      {[...Array(venue.maxGuests)].map((_, index) => (
+                        <option key={index + 1} value={index + 1}>
+                          {index + 1}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="error">{errors.guests}</span>
+                  </div>
+                  <p className="text-xl font-semibold">Total: {result}</p>
+                  <button type="submit" className="btnStyle">
+                    Book Venue
+                  </button>
+                </>
+              )}
+              {successMessage && <span className="error">{successMessage}</span>}
+              {errorMessage && <span className="error">{errorMessage}</span>}
+            </form>
+          </div>
         </div>
-      )}
+      </div>
+      {/* )} */}
     </div>
   );
 }

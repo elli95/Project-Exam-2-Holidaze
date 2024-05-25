@@ -6,7 +6,7 @@ import { API_VENUES } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import useVenues from "../../store/venueLocations";
 
-function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingData, fetchVenueBookingData, venueId, handleCloseBtn }) {
+function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venueId, handleCloseBtn, setIsCreateVenueShown, onDeleteVenue }) {
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
@@ -237,24 +237,9 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingD
       );
       console.log("try", updatedProfileData.data);
       if (updatedProfileData && !updatedProfileData.errors) {
-        setVenueBookingData((prevState) => ({
-          ...prevState,
-          venues: prevState.venues.map((venue) =>
-            venue.id === updatedProfileData.data.id
-              ? {
-                  ...venue,
-                  name: updatedProfileData.data.name,
-                  description: updatedProfileData.data.description,
-                  media: updatedProfileData.data.media,
-                  price: updatedProfileData.data.price,
-                  maxGuests: updatedProfileData.data.maxGuests,
-                  rating: updatedProfileData.data.rating,
-                  meta: updatedProfileData.data.meta,
-                  location: updatedProfileData.data.location,
-                }
-              : venue
-          ),
-        }));
+        setVenues((prevVenues) =>
+          prevVenues.map((venue) => (venue.id === updatedProfileData.data.id ? { ...venue, ...updatedProfileData.data } : venue))
+        );
         setVenueIdToShow(null);
         setIsVenueBookingsShown(false);
       } else {
@@ -287,7 +272,9 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingD
       });
 
       if (!updatedProfileData) {
-        fetchVenueBookingData();
+        onDeleteVenue(venueId);
+        setVenueIdToShow(null);
+        setIsCreateVenueShown(false);
       } else {
         console.log("Error:", updatedProfileData.errors[0].message);
         setErrorMessage("There was an error: " + updatedProfileData.errors[0].message);
@@ -300,6 +287,9 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingD
   const handleCancel = () => {
     setShowModal(false);
   };
+
+  const optionsGuest = Array.from({ length: 100 }, (_, index) => index + 1);
+  const optionsRating = Array.from({ length: 6 }, (_, index) => index);
 
   return (
     <div>
@@ -353,6 +343,7 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingD
                       name="price"
                       placeholder="Venue price"
                       aria-label="Venue price"
+                      max={10000}
                       onBlur={handleBlur}
                       defaultValue={editVenueFilter[0].price}
                       className="bg-greyBlur w-box280 sm:w-box490 pl-1"
@@ -362,7 +353,23 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingD
                   </div>
                   <div className="flex flex-col">
                     <label htmlFor="maxGuests">Max guests</label>
-                    <input
+
+                    <select
+                      type="number"
+                      name="maxGuests"
+                      onBlur={handleBlur}
+                      aria-label="Max guests"
+                      defaultValue={editVenueFilter[0].maxGuests}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                      required
+                    >
+                      {optionsGuest.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    {/* <input
                       type="number"
                       name="maxGuests"
                       aria-label="Max guests"
@@ -370,19 +377,32 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingD
                       defaultValue={editVenueFilter[0].maxGuests}
                       className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                       required
-                    />
+                    /> */}
                     <span className="error">{errors.maxGuests}</span>
                   </div>
                   <div className="flex flex-col">
                     <label htmlFor="rating">Venue rating</label>
-                    <input
+                    <select
+                      type="number"
+                      name="rating"
+                      aria-label="Venue rating"
+                      defaultValue={editVenueFilter[0].rating}
+                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                    >
+                      {optionsRating.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    {/* <input
                       type="number"
                       name="rating"
                       aria-label="Venue rating"
                       max={5}
                       defaultValue={editVenueFilter[0].rating}
                       className="bg-greyBlur w-box280 sm:w-box490 pl-1"
-                    />
+                    /> */}
                   </div>
                 </div>
                 <div className="flex flex-col w-box280 sm:w-box490 gap-2.5">

@@ -22,7 +22,7 @@ function SearchField({ onLinkClick }) {
   // const fetchApiData = () => {
   const currentPage = 1;
   const itemsPerPage = 100;
-  const { venues } = useVenueApiCall(currentPage, itemsPerPage);
+  const { errorMessageVenues, venues } = useVenueApiCall(currentPage, itemsPerPage);
   // };
   // const navigate = useNavigate();
   const location = useLocation();
@@ -77,6 +77,7 @@ function SearchField({ onLinkClick }) {
               </li>
             </Link>
           ))}
+          {errorMessageVenues && <span className="error flex justify-center pt-2.5 text-xl">{errorMessageVenues}</span>}
         </ul>
       )}
       {/* {!inputValue && <div className="loading"></div>} */}

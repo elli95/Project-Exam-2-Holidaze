@@ -9,7 +9,7 @@ function Venues() {
   const [filteredVenues, setFilteredVenues] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(40);
-  const { venues, meta } = useVenueApiCall(currentPage, itemsPerPage);
+  const { errorMessageVenues, venues, meta } = useVenueApiCall(currentPage, itemsPerPage);
   // const textRef = useRef(null);
 
   // const { venues, meta } = useVenueApiCall(currentPage, itemsPerPage);
@@ -106,15 +106,6 @@ function Venues() {
           </div>
         )}
         {/* <div className={`${!filteredVenues.length > 0 ? "" : "pt-10"} venueSection`}> */}
-        {!displayVenues ? (
-          <div className="loading"></div>
-        ) : (
-          displayVenues.map((venue) => (
-            <div key={venue.id} className="rounded">
-              {/* Your venue rendering logic */}
-            </div>
-          ))
-        )}
         {/* </div> */}
         {/* <Pagination currentPage={currentPage} totalPages={meta.totalPages} paginate={paginate} />
       <VenueFilter setFilteredVenues={setFilteredVenues} />
@@ -189,6 +180,7 @@ function Venues() {
           </div>
         )}
       </div>
+      {errorMessageVenues && <span className="error flex justify-center pt-2.5 text-xl">{errorMessageVenues}</span>}
     </div>
   );
 }

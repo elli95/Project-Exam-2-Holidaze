@@ -299,20 +299,22 @@ img {
 }
 
 .venueSection a,
-.venueFilterBox {
+.venueFilterBox,
+.profileVenues div {
   background-color: #e1e1e1;
 }
 
-.venueSection a:hover {
+.venueSection a:hover,
+.profileVenues:hover {
   filter: drop-shadow(0px 10px 10px #4b4b4b);
 }
 
-.highlight {
-  background-color: yellow; /* Customize the styling as desired */
+.highlightBooked {
+  background-color: yellow !important; /* Customize the styling as desired */
 }
 
 .highlightBooking {
-  background-color: rgb(94, 17, 217); /* Customize the styling as desired */
+  background-color: rgb(94, 17, 217) !important; /* Customize the styling as desired */
 }
 
 /*Venue page*/

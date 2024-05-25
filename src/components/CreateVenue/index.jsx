@@ -5,7 +5,7 @@ import usePostApiKey from "../../hooks/usePostApiKey";
 import useApiCall from "../../hooks/useApiCall";
 import useVenues from "../../store/venueLocations";
 
-function CreateVenue({ setVenueBookingData, handleCloseBtn, setIsCreateVenueShown }) {
+function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
@@ -202,6 +202,7 @@ function CreateVenue({ setVenueBookingData, handleCloseBtn, setIsCreateVenueShow
         //   newState.venues.push(updatedProfileData.data);
         //   return newState;
         // });
+        setVenues((prevVenues) => [...prevVenues, updatedProfileData.data]);
         setIsCreateVenueShown(false);
       } else {
         console.log("Error:", updatedProfileData);
