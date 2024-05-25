@@ -99,22 +99,32 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenueBookingD
   //     media: [...formState.media, { url: "", alt: "" }],
   //   });
   // };
-  const handleAddImage =
-    (() => {
-      setFormState((prevState) => ({
-        ...prevState,
-        media: [...prevState.media, { url: "", alt: "" }],
-      }));
-    },
-    []);
+
+  const handleAddImage = () => {
+    // const handleAddImage =
+    //   (() => {
+    setFormState((prevState) => ({
+      ...prevState,
+      media: [...prevState.media, { url: "", alt: "" }],
+    }));
+  };
+  // },
+  // []);
+
   const runCount = useRef(0);
 
+  // useEffect(() => {
+  //   if (editVenueFilter && runCount.current < editVenueFilter[0].media.length - 1) {
+  //     handleAddImage(editVenueFilter[0].media[runCount.current]);
+  //     runCount.current += 1;
+  //   }
+  // }, [editVenueFilter, handleAddImage]);
   useEffect(() => {
     if (editVenueFilter && runCount.current < editVenueFilter[0].media.length - 1) {
       handleAddImage(editVenueFilter[0].media[runCount.current]);
       runCount.current += 1;
     }
-  }, [editVenueFilter, handleAddImage]);
+  }, [editVenueFilter]);
 
   const handleRemoveImage = (index) => {
     console.log("index after btn", index);

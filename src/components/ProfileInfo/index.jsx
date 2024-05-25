@@ -33,11 +33,11 @@ function ProfileInfo() {
   };
 
   const handleClickOutside = (event) => {
-    setTimeout(() => {
-      if (divRef.current && !divRef.current.contains(event.target)) {
-        setIsProfileEditShown(false);
-      }
-    }, 0);
+    // setTimeout(() => {
+    if (divRef.current && !divRef.current.contains(event.target)) {
+      setIsProfileEditShown(false);
+    }
+    // }, 0);
   };
 
   useEffect(() => {

@@ -76,13 +76,13 @@ function ProfileBooking() {
   };
 
   const handleClickOutside = (event) => {
-    setTimeout(() => {
-      if (divRef.current && !divRef.current.contains(event.target)) {
-        setIstBookingEditFormShown(false);
-        // setIsBookingsShown(false);
-        setVenueIdToShow(null);
-      }
-    }, 0);
+    // setTimeout(() => {
+    if (divRef.current && !divRef.current.contains(event.target)) {
+      setIstBookingEditFormShown(false);
+      // setIsBookingsShown(false);
+      setVenueIdToShow(null);
+    }
+    // }, 0);
   };
 
   useEffect(() => {
@@ -154,8 +154,9 @@ function ProfileBooking() {
                     </button>
 
                     {venueIdToShow === booked.id && istBookingEditFormShown && (
-                      <div className="overlay">
-                        <div ref={divRef} className="modulePosition w-box340  rounded-lg border-2 border-greyBlur md:w-box610 lg:w-box900">
+                      <div className="overlay ">
+                        <div ref={divRef} className="modulePosition w-box340 h-box700 rounded-lg border-2 border-greyBlur md:w-box610 lg:w-box900">
+                          {/* <div ref={divRef} className="modulePosition w-box340  rounded-lg border-2 border-greyBlur md:w-box610 lg:w-box900"> */}
                           <BookingEdit
                             setVenueIdToShow={setVenueIdToShow}
                             setBookingData={setBookingData}

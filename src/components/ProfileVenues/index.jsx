@@ -76,14 +76,14 @@ function ProfileVenues() {
   };
 
   const handleClickOutside = (event) => {
-    setTimeout(() => {
-      if (divRef.current && !divRef.current.contains(event.target)) {
-        setIsCreateVenueShown(false);
-        setIsVenueEditFormShown(false);
-        setIsVenueBookingsShown(false);
-        setVenueIdToShow(null);
-      }
-    }, 0);
+    // setTimeout(() => {
+    if (divRef.current && !divRef.current.contains(event.target)) {
+      setIsCreateVenueShown(false);
+      setIsVenueEditFormShown(false);
+      setIsVenueBookingsShown(false);
+      setVenueIdToShow(null);
+    }
+    // }, 0);
   };
 
   useEffect(() => {
@@ -116,7 +116,7 @@ function ProfileVenues() {
                 </div>
                 {isCreateVenueShown && (
                   <div className="overlay">
-                    <div ref={divRef} className="modulePosition w-box340 h-5/6 rounded-lg border-2 border-greyBlur sm:w-box610 lg:w-box900">
+                    <div ref={divRef} className="modulePosition w-box340 h-box700 h-5/6 rounded-lg border-2 border-greyBlur sm:w-box610 lg:w-box900">
                       <CreateVenue
                         // setVenueBookingData={setVenueBookingData}
                         handleCloseBtn={handleCloseBtn}
@@ -158,7 +158,10 @@ function ProfileVenues() {
                       </button>
                       {venueIdToShow === venue.id && isVenueEditFormShown && (
                         <div className="overlay">
-                          <div ref={divRef} className="modulePosition w-box340 h-5/6 rounded-lg border-2 border-greyBlur sm:w-box610 lg:w-box900">
+                          <div
+                            ref={divRef}
+                            className="modulePosition w-box340 h-box700 h-5/6 rounded-lg border-2 border-greyBlur sm:w-box610 lg:w-box900"
+                          >
                             <VenueEdit
                               setVenueIdToShow={setVenueIdToShow}
                               setIsVenueBookingsShown={setIsVenueBookingsShown}
@@ -178,7 +181,10 @@ function ProfileVenues() {
                       </button>
                       {venueIdToShow === venue.id && isVenueBookingsShown && (
                         <div className="overlay">
-                          <div ref={divRef} className="modulePosition w-box340 h-5/6 rounded-lg border-2 border-greyBlur sm:w-box610 lg:w-box900">
+                          <div
+                            ref={divRef}
+                            className="modulePosition w-box340 h-box700 h-5/6 rounded-lg border-2 border-greyBlur sm:w-box610 lg:w-box900"
+                          >
                             <VenueBookings venueId={venue.id} handleCloseBtn={handleCloseBtn} />
                           </div>
                         </div>
