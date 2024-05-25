@@ -1,6 +1,7 @@
 /* @tailwind base;
 @tailwind components;
 @tailwind utilities; */
+
 /* main {
   display: flex;
   justify-content: center;
@@ -8,6 +9,12 @@
   margin: 52px 0px 0px 0px;
   min-height: 100vh;
 } */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+body {
+  font-family: "Roboto", sans-serif;
+}
+
 .mainDiv {
   display: flex;
   justify-content: center;

@@ -20,7 +20,7 @@ function HomePage() {
             <div className="flex flex-col items-center text-center pt-2.5">
               <h2 className="text-xl">Ready to Embark on Your Journey?</h2>
               <Link to="/registration">
-                <button className="btnStyle alternativeBtnStyle text-lg my-5 w-52">Sign up now!</button>
+                <h2 className="btnStyle alternativeBtnStyle text-lg my-5 w-52">Sign up now!</h2>
               </Link>
             </div>
           </div>
