@@ -201,8 +201,8 @@ function VenueInfo() {
           {/* <div className="overflow-hidden self-center max-h-56 w-5/6 md:h-96  ">
             {venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} className="object-contain" />}
           </div> */}
-          <div className="flex flex-col gap-7 lg:gap-0 lg:grid lg:grid-cols-2 ">
-            <div className="flex flex-col justify-center items-center self-center min-h-128 lg:border-r-2 lg:px-5 xl:px-12">
+          <div className="flex flex-col gap-7 lg:gap-0">
+            <div className="flex flex-col justify-center items-center self-center min-h-128 border-b-2 lg:px-5 xl:px-12">
               <div className="flex justify-around items-center w-64 sm:w-box510 sm:justify-start sm:gap-48">
                 <h2 className="text-2xl font-bold break-words lg:w-box340">{venue.name}</h2>
                 <p className="text-end w-11 text-lg">⭐{venue.rating}</p>
@@ -293,7 +293,7 @@ function VenueInfo() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col items-center self-center gap-5 lg:border-l-2 lg:px-5 xl:px-12">
+            <div className="flex flex-col items-center self-center gap-5 lg:pt-5 lg:px-5 xl:px-12">
               <h2 className="text-2xl font-bold">Book Venue</h2>
               <form onSubmit={handleSubmit} className="flex flex-col venueEdit gap-2.5">
                 <div>

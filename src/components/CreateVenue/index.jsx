@@ -217,6 +217,9 @@ function CreateVenue({ setVenueBookingData, handleCloseBtn, setIsCreateVenueShow
     setShowModal(false);
   };
 
+  const optionsGuest = Array.from({ length: 100 }, (_, index) => index + 1);
+  const optionsRating = Array.from({ length: 6 }, (_, index) => index);
+
   return (
     <div>
       <div className="flex justify-end">
@@ -264,6 +267,7 @@ function CreateVenue({ setVenueBookingData, handleCloseBtn, setIsCreateVenueShow
                   name="price"
                   placeholder="Venue price"
                   aria-label="Venue price"
+                  max={10000}
                   onBlur={handleBlur}
                   className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                   required
@@ -272,19 +276,41 @@ function CreateVenue({ setVenueBookingData, handleCloseBtn, setIsCreateVenueShow
               </div>
               <div className="flex flex-col">
                 <label htmlFor="maxGuests">Max guests</label>
-                <input
+                {/* <input
                   type="number"
                   name="maxGuests"
                   aria-label="Max guests"
                   onBlur={handleBlur}
+                  max={100}
                   className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                   required
-                />
+                /> */}
+                <select
+                  type="number"
+                  name="maxGuests"
+                  onBlur={handleBlur}
+                  aria-label="Max guests"
+                  className="bg-greyBlur w-box280 sm:w-box490 pl-1"
+                  required
+                >
+                  {optionsGuest.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
                 <span className="error">{errors.maxGuests}</span>
               </div>
               <div className="flex flex-col">
                 <label htmlFor="rating">Venue rating</label>
-                <input type="number" name="rating" aria-label="Venue rating" max={5} className="bg-greyBlur w-box280 sm:w-box490 pl-1" />
+                {/* <input type="number" name="rating" max={5} className="bg-greyBlur w-box280 sm:w-box490 pl-1" /> */}
+                <select type="number" name="rating" aria-label="Venue rating" className="bg-greyBlur w-box280 sm:w-box490 pl-1">
+                  {optionsRating.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
             <div className="flex flex-col w-box280 sm:w-box490 gap-2.5">

@@ -19,6 +19,11 @@ function HeaderNav() {
     setIsNavShown(!isNavShown);
   };
 
+  const handleHideMenus = () => {
+    setIsSearchShown(false);
+    setIsNavShown(false);
+  };
+
   const isLoggedIn = accessToken.length > 0;
 
   const handleLogoutClick = () => {
@@ -38,7 +43,7 @@ function HeaderNav() {
           isSearchShown ? "show" : "hidden"
         } absolute headerImg headerSearch imgCover rounded bg-black inset-x-0 top-16 p-2.5 justify-center  lg:flex lg:static lg:p-0`}
       >
-        <SearchField />
+        <SearchField onLinkClick={handleHideMenus} />
       </div>
       <FontAwesomeIcon icon={faBars} onClick={handleNavClick} className="md:hidden text-white" />
       <nav
@@ -48,22 +53,30 @@ function HeaderNav() {
       >
         <ul className="flex flex-col text-white text-center gap-10 md:flex-row">
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/" onClick={handleHideMenus}>
+              Home
+            </Link>
           </li>
           {!isLoggedIn && (
             <>
               <li>
-                <Link to="/login">Login</Link>
+                <Link to="/login" onClick={handleHideMenus}>
+                  Login
+                </Link>
               </li>
               <li>
-                <Link to="/registration">Registration</Link>
+                <Link to="/registration" onClick={handleHideMenus}>
+                  Registration
+                </Link>
               </li>
             </>
           )}
           {isLoggedIn && (
             <>
               <li>
-                <Link to="/profilePage">Profile</Link>
+                <Link to="/profilePage" onClick={handleHideMenus}>
+                  Profile
+                </Link>
               </li>
               <li>
                 <Link to="/" onClick={handleLogoutClick}>

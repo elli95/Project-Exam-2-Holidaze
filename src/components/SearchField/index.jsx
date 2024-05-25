@@ -8,7 +8,7 @@ import { Link, useLocation } from "react-router-dom";
 // import useAllVenuesApiCall from "../../hooks/useAllVenuesApiCall";
 import useVenueApiCall from "../../hooks/useVenueApiCall";
 
-function SearchField() {
+function SearchField({ onLinkClick }) {
   // const { venues, isError } = useFetchApi(API_VENUES);
   // const [venues, setVenue] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -70,7 +70,7 @@ function SearchField() {
       {inputValue && (
         <ul ref={listRef} className="flex flex-col absolute pt-5 p-2.5 top-12 bg-grayShade w-80 h-box565 lg:w-96 overflow-auto z-10 rounded ">
           {filteredVenues.map((venue) => (
-            <Link key={venue.id} to={`/venue/${venue.id}`} className="hover:bg-grayShadeHover p-2.5">
+            <Link key={venue.id} to={`/venue/${venue.id}`} className="hover:bg-grayShadeHover p-2.5" onClick={onLinkClick}>
               <li key={venue.id} className="flex overflow-hidden whitespace-nowrap gap-2.5 items-center">
                 <div>{venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} className="w-12 h-12 rounded" />}</div>
                 <p className="w-12">{venue.name}</p>
