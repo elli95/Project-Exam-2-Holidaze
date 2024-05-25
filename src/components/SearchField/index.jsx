@@ -51,6 +51,7 @@ function SearchField() {
 
   return (
     <div>
+      <label htmlFor="Search"></label>
       <input
         ref={inputRef}
         type="text"
