@@ -112,7 +112,7 @@ function BookingEdit({ setVenueIdToShow, setBookingData, fetchBookingData, venue
   const ConfirmationModal = ({ onConfirm, onCancel }) => {
     const message = actionType === "submit" ? "Are you sure you want to edit this booking?" : "Are you sure you want to cancel this booking?";
     return (
-      <div className="overlayCheck">
+      <div className="overlayCheck" onTouchStart={(e) => e.stopPropagation()}>
         <div className="modulePosition flex flex-col justify-center rounded-lg">
           <p className="text-xl text-center">{message}</p>
           <div className="flex gap-5 justify-evenly pt-5">
