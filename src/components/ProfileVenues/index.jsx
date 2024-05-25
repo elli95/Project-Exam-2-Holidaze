@@ -273,7 +273,7 @@ function ProfileVenues() {
             ) : (
               <div>
                 <div className="flex justify-center mb-5">
-                  <button className="btnStyle w-44" onClick={handleSeeCreateVenue}>
+                  <button className="bg-white btnStyle w-44" onClick={handleSeeCreateVenue}>
                     Create new Venue
                   </button>
                 </div>

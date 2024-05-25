@@ -289,21 +289,24 @@ function ProfileBooking() {
                       </div>
                     </Link>
 
-                    <button
-                      className="btnStyle alternativeBtnStyle w-box300 sm:w-box490 md:w-box340 lg:w-box400"
-                      onClick={() => handleCreateVenueForm(booked.id)}
-                    >
-                      Edit Booking
-                    </button>
-
+                    {new Date(booked.dateFrom) < new Date() ? (
+                      <h2 className="flex justify-center btnStyle alternativeBtnStyle w-box300 sm:w-box490 md:w-box340 lg:w-box400">
+                        Booking Active
+                      </h2>
+                    ) : (
+                      <button
+                        className="btnStyle alternativeBtnStyle w-box300 sm:w-box490 md:w-box340 lg:w-box400"
+                        onClick={() => handleCreateVenueForm(booked.id)}
+                      >
+                        Edit Booking
+                      </button>
+                    )}
                     {venueIdToShow === booked.id && isBookingEditFormShown && (
                       <div className="overlay ">
                         <div ref={divRef} className="modulePosition w-box340 h-box700 rounded-lg border-2 border-greyBlur md:w-box610 lg:w-box900">
                           <BookingEdit
                             setVenueIdToShow={setVenueIdToShow}
-                            // setIsVenueBookingsShown={setIsVenueBookingsShown}
                             setBooking={setBooking}
-                            // setIsCreateBookingShown={setIsCreateBookingShown}
                             onDeleteBooking={handleDeleteVenue}
                             venueId={booked.id}
                             handleCloseBtn={handleCloseBtn}

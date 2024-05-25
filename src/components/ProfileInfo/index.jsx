@@ -82,14 +82,14 @@ function ProfileInfo() {
             <p className="italic">{profileData.email}</p>
           </div>
           {profileData.bio && (
-            <div className="border-solid border-t-2 border-b-2 max-w-md shadow-lg shadow-black w-270 sm:w-375">
+            <div className="bg-white px-5 border-solid border-t-2 border-b-2 max-w-md shadow-lg shadow-black w-270 sm:w-375">
               <p className="my-2.5">{profileData.bio}</p>
             </div>
           )}
 
           <div className="flex flex-col justify-center gap-2.5 m-2.5">
             <div className="flex justify-center">
-              <button className="btnStyle w-44" onClick={handleSeeProfileBooking}>
+              <button className="btnStyle bg-white w-44" onClick={handleSeeProfileBooking}>
                 Edit Profile
               </button>
             </div>

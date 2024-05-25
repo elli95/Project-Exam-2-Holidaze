@@ -163,8 +163,8 @@ function VenueFilter({ setFilteredVenues }) {
             </div>
           </div>
           <div className="flex self-center sm:pr-1.5">
-            <button className="btnStyle">Filter Venues</button>
-            <button type="button" onClick={handleClearFilter} className="btnStyle ml-2">
+            <button className="btnStyle bg-green confirmBtn">Filter Venues</button>
+            <button type="button" onClick={handleClearFilter} className="btnStyle bg-redish denyBtn ml-2">
               Clear Filters
             </button>
           </div>

@@ -220,6 +220,9 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
     setShowModal(false);
   };
 
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + 1);
+
   return (
     <div className="flex flex-col justify-center">
       <div className="self-end">
@@ -301,12 +304,26 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
               <div className="flex gap-12 justify-center">
                 <div className="flex flex-col items-center">
                   <label>Start Date:</label>
-                  <input type="date" name="dateFrom" defaultValue={dateFrom} onBlur={handleBlur} onChange={handleStartDateChange} />
+                  <input
+                    type="date"
+                    name="dateFrom"
+                    min={currentDate.toISOString().split("T")[0]}
+                    defaultValue={dateFrom}
+                    onBlur={handleBlur}
+                    onChange={handleStartDateChange}
+                  />
                   <span className="error">{errors.dateFrom}</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <label>End Date:</label>
-                  <input type="date" name="dateTo" defaultValue={dateTo} onBlur={handleBlur} onChange={handleEndDateChange} />
+                  <input
+                    type="date"
+                    name="dateTo"
+                    min={currentDate.toISOString().split("T")[0]}
+                    defaultValue={dateTo}
+                    onBlur={handleBlur}
+                    onChange={handleEndDateChange}
+                  />
                   <span className="error">{errors.dateTo}</span>
                 </div>
               </div>
