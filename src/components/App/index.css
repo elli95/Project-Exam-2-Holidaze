@@ -368,7 +368,7 @@ img {
 
 /*media*/
 
-@media (min-width: 640px) {
+@media (max-width: 1024px) {
   .PasswordInput input {
     width: 452px !important;
   }
