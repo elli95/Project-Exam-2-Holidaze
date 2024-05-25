@@ -331,13 +331,13 @@ function BookingEdit({ setVenueIdToShow, setBookingData, fetchBookingData, venue
               </div>
               <p className="flex justify-center">Total: {result}</p>
               <div className="flex justify-center mt-4">
-                <button type="submit" className="btnStyle alternativeBtnStyle w-form500">
+                <button type="submit" className="btnStyle alternativeBtnStyle w-72 md:w-form500">
                   Edit Booking
                 </button>
               </div>
             </form>
             <div className="flex justify-center mt-5">
-              <button type="delete" className="btnStyle alternativeBtnStyle w-form500" onClick={handleDelete}>
+              <button type="delete" className="btnStyle alternativeBtnStyle w-72 md:w-form500" onClick={handleDelete}>
                 Cancel Booking
               </button>
             </div>
