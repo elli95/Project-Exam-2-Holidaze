@@ -5,7 +5,8 @@ import { Link, useLocation } from "react-router-dom";
 // import usePostApiKey from "../../hooks/usePostApiKey";
 // import useLocalStorage from "../../hooks/useLocalStorage";
 // import useApiCall from "../../hooks/useApiCall";
-import useAllVenuesApiCall from "../../hooks/useAllVenuesApiCall";
+// import useAllVenuesApiCall from "../../hooks/useAllVenuesApiCall";
+import useVenueApiCall from "../../hooks/useVenueApiCall";
 
 function SearchField() {
   // const { venues, isError } = useFetchApi(API_VENUES);
@@ -17,7 +18,12 @@ function SearchField() {
   const inputRef = useRef();
   const listRef = useRef();
 
-  const { allVenues } = useAllVenuesApiCall();
+  // const { allVenues } = useAllVenuesApiCall();
+  // const fetchApiData = () => {
+  const currentPage = 1;
+  const itemsPerPage = 100;
+  const { venues } = useVenueApiCall(currentPage, itemsPerPage);
+  // };
   // const navigate = useNavigate();
   const location = useLocation();
 
@@ -27,7 +33,7 @@ function SearchField() {
   };
 
   // useEffect(() => {
-  const filteredVenues = allVenues.filter((venueData) => venueData.name.toLowerCase().includes(inputValue.toLowerCase()));
+  const filteredVenues = venues.filter((venueData) => venueData.name.toLowerCase().includes(inputValue.toLowerCase()));
   // }, []);
   console.log("filteredVenues", filteredVenues);
 
@@ -57,6 +63,7 @@ function SearchField() {
         type="text"
         placeholder="Search"
         value={inputValue}
+        // onClick={fetchApiData}
         onChange={inputValueChange}
         className="rounded-lg p-2 max-h-10 text-xl w-80 h-10 lg:w-96 z-20 relative"
       ></input>
