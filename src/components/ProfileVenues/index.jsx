@@ -135,7 +135,14 @@ function ProfileVenues() {
                   {venueBookingData.venues.map((venue) => (
                     <div key={venue.id} className="self-center overflow-hidden w-box300 sm:w-box490 md:w-box340 lg:w-box400">
                       <Link to={`/venue/${venue.id}`} className="bg-redish rounded-lg">
-                        <div className="imgBox">{venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} />}</div>
+                        <div className="imgBox">
+                          {venue.media[0] ? (
+                            <img src={venue.media[0].url} alt={venue.media[0].alt} />
+                          ) : (
+                            <img src="https://images.unsplash.com/photo-1579547945413-497e1b99dac0" alt="Venue" />
+                          )}
+                          {/* {venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} />} */}
+                        </div>
                         <div className="h-24 p-3">
                           <div className="flex justify-between">
                             <h2>{venue.name}</h2>

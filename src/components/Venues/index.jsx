@@ -129,7 +129,14 @@ function Venues() {
           ) : (
             displayVenues.map((venue) => (
               <Link key={venue.id} to={`/venue/${venue.id}`} className=" rounded">
-                <div className="imgBox">{venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} />}</div>
+                <div className="imgBox">
+                  {/* {venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} />} */}
+                  {venue.media[0] ? (
+                    <img src={venue.media[0].url} alt={venue.media[0].alt} />
+                  ) : (
+                    <img src="https://images.unsplash.com/photo-1579547945413-497e1b99dac0" alt="Venue" />
+                  )}
+                </div>
                 <div className="flex flex-col justify-between h-box180 gap-2.5 p-3 overflow-hidden">
                   <div className="flex justify-between">
                     <h2 className="text-2xl whitespace-nowrap w-270 overflow-hidden">{venue.name}</h2>

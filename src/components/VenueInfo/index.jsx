@@ -182,9 +182,22 @@ function VenueInfo() {
         <div className="loading"></div>
       ) : (
         <div className="venueSection textBreakStyle flex-col pt-8" key={venue.id}>
-          <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
+          {/* <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
             <img src={selectedImage} alt="Selected" className="object-contain w-full h-full" />
-          </div>
+          </div> */}
+          {venue.media.length > 0 ? (
+            <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
+              <img src={selectedImage} alt="Selected" className="object-contain w-full h-full" />
+            </div>
+          ) : (
+            <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
+              <img
+                src="https://images.unsplash.com/photo-1579547945413-497e1b99dac0"
+                alt="Venue Manager Avatar"
+                className="object-contain w-full h-full"
+              />
+            </div>
+          )}
           {venue.media.length > 1 && (
             <div className="flex justify-center flex-wrap gap-2.5">
               {venue.media.map((mediaItem, index) => (
@@ -286,7 +299,12 @@ function VenueInfo() {
                   <h2 className="text-xl font-semibold">Venue manager:</h2>
                   <div className="flex items-center justify-start gap-2.5">
                     <div className="h-12 w-12 overflow-hidden">
-                      {venue.owner.avatar && <img src={venue.owner.avatar.url} alt={venue.owner.avatar.alt} className="rounded-full object-cover" />}
+                      {venue.owner.avatar ? (
+                        <img src={venue.owner.avatar.url} alt={venue.owner.avatar.alt} className="rounded-full object-cover" />
+                      ) : (
+                        <img src="https://images.unsplash.com/photo-1579547945413-497e1b99dac0" alt="Venue" className="rounded-full object-cover" />
+                      )}
+                      {/* {venue.owner.avatar && <img src={venue.owner.avatar.url} alt={venue.owner.avatar.alt} className="rounded-full object-cover" />} */}
                     </div>
                     <p className="text-lg">{venue.owner.name}</p>
                   </div>
