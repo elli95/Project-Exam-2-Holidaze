@@ -372,6 +372,9 @@ img {
   .PasswordInput input {
     width: 452px !important;
   }
+  .headerImg {
+    position: fixed !important;
+  }
 }
 
 @media (min-width: 768px) {
@@ -381,14 +384,10 @@ img {
   }
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 640px) {
   .mainDiv {
     padding: 20px;
     margin: 52px 0px 0px 0px;
-  }
-
-  .headerImg {
-    position: fixed !important;
   }
 }
 
