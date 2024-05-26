@@ -9,6 +9,17 @@ import VenuePage from "../../pages/venuePage";
 import ProfilePage from "../../pages/profilePage";
 import PageNotFound from "../../pages/pageNotFound";
 
+/**
+ * Defines the routes for the application using react-router-dom's createBrowserRouter.
+ *
+ * Routes:
+ * - "/" (HomePage)
+ * - "/venue/:id" (VenuePage)
+ * - "/login" (LoginPage)
+ * - "/registration" (RegistrationPage)
+ * - "/profilePage" (ProfilePage)
+ * - "*" (PageNotFound)
+ */
 const router = createBrowserRouter([
   {
     path: "/",
@@ -46,6 +57,11 @@ const router = createBrowserRouter([
   },
 ]);
 
+/**
+ * Root component of the application that provides routing using RouterProvider.
+ *
+ * @component
+ */
 function App() {
   return <RouterProvider router={router}></RouterProvider>;
 }
