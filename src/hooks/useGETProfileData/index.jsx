@@ -3,6 +3,13 @@ import { API_PROFILES } from "../../shared/apis";
 import { useEffect, useState } from "react";
 import useLocalStorage from "../useLocalStorage";
 
+/**
+ * Custom hook to fetch profile data based on user information.
+ * @returns {{
+ *  profileData: Object,
+ *  setProfileData: Function
+ * }} An object containing profile data and a function to update profile data.
+ */
 function useGETProfileData() {
   const { apiKey } = usePostApiKey();
   const { accessToken, userInfo } = useLocalStorage();

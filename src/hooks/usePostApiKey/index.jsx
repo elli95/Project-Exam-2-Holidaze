@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { API_KEY_URL } from "../../shared/apis";
 
+/**
+ * Custom hook to post and retrieve an API key.
+ * @returns {{ apiKey: Object }} An object containing the API key.
+ */
 function usePostApiKey() {
   const [apiKey, setApiKey] = useState([]);
   const accessToken = useLocalStorage();

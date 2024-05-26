@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-// import useLocalStorage from "../../hooks/useLocalStorage";
 import { API_VENUES } from "../../shared/apis";
-// import usePostApiKey from "../usePostApiKey";
 
+/**
+ * Custom hook for fetching all venues from the API.
+ * @returns {Object} An object containing all venues and loading state.
+ * @property {Array} allVenues - An array of all venues fetched from the API.
+ * @property {boolean} isLoading - A boolean indicating whether the data is currently being loaded.
+ * @throws {Error} Throws an error if there is a problem fetching venue data.
+ */
 function useAllVenuesApiCall() {
-  //   const { apiKey } = usePostApiKey();
-  //   const accessToken = useLocalStorage();
   const [allVenues, setAllVenues] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // if (accessToken.accessToken && apiKey.key) {
     async function fetchAllPages() {
       setIsLoading(true);
       try {
@@ -23,8 +25,6 @@ function useAllVenuesApiCall() {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              // Authorization: `Bearer ${accessToken.accessToken}`,
-              // "X-Noroff-API-Key": apiKey.key,
             },
           });
 
@@ -47,9 +47,7 @@ function useAllVenuesApiCall() {
     }
 
     fetchAllPages();
-    // }
   }, []);
-  // }, [accessToken.accessToken, apiKey.key]);
 
   return { allVenues, isLoading };
 }
