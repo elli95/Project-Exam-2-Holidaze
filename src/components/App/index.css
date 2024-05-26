@@ -485,6 +485,10 @@ img {
     position: initial !important;
     background: none;
   }
+
+  .react-calendar {
+    width: 400px;
+  }
 }
 
 @media (min-width: 1024px) {
