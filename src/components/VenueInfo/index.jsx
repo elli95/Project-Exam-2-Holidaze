@@ -375,8 +375,8 @@ function VenueInfo() {
               {localStorage.length > 0 && (
                 <>
                   <div className="flex text-lg self-center items-center gap-2.5">
-                    <label>Guests:</label>
-                    <select name="guests" onBlur={handleBlur}>
+                    <label htmlFor="guests">Guests:</label>
+                    <select type="number" name="guests" id="guests" onBlur={handleBlur}>
                       {[...Array(venue.maxGuests)].map((_, index) => (
                         <option key={index + 1} value={index + 1}>
                           {index + 1}
