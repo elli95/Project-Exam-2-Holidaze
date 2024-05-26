@@ -86,7 +86,7 @@ function ProfileInfo() {
           </div>
           <div className="text-center pb-1.5">
             <h1 className="text-center font-bold text-xl">{profileData.name}</h1>
-            <p className="italic text-lg">{profileData.email}</p>
+            <h2 className="italic text-lg">{profileData.email}</h2>
           </div>
           {profileData.bio && (
             <div className="bg-white px-5 border-solid border-t-2 border-b-2 max-w-md shadow-lg text-lg shadow-black w-270 sm:w-375">
