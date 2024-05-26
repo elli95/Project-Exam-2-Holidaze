@@ -28,6 +28,7 @@ module.exports = {
         box820: "820px",
         box850: "850px",
         box900: "900px",
+        box1100: "1100px",
         box1240: "1240px",
         box1660: "1660px",
       },

@@ -117,7 +117,7 @@ function Venues() {
                     <img src="https://images.unsplash.com/photo-1579547945413-497e1b99dac0" alt="Venue" />
                   )}
                 </div>
-                <div className="flex flex-col justify-between h-box180 p-3 overflow-hidden">
+                <div className="flex flex-col justify-between h-box200 p-3 overflow-hidden">
                   <div className="flex justify-between">
                     <h2 className="text-2xl whitespace-nowrap w-270 overflow-hidden">{venue.name || "Venue Name Not Available"}</h2>
 

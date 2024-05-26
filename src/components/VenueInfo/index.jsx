@@ -55,6 +55,12 @@ function VenueInfo() {
 
   const apiCall = useApiCall();
 
+  /**
+   * Handles changes to the selected date(s) on the calendar.
+   * Updates the form state with the selected date(s).
+   *
+   * @param {Date} value - The selected date.
+   */
   const onDateChange = (value) => {
     if (selecting) {
       setFormState({
@@ -73,6 +79,10 @@ function VenueInfo() {
     }
   };
 
+  /**
+   * Runs logic to calculate the result when the start date or end date changes.
+   * Updates the result state with the calculated value.
+   */
   useEffect(() => {
     if (startDate && endDate) {
       const oneDay = 24 * 60 * 60 * 1000;
@@ -85,9 +95,13 @@ function VenueInfo() {
     }
   }, [startDate, endDate, venue]);
 
+  /**
+   * Effect to update venue information and selected image when venues or pagination metadata change.
+   * If the venue with the specified ID is found among the fetched venues, updates the selected image and venue state.
+   * If the venue is not found and there are more pages to fetch, increases the current page number to fetch more venues.
+   */
   useEffect(() => {
     const foundVenue = venues.find((venue) => venue.id.toString() === id);
-    console.log("venues venues venues", venues, foundVenue);
     if (foundVenue) {
       setSelectedImage(foundVenue.media[0]?.url);
       setVenue(foundVenue);
@@ -104,11 +118,21 @@ function VenueInfo() {
     return <div className="loading"></div>;
   }
 
+  /**
+   * Array containing booking date ranges for the venue.
+   * Each booking date range object has 'from' and 'to' properties representing the start and end dates.
+   */
   const bookedDates = venue.bookings.map((booking) => ({
     from: new Date(booking.dateFrom),
     to: new Date(booking.dateTo),
   }));
 
+  /**
+   * Handles the onBlur event for form input fields.
+   * Validates the input value and updates the errors state accordingly.
+   *
+   * @param {Event} event - The onBlur event.
+   */
   const handleBlur = (event) => {
     const { name, value } = event.target;
     const newErrors = { ...errors };
@@ -129,6 +153,12 @@ function VenueInfo() {
     setErrors(newErrors);
   };
 
+  /**
+   * Handles the form submission event.
+   * Submits the booking details to the API and displays success or error messages.
+   *
+   * @param {Event} event - The form submission event.
+   */
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -162,13 +192,22 @@ function VenueInfo() {
       .catch((error) => console.error("Error fetching data:", error));
   };
 
+  /**
+   * Handles the click event for thumbnail images.
+   * Updates the selected image state with the clicked image URL.
+   *
+   * @param {string} url - The URL of the clicked thumbnail image.
+   */
   const handleThumbnailClick = (url) => {
     setSelectedImage(url);
   };
 
   return (
-    <div>
-      <div className="venueSection bg-grayShadeHover p-5 m-5 rounded textBreakStyle flex-col pt-8" key={venue.id}>
+    <div className="flex justify-center">
+      <div
+        className="venueSection bg-grayShadeHover p-5 m-5 rounded textBreakStyle flex-col pt-8 md:w-box700 lg:w-box900 xl:w-box1100"
+        key={venue.id}
+      >
         {venue.media.length > 0 ? (
           <div className="overflow-hidden self-center h-64 w-5/6 md:h-96">
             <img src={selectedImage} alt="Selected" className="object-contain w-full h-full" />
@@ -185,19 +224,21 @@ function VenueInfo() {
         {venue.media.length > 1 && (
           <div className="flex justify-center flex-wrap gap-2.5">
             {venue.media.map((mediaItem, index) => (
-              <img
-                key={index}
-                src={mediaItem.url}
-                alt={mediaItem.alt}
-                className="object-contain imgCover h-16 w-16 mx-2 cursor-pointer border-2 border-transparent hover:border-blue-500"
-                onClick={() => handleThumbnailClick(mediaItem.url)}
-              />
+              <div key={index}>
+                <img
+                  key={index}
+                  src={mediaItem.url}
+                  alt={mediaItem.alt}
+                  className="object-fill w-24 h-20 rounded p-2.5 mx-2 cursor-pointer hover:border-blue-500"
+                  onClick={() => handleThumbnailClick(mediaItem.url)}
+                />
+              </div>
             ))}
           </div>
         )}
         <div className="flex flex-col gap-7 lg:gap-0">
           <div className="flex flex-col justify-center items-center self-center min-h-128 lg:px-5 xl:px-12">
-            <div className="flex justify-around items-center w-64 sm:w-box510 sm:justify-start sm:gap-48">
+            <div className="flex justify-around items-center w-64 sm:w-box510 sm:justify-center sm:gap-48">
               <h2 className="text-2xl font-bold break-words lg:w-box340">{venue.name || "Venue Name Not Available"}</h2>
               <div className="flex gap-1 text-xl">
                 <p className="text-star">
@@ -206,8 +247,8 @@ function VenueInfo() {
                 <p>{venue.rating}</p>
               </div>
             </div>
-            <div className="flex flex-col items-center gap-4 w-64 sm:flex-row sm:justify-evenly sm:gap-20">
-              <div className="flex flex-col gap-2.5 min-w-60 ">
+            <div className="flex flex-col items-center gap-4 w-64 sm:justify-evenly sm:gap-20">
+              <div className="flex flex-col gap-2.5 sm:w-box340 md:w-box460 lg:w-box510">
                 <div className="flex justify-between px-1 text-lg">
                   <p>Guests:</p>
                   <p>{venue.maxGuests}</p>
@@ -216,7 +257,7 @@ function VenueInfo() {
                   <p>Price per day:</p>
                   <p> {venue.price}</p>
                 </div>
-                <div className="flex flex-col gap-2.5 min-w-48 pt-2.5">
+                <div className="flex flex-col gap-2.5 pt-2.5">
                   <h2 className="text-xl font-semibold">Location:</h2>
                   <div className="flex justify-between bg-greyBlur px-1 text-lg flex-wrap">
                     <p>Address:</p>
@@ -239,36 +280,38 @@ function VenueInfo() {
                     <p>{venue.location.continent || "Continent Not Available"}</p>
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col items-center min-w-48">
-                <h2 className="text-xl font-semibold">Amenities:</h2>
-                <div className="flex h-10 gap-2.5">
-                  {venue.meta.wifi && (
-                    <div title="Wifi included" className="metaIconTrue">
-                      <FontAwesomeIcon icon={faWifi} />
-                      <span className="sr-only">Wifi included</span>
-                    </div>
-                  )}
-                  {venue.meta.parking && (
-                    <div title="Parking available" className="metaIconTrue">
-                      <FontAwesomeIcon icon={faSquareParking} />
-                      <span className="sr-only">Parking available</span>
-                    </div>
-                  )}
-                  {venue.meta.breakfast && (
-                    <div title="Breakfast included" className="metaIconTrue">
-                      <FontAwesomeIcon icon={faMugHot} />
-                      <span className="sr-only">Breakfast included</span>
-                    </div>
-                  )}
-                  {venue.meta.pets && (
-                    <div title="Pets permitted" className="metaIconTrue">
-                      <FontAwesomeIcon icon={faPaw} />
-                      <span className="sr-only">Pets permitted</span>
-                    </div>
-                  )}
+              </div>{" "}
+              {venue.meta.length > 0 && (
+                <div className="flex flex-col items-center min-w-48">
+                  <h2 className="text-xl font-semibold">Amenities:</h2>
+                  <div className="flex h-10 gap-2.5">
+                    {venue.meta.wifi && (
+                      <div title="Wifi included" className="metaIconTrue">
+                        <FontAwesomeIcon icon={faWifi} />
+                        <span className="sr-only">Wifi included</span>
+                      </div>
+                    )}
+                    {venue.meta.parking && (
+                      <div title="Parking available" className="metaIconTrue">
+                        <FontAwesomeIcon icon={faSquareParking} />
+                        <span className="sr-only">Parking available</span>
+                      </div>
+                    )}
+                    {venue.meta.breakfast && (
+                      <div title="Breakfast included" className="metaIconTrue">
+                        <FontAwesomeIcon icon={faMugHot} />
+                        <span className="sr-only">Breakfast included</span>
+                      </div>
+                    )}
+                    {venue.meta.pets && (
+                      <div title="Pets permitted" className="metaIconTrue">
+                        <FontAwesomeIcon icon={faPaw} />
+                        <span className="sr-only">Pets permitted</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <div className="flex flex-col p-6 gap-2.5 max-w-box565">
               <h2 className="text-xl font-semibold">Description</h2>
@@ -289,10 +332,10 @@ function VenueInfo() {
             </div>
           </div>
           <div className="flex flex-col items-center self-center gap-5 lg:pt-5 lg:px-5 xl:px-12">
-            <h2 className="text-2xl font-bold">Book Venue</h2>
+            {localStorage.length > 0 ? <h2 className="text-2xl font-bold">Book Venue</h2> : <h2 className="text-2xl font-bold">Available Venues</h2>}
             <form onSubmit={handleSubmit} className="flex flex-col venueEdit gap-2.5">
               <div>
-                <p className="text-xl font-semibold">Choose a date</p>
+                {localStorage.length > 0 && <p className="text-xl font-semibold">Choose a date</p>}
                 <Calendar
                   onChange={onDateChange}
                   value={formState.dateFrom}
