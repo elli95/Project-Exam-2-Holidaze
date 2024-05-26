@@ -384,7 +384,7 @@ function VenueInfo() {
                     <span className="error">{errors.guests}</span>
                   </div>
                   <p className="text-xl font-semibold">Total: {result}</p>
-                  <button type="submit" className="bg-white btnStyle">
+                  <button type="submit" className="bg-green btnStyle">
                     Book Venue
                   </button>
                 </>
