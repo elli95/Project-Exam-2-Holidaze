@@ -145,6 +145,7 @@ function RegistrationPage() {
               </label>
               <input
                 type="text"
+                id="name"
                 name="name"
                 placeholder="Your full name"
                 onBlur={handleBlur}
@@ -162,6 +163,7 @@ function RegistrationPage() {
               </label>
               <input
                 type="text"
+                id="email"
                 name="email"
                 placeholder="Your Email"
                 onBlur={handleBlur}
@@ -177,6 +179,7 @@ function RegistrationPage() {
               </label>
               <input
                 type="text"
+                id="avatar.url"
                 name="avatar.url"
                 placeholder="User avatar url"
                 onBlur={handleBlur}
@@ -191,6 +194,7 @@ function RegistrationPage() {
               </label>
               <input
                 type="text"
+                id="avatar.alt"
                 name="avatar.alt"
                 placeholder="User avatar alternative text"
                 minLength={3}
@@ -205,6 +209,7 @@ function RegistrationPage() {
               <div className="PasswordInput">
                 <input
                   type={type}
+                  id="password"
                   name="password"
                   placeholder="Password content"
                   minLength={8}

@@ -11,6 +11,14 @@
 } */
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
+/* reference: https://blog.pope.tech/2020/02/28/missing-form-label-search/ */
+.wave-fix {
+  position: absolute;
+  overflow: hidden;
+  left: -999999px;
+  top: auto;
+}
+
 body {
   font-family: "Roboto", sans-serif;
 }

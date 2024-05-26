@@ -56,9 +56,6 @@ function LoginPage() {
       password: event.target.elements.password.value,
     };
     setFormState(updatedFormState);
-    // const isValidForm = Object.values(errors).every((error) => !error);
-    // if (isValidForm) {
-    //   console.log("Form submitted:", formState);
 
     apiCall(
       API_LOGIN_URL,

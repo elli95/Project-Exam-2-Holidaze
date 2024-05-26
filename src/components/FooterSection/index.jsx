@@ -1,3 +1,8 @@
+/**
+ * Footer section component.
+ * Displays a simple footer with copyright information.
+ */
+
 function FooterSection() {
   return (
     <div className="footerImg imgCover bg-black h-12 flex justify-center items-center">
