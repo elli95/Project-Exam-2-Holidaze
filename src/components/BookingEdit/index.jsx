@@ -331,25 +331,25 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
                     </div>
                     <div className="flex justify-center h-10 gap-2.5">
                       {editVenueFilter[0].venue.meta.wifi && (
-                        <div title="Wifi included" className="metaIconTrue">
+                        <div className="metaIconTrue">
                           <FontAwesomeIcon icon={faWifi} />
                           <span className="sr-only">Wifi included</span>
                         </div>
                       )}
                       {editVenueFilter[0].venue.meta.parking && (
-                        <div title="Parking available" className="metaIconTrue">
+                        <div className="metaIconTrue">
                           <FontAwesomeIcon icon={faSquareParking} />
                           <span className="sr-only">Parking available</span>
                         </div>
                       )}
                       {editVenueFilter[0].venue.meta.breakfast && (
-                        <div title="Breakfast included" className="metaIconTrue">
+                        <div className="metaIconTrue">
                           <FontAwesomeIcon icon={faMugHot} />
                           <span className="sr-only">Breakfast included</span>
                         </div>
                       )}
                       {editVenueFilter[0].venue.meta.pets && (
-                        <div title="Pets permitted" className="metaIconTrue">
+                        <div className="metaIconTrue">
                           <FontAwesomeIcon icon={faPaw} />
                           <span className="sr-only">Pets permitted</span>
                         </div>
@@ -362,9 +362,10 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
             <form onSubmit={handleSubmit} className="text-lg">
               <div className="flex gap-12 justify-center">
                 <div className="flex flex-col items-center">
-                  <label>Start Date:</label>
+                  <label htmlFor="dateFrom">Start Date:</label>
                   <input
                     type="date"
+                    id="dateFrom"
                     name="dateFrom"
                     min={currentDate.toISOString().split("T")[0]}
                     defaultValue={dateFrom}
@@ -374,9 +375,10 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
                   <span className="error">{errors.dateFrom}</span>
                 </div>
                 <div className="flex flex-col items-center">
-                  <label>End Date:</label>
+                  <label htmlFor="dateTo">End Date:</label>
                   <input
                     type="date"
+                    id="dateTo"
                     name="dateTo"
                     min={currentDate.toISOString().split("T")[0]}
                     defaultValue={dateTo}
@@ -387,8 +389,15 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
                 </div>
               </div>
               <div className="flex justify-center my-2.5 gap-2">
-                <label>Guests:</label>
-                <select type="number" name="guests" onBlur={handleBlur} defaultValue={editVenueFilter[0].guests} className="bg-greyBlur w-20 pl-1">
+                <label htmlFor="guests">Guests:</label>
+                <select
+                  type="number"
+                  id="guests"
+                  name="guests"
+                  onBlur={handleBlur}
+                  defaultValue={editVenueFilter[0].guests}
+                  className="bg-greyBlur w-20 pl-1"
+                >
                   {[...Array(editVenueFilter[0].venue.maxGuests)].map((_, index) => (
                     <option key={index + 1} value={index + 1}>
                       {index + 1}
