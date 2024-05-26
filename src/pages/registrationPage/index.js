@@ -140,7 +140,7 @@ function RegistrationPage() {
           <h1 className="text-3xl font-semibold py-2">Registration</h1>
           <form onSubmit={handleSubmit} className="py-2.5">
             <div className="w-72 sm:w-form500">
-              <label htmlFor="name" for="name" className="text-xl">
+              <label htmlFor="name" className="text-xl">
                 Full name
               </label>
               <input
@@ -158,7 +158,7 @@ function RegistrationPage() {
               <span className="error">{errors.name}</span>
             </div>
             <div className="w-72 sm:w-form500">
-              <label htmlFor="email" for="email" className="text-xl">
+              <label htmlFor="email" className="text-xl">
                 Email
               </label>
               <input
@@ -174,7 +174,7 @@ function RegistrationPage() {
               <span className="error">{errors.email}</span>
             </div>
             <div className="w-72 sm:w-form500">
-              <label htmlFor="avatar.url" for="avatar.url" className="text-xl">
+              <label htmlFor="avatar.url" className="text-xl">
                 Avatar url
               </label>
               <input
@@ -189,7 +189,7 @@ function RegistrationPage() {
               <span className="error">{errors.avatar.url}</span>
             </div>
             <div className="w-72 sm:w-form500">
-              <label htmlFor="avatar.alt" for="avatar.alt" className="text-xl">
+              <label htmlFor="avatar.alt" className="text-xl">
                 Avatar alternative text
               </label>
               <input
@@ -203,7 +203,7 @@ function RegistrationPage() {
               />
             </div>
             <div className="w-72 sm:w-form500">
-              <label htmlFor="password" for="password" className="text-xl">
+              <label htmlFor="password" className="text-xl">
                 Password
               </label>
               <div className="PasswordInput">
@@ -225,7 +225,7 @@ function RegistrationPage() {
               <span className="error">{errors.password}</span>
             </div>
             <div className="checkboxStyle">
-              <label htmlFor="venueManager" for="venueManager" className="text-xl">
+              <label htmlFor="venueManager" className="text-xl">
                 Venue manager
               </label>
               <input type="hidden" name="venueManager" value="0" />
