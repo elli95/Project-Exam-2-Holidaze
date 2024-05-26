@@ -7,16 +7,26 @@ import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useApiCall from "../../hooks/useApiCall";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
+import { faStar, faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
 import useVenueApiCall from "../../hooks/useVenueApiCall";
 
+/**
+ * The VenueInfo component displays detailed information about a venue,
+ * including its name, location, amenities, description, and booking form.
+ * It also allows users to select dates for booking the venue.
+ *
+ * @component
+ * @example
+ * // Example usage of VenueInfo component:
+ * import VenueInfo from './VenueInfo';
+ * <VenueInfo />
+ */
 function VenueInfo() {
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
   const { id } = useParams();
   const { validateField } = useVenues();
   const [venue, setVenue] = useState(null);
-  // const [selectedDate, setSelectedDate] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [result, setResult] = useState(null);
@@ -45,12 +55,6 @@ function VenueInfo() {
 
   const apiCall = useApiCall();
 
-  console.log("formState", formState);
-
-  // useEffect(() => {
-  //   setSelectedImage(venue.media[0].url);
-  // }, [venue]);
-
   const onDateChange = (value) => {
     if (selecting) {
       setFormState({
@@ -69,22 +73,6 @@ function VenueInfo() {
     }
   };
 
-  // useEffect(() => {
-  //   if (startDate && endDate) {
-  //     const start = new Date(startDate);
-  //     const end = new Date(endDate);
-  //     if (!isNaN(start) && !isNaN(end)) {
-  //       const oneDay = 24 * 60 * 60 * 1000;
-  //       const daysDifference = Math.round(Math.abs((end - start) / oneDay) + 1);
-  //       // console.log("daysDifference:", daysDifference);
-  //       const value = venue ? venue.price : 0;
-  //       const calculatedResult = daysDifference * value;
-  //       // console.log("calculatedResult:", calculatedResult);
-  //       setResult(calculatedResult);
-  //     }
-  //   }
-  // }, [startDate, endDate, venue]);
-
   useEffect(() => {
     if (startDate && endDate) {
       const oneDay = 24 * 60 * 60 * 1000;
@@ -96,8 +84,6 @@ function VenueInfo() {
       setResult(calculatedResult);
     }
   }, [startDate, endDate, venue]);
-
-  /*------------*/
 
   useEffect(() => {
     const foundVenue = venues.find((venue) => venue.id.toString() === id);
@@ -212,8 +198,13 @@ function VenueInfo() {
         <div className="flex flex-col gap-7 lg:gap-0">
           <div className="flex flex-col justify-center items-center self-center min-h-128 lg:px-5 xl:px-12">
             <div className="flex justify-around items-center w-64 sm:w-box510 sm:justify-start sm:gap-48">
-              <h2 className="text-2xl font-bold break-words lg:w-box340">{venue.name}</h2>
-              <p className="text-end w-11 text-lg">⭐{venue.rating}</p>
+              <h2 className="text-2xl font-bold break-words lg:w-box340">{venue.name || "Venue Name Not Available"}</h2>
+              <div className="flex gap-1 text-xl">
+                <p className="text-star">
+                  <FontAwesomeIcon icon={faStar} />
+                </p>
+                <p>{venue.rating}</p>
+              </div>
             </div>
             <div className="flex flex-col items-center gap-4 w-64 sm:flex-row sm:justify-evenly sm:gap-20">
               <div className="flex flex-col gap-2.5 min-w-60 ">
@@ -229,59 +220,51 @@ function VenueInfo() {
                   <h2 className="text-xl font-semibold">Location:</h2>
                   <div className="flex justify-between bg-greyBlur px-1 text-lg flex-wrap">
                     <p>Address:</p>
-                    <p>{venue.location.address}</p>
+                    <p>{venue.location.address || "Address Not Available"}</p>
                   </div>
                   <div className="flex justify-between px-1 text-lg flex-wrap">
                     <p>City:</p>
-                    <p>{venue.location.city}</p>
+                    <p>{venue.location.city || "City Not Available"}</p>
                   </div>
                   <div className="flex justify-between bg-greyBlur px-1 text-lg flex-wrap">
                     <p>Zip:</p>
-                    <p>{venue.location.zip}</p>
+                    <p>{venue.location.zip || "Zip Not Available"}</p>
                   </div>
                   <div className="flex justify-between px-1 text-lg flex-wrap">
                     <p>Country:</p>
-                    <p>{venue.location.country}</p>
+                    <p>{venue.location.country || "Country Not Available"}</p>
                   </div>
                   <div className="flex justify-between bg-greyBlur px-1 text-lg flex-wrap">
                     <p>Continent:</p>
-                    <p>{venue.location.continent}</p>
+                    <p>{venue.location.continent || "Continent Not Available"}</p>
                   </div>
                 </div>
               </div>
               <div className="flex flex-col items-center min-w-48">
                 <h2 className="text-xl font-semibold">Amenities:</h2>
-                <div className="flex flex-wrap gap-2.5 justify-center pt-2.5">
+                <div className="flex h-10 gap-2.5">
                   {venue.meta.wifi && (
-                    <div className="flex flex-col items-center w-24 text-lg">
-                      <h3 title="Wifi included" className="metaIconTrue">
-                        <FontAwesomeIcon icon={faWifi} />
-                      </h3>
-                      <p>Wifi</p>
+                    <div title="Wifi included" className="metaIconTrue">
+                      <FontAwesomeIcon icon={faWifi} />
+                      <span className="sr-only">Wifi included</span>
                     </div>
                   )}
                   {venue.meta.parking && (
-                    <div className="flex flex-col items-center w-24 text-lg">
-                      <h3 title="Parking available" className="metaIconTrue">
-                        <FontAwesomeIcon icon={faSquareParking} />
-                      </h3>
-                      <p>Parking</p>
+                    <div title="Parking available" className="metaIconTrue">
+                      <FontAwesomeIcon icon={faSquareParking} />
+                      <span className="sr-only">Parking available</span>
                     </div>
                   )}
                   {venue.meta.breakfast && (
-                    <div className="flex flex-col items-center w-24 text-lg">
-                      <h3 title="Breakfast included" className="metaIconTrue">
-                        <FontAwesomeIcon icon={faMugHot} />
-                      </h3>
-                      <p>Breakfast</p>
+                    <div title="Breakfast included" className="metaIconTrue">
+                      <FontAwesomeIcon icon={faMugHot} />
+                      <span className="sr-only">Breakfast included</span>
                     </div>
                   )}
                   {venue.meta.pets && (
-                    <div className="flex flex-col items-center w-24 text-lg">
-                      <h3 title="Pets permitted" className="metaIconTrue">
-                        <FontAwesomeIcon icon={faPaw} />
-                      </h3>
-                      <p>Pets</p>
+                    <div title="Pets permitted" className="metaIconTrue">
+                      <FontAwesomeIcon icon={faPaw} />
+                      <span className="sr-only">Pets permitted</span>
                     </div>
                   )}
                 </div>
