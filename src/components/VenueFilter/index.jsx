@@ -134,7 +134,7 @@ function VenueFilter({ setFilteredVenues }) {
   };
 
   return (
-    <div className="flex justify-center venueEdit">
+    <div className="flex justify-center venueEdit m-2.5">
       <form id="filterForm" onSubmit={handleSubmit} className="flex flex-col justify-center rounded p-7 gap-2.5 max-w-box700 venueFilterBox">
         <label htmlFor="name" className="wave-fix ">
           Name
@@ -142,7 +142,7 @@ function VenueFilter({ setFilteredVenues }) {
         <input type="text" id="name" name="name" onChange={handleChange} placeholder="Name" className="w-5/6 text-lg sm:w-box570" />
 
         <div className="flex flex-wrap gap-2.5 justify-center">
-          <div>
+          <div className="flex justify-center w-5/6 sm:w-auto">
             <label htmlFor="country" className="wave-fix ">
               Country
             </label>
@@ -152,20 +152,20 @@ function VenueFilter({ setFilteredVenues }) {
               name="location.country"
               onChange={handleChange}
               placeholder="Country"
-              className="w-5/6 text-lg sm:w-box280"
+              className="w-full text-lg sm:w-box280"
             />
           </div>
-          <div>
+          <div className="flex justify-center w-5/6 sm:w-auto">
             <label htmlFor="city" className="wave-fix ">
               City
             </label>
-            <input type="text" id="city" name="location.city" onChange={handleChange} placeholder="City" className="w-5/6 text-lg sm:w-box280" />
+            <input type="text" id="city" name="location.city" onChange={handleChange} placeholder="City" className="w-full text-lg sm:w-box280" />
           </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-2.5 justify-center  sm:justify-between">
           <div className="flex flex-col gap-2.5">
             <fieldset>
-              <legend>Rating</legend>
+              <legend className="wave-fix">Rating</legend>
               <div className="flex gap-2.5 justify-center text-lg">
                 {[1, 2, 3, 4, 5].map((rating) => (
                   <label key={rating}>
