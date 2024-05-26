@@ -5,9 +5,7 @@ module.exports = {
     extend: {
       spacing: {
         formDiv35: "35rem",
-        box75: "75px",
         box150: "150px",
-        box180: "180px",
         box200: "200px",
         box245: "245px",
         270: "270px",
@@ -46,10 +44,7 @@ module.exports = {
     colors: {
       white: "#ffffff",
       black: "#000000",
-      metal: "#565584",
       tahiti: "#3ab7bf",
-      silver: "#ecebff",
-      "bubble-gum": "#ff77e9",
       bermuda: "#78dcca",
       redish: "#F57575",
       green: "#3ee230",

@@ -114,30 +114,6 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
   }
 
   /**
-   * Component representing a confirmation modal for editing or canceling a booking.
-   * @param {function} onConfirm - Function to handle confirmation action.
-   * @param {function} onCancel - Function to handle cancellation action.
-   */
-  // const ConfirmationModal = ({ onConfirm, onCancel }) => {
-  //   const message = actionType === "submit" ? "Are you sure you want to edit this booking?" : "Are you sure you want to cancel this booking?";
-  //   return (
-  //     <div className="overlayCheck bookingEditModuleHight" onTouchStart={(e) => e.stopPropagation()}>
-  //       <div className="modulePosition flex flex-col justify-center rounded-lg">
-  //         <p className="text-xl text-center">{message}</p>
-  //         <div className="flex gap-5 justify-evenly pt-5">
-  //           <button className="btnStyle confirmBtn w-24 bg-green" onClick={onConfirm}>
-  //             Yes
-  //           </button>
-  //           <button className="btnStyle denyBtn w-24 bg-redish" onClick={onCancel}>
-  //             No
-  //           </button>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // };
-
-  /**
    * Handles form submission for editing a booking.
    * @param {object} event - The form submission event.
    */
