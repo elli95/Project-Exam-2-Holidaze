@@ -3,7 +3,7 @@ import { API_VENUES } from "../../shared/apis";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import usePostApiKey from "../../hooks/usePostApiKey";
 import useApiCall from "../../hooks/useApiCall";
-import useVenues from "../../store/venueLocations";
+import useValidation from "../../util/venueLocations";
 
 /**
  * Component for creating a new venue.
@@ -15,7 +15,7 @@ import useVenues from "../../store/venueLocations";
  * @returns {JSX.Element} The JSX element representing the create venue form.
  */
 function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
-  const { validateField } = useVenues();
+  const { validateField } = useValidation();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
   const [showModal, setShowModal] = useState(false);

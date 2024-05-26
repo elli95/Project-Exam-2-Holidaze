@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { API_LOGIN_URL } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
-import useVenues from "../../store/venueLocations";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import useValidation from "../../util/venueLocations";
 
 console.log("123123123@stud.noroff.no or robinTest@stud.noroff.no or robin@stud.noroff.no");
 
@@ -17,7 +17,7 @@ console.log("123123123@stud.noroff.no or robinTest@stud.noroff.no or robin@stud.
  */
 
 function LoginPage() {
-  const { validateField } = useVenues();
+  const { validateField } = useValidation();
   const [errorMessage, setErrorMessage] = useState("");
 
   const [shown, setShown] = useState(false);

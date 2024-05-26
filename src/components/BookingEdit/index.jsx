@@ -4,9 +4,9 @@ import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { API_BOOKINGS } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
-import useVenues from "../../store/venueLocations";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
+import useValidation from "../../util/venueLocations";
 
 /**
  * BookingEdit component allows users to edit their booking details.
@@ -23,7 +23,7 @@ import { faStar, faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/f
  * <BookingEdit setVenueIdToShow={setVenueIdToShow} setBooking={setBooking} venueId={venueId} handleCloseBtn={handleCloseBtn} onDeleteBooking={onDeleteBooking} />
  */
 function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, onDeleteBooking }) {
-  const { validateField } = useVenues();
+  const { validateField } = useValidation;
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
   const { profileData } = useGETProfileData();

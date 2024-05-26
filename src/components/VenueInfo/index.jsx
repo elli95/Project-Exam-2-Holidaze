@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import useVenues from "../../store/venueLocations";
 import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import { API_BOOKINGS } from "../../shared/apis";
@@ -9,6 +8,7 @@ import useApiCall from "../../hooks/useApiCall";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
 import useVenueApiCall from "../../hooks/useVenueApiCall";
+import useValidation from "../../util/venueLocations";
 
 /**
  * The VenueInfo component displays detailed information about a venue,
@@ -25,7 +25,7 @@ function VenueInfo() {
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
   const { id } = useParams();
-  const { validateField } = useVenues();
+  const { validateField } = useValidation();
   const [venue, setVenue] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);

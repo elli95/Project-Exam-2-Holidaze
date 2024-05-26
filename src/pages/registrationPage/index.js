@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { API_REGISTER_URL } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
-import useVenues from "../../store/venueLocations";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
+import useValidation from "../../util/venueLocations";
 
 /**
  * RegistrationPage component renders a registration form for users to sign up.
@@ -16,7 +16,7 @@ import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
  */
 
 function RegistrationPage() {
-  const { validateField } = useVenues();
+  const { validateField } = useValidation();
   const [successMessage, setSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 

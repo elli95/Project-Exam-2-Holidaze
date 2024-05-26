@@ -4,7 +4,7 @@ import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { API_VENUES } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
-import useVenues from "../../store/venueLocations";
+import useValidation from "../../util/venueLocations";
 
 /**
  * Component for editing a venue.
@@ -20,7 +20,7 @@ import useVenues from "../../store/venueLocations";
  * @returns {JSX.Element} The JSX element representing the venue edit form.
  */
 function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venueId, handleCloseBtn, setIsCreateVenueShown, onDeleteVenue }) {
-  const { validateField } = useVenues();
+  const { validateField } = useValidation();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
   const { profileData } = useGETProfileData();

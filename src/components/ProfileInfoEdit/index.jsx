@@ -4,7 +4,7 @@ import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { API_PROFILES } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
-import useVenues from "../../store/venueLocations";
+import useValidation from "../../util/venueLocations";
 
 /**
  * Component to edit the user's profile information.
@@ -31,7 +31,7 @@ function ProfileInfoEdit({
   setSectionBButtonDisabled,
   handleCloseBtn,
 }) {
-  const { validateField } = useVenues();
+  const { validateField } = useValidation();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
   const [errorMessage, setErrorMessage] = useState("");
