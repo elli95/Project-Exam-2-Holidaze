@@ -505,4 +505,7 @@ img {
   .headerImg {
     position: fixed !important;
   }
+  .headerMenu {
+    position: initial !important;
+  }
 }
