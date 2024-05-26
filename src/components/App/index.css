@@ -16,7 +16,7 @@ body {
   display: flex;
   justify-content: center;
   min-height: 100vh;
-  background-image: url(../../images/mink-mingle-AlEyuIKuSmc-unsplash.jpg);
+  background-image: url(../../images/mink-mingle-AlEyuIKuSmc-unsplash.webp);
 }
 
 /*Img style*/
@@ -34,11 +34,11 @@ body {
 }
 
 .regImg {
-  background-image: url("../../images/tron-le-JsuBKjHGDMM-unsplash.jpg");
+  background-image: url("../../images/tron-le-JsuBKjHGDMM-unsplash.webp");
 }
 
 .logImg {
-  background-image: url("../../images/allphoto-bangkok-hgPWK6SNfPo-unsplash.jpg");
+  background-image: url("../../images/allphoto-bangkok-hgPWK6SNfPo-unsplash.webp");
 }
 
 img {
