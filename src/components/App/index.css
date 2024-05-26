@@ -366,38 +366,6 @@ img {
 /* .venueEdit {
 } */
 
-/*media*/
-
-@media (max-width: 1024px) {
-  .PasswordInput input {
-    width: 452px !important;
-  }
-  .headerImg {
-    position: fixed !important;
-  }
-}
-
-@media (min-width: 768px) {
-  .headerMenu {
-    position: initial !important;
-    background: none;
-  }
-}
-
-@media (min-width: 640px) {
-  .mainDiv {
-    padding: 20px;
-    margin: 52px 0px 0px 0px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .headerSearch {
-    position: initial !important;
-    background: none;
-  }
-}
-
 /*react calendar*/
 .react-calendar {
   width: 300px;
@@ -554,4 +522,40 @@ img {
 
 .react-calendar--selectRange .react-calendar__tile--hover {
   background-color: #e6e6e6;
+}
+
+/*media*/
+
+@media (max-width: 1024px) {
+  .PasswordInput input {
+    width: 452px !important;
+  }
+  .headerImg {
+    position: fixed !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .headerMenu {
+    position: initial !important;
+    background: none;
+  }
+}
+
+/* @media (min-width: 640px) {
+  .mainDiv {
+    padding: 20px;
+    margin: 52px 0px 0px 0px;
+  }
+} */
+
+@media (min-width: 1024px) {
+  .headerSearch {
+    position: initial !important;
+    background: none;
+  }
+
+  .PasswordInput input {
+    width: 565px !important;
+  }
 }

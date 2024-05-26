@@ -14,19 +14,15 @@ function RegistrationPage() {
   const [shown, setShown] = useState(false);
   const type = shown ? "text" : "password";
   const buttonText = shown ? <FontAwesomeIcon icon={faEyeSlash} /> : <FontAwesomeIcon icon={faEye} />;
+  const buttonAriaLabel = shown ? "Hide password" : "Show password";
 
   const [formState, setFormState] = useState({
     name: "",
     email: "",
-    // bio: "",
     avatar: {
       url: "",
       alt: "",
     },
-    // banner: {
-    //   url: "",
-    //   alt: "",
-    // },
     password: "",
     venueManager: "",
   });
@@ -34,13 +30,9 @@ function RegistrationPage() {
   const [errors, setErrors] = useState({
     name: "",
     email: "",
-    // bio: "",
     avatar: {
       url: "",
     },
-    // banner: {
-    //   url: "",
-    // },
     password: "",
   });
 
@@ -52,8 +44,7 @@ function RegistrationPage() {
 
     switch (name) {
       case "name":
-        // case "bio":
-        newErrors[name] = validateField(value, "inputLength") ? "" : "You must enter at least 1 characters";
+        newErrors[name] = validateField(value, "inputLength") ? "" : "Please enter a name";
         break;
       case "password":
         newErrors.password = validateField(value, "inputLengthPassword")
@@ -66,9 +57,9 @@ function RegistrationPage() {
       case "avatar.url":
         newErrors.avatar.url = validateField(value, "imgUrl") ? "" : "Please enter a valid URL";
         break;
-      // case "banner.url":
-      //   newErrors.banner.url = validateField(value, "imgUrl") ? "" : "Please enter a valid URL";
-      //   break;
+      case "avatar.alt":
+        newErrors.avatar.alt = validateField(value, "minInputLength") ? "" : "Please enter alternative text";
+        break;
       default:
         break;
     }
@@ -82,47 +73,24 @@ function RegistrationPage() {
     let avatarUrl = event.target.elements["avatar.url"].value;
     let avatarAlt = event.target.elements["avatar.alt"].value;
     if (!avatarUrl) {
-      avatarUrl =
-        "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?q=80&w=2624&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+      avatarUrl = "https://images.unsplash.com/photo-1579547945413-497e1b99dac0";
     }
     if (!avatarAlt) {
-      avatarAlt = "This is a goldfish";
+      avatarAlt = "Profile Avatar";
     }
-
-    // let bannerUrl = event.target.elements["banner.url"].value;
-    // let bannerAlt = event.target.elements["banner.alt"].value;
-    // if (!bannerUrl) {
-    //   bannerUrl =
-    //     "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-    // }
-    // if (!bannerAlt) {
-    //   bannerAlt = "A wall of books";
-    // }
 
     const updatedFormState = {
       ...formState,
       name: event.target.elements.name.value,
       email: event.target.elements.email.value,
-      // bio: event.target.elements.bio.value,
       avatar: {
         url: avatarUrl,
         alt: avatarAlt,
       },
-      // banner: {
-      //   url: bannerUrl,
-      //   alt: bannerAlt,
-      // },
       password: event.target.elements.password.value,
       venueManager: event.target.querySelector('input[name="venueManager"]').checked,
     };
     setFormState(updatedFormState);
-
-    console.log("This form Please correct them11111.");
-    // const isValidForm = Object.values(errors).every((error) => !error);
-    // if (isValidForm) {
-    console.log("This form Please correct them33333.");
-    console.log("Form submitted:", formState);
-    console.log("Form submitted:", updatedFormState);
 
     apiCall(
       API_REGISTER_URL,
@@ -144,13 +112,13 @@ function RegistrationPage() {
   };
 
   return (
-    <div className="mainDiv imgCover regImg">
+    <div className="mainDiv imgCover regImg mt-16 py-10 lg:m-0">
       <div className="registrationForm">
         <div className="registrationFormContainer formStyle justify-center items-center min-w-80 sm:w-box610 lg:w-box700">
           <h1 className="text-3xl font-semibold py-2">Registration</h1>
           <form onSubmit={handleSubmit} className="py-2.5">
             <div className="w-72 sm:w-form500">
-              <label htmlFor="name" className="text-xl">
+              <label htmlFor="name" for="name" className="text-xl">
                 Full name
               </label>
               <input
@@ -167,7 +135,7 @@ function RegistrationPage() {
               <span className="error">{errors.name}</span>
             </div>
             <div className="w-72 sm:w-form500">
-              <label htmlFor="email" className="text-xl">
+              <label htmlFor="email" for="email" className="text-xl">
                 Email
               </label>
               <input
@@ -181,23 +149,8 @@ function RegistrationPage() {
               />
               <span className="error">{errors.email}</span>
             </div>
-            {/* <div className="w-72 sm:w-form500">
-              <label htmlFor="bio">Bio</label>
-              <textarea
-                type="text"
-                name="bio"
-                placeholder="Bio description"
-                onBlur={handleBlur}
-                minLength={3}
-                maxLength={160}
-                aria-label="Bio"
-                className="bg-greyBlur w-box280 h-36 sm:h-24 sm:w-box490"
-                required
-              />
-              <span className="error">{errors.bio}</span>
-            </div> */}
             <div className="w-72 sm:w-form500">
-              <label htmlFor="avatar.url" className="text-xl">
+              <label htmlFor="avatar.url" for="avatar.url" className="text-xl">
                 Avatar url
               </label>
               <input
@@ -211,7 +164,7 @@ function RegistrationPage() {
               <span className="error">{errors.avatar.url}</span>
             </div>
             <div className="w-72 sm:w-form500">
-              <label htmlFor="avatar.alt" className="text-xl">
+              <label htmlFor="avatar.alt" for="avatar.alt" className="text-xl">
                 Avatar alternative text
               </label>
               <input
@@ -223,31 +176,8 @@ function RegistrationPage() {
                 className="text-lg bg-greyBlur w-box280 sm:w-box490"
               />
             </div>
-            {/* <div className="w-72 sm:w-form500">
-              <label htmlFor="banner.url">Profile banner url</label>
-              <input
-                type="text"
-                name="banner.url"
-                placeholder="Profile banner url"
-                onBlur={handleBlur}
-                aria-label="Profile banner url"
-                className="bg-greyBlur w-box280 sm:w-box490"
-              />
-              <span className="error">{errors.banner.url}</span>
-            </div>
             <div className="w-72 sm:w-form500">
-              <label htmlFor="banner.alt">Profile banner alternative text</label>
-              <input
-                type="text"
-                name="banner.alt"
-                placeholder="Profile banner alternative text"
-                minLength={3}
-                aria-label="Profile banner alternative text"
-                className="bg-greyBlur w-box280 sm:w-box490"
-              />
-            </div> */}
-            <div className="w-72 sm:w-form500">
-              <label htmlFor="password" className="text-xl">
+              <label htmlFor="password" for="password" className="text-xl">
                 Password
               </label>
               <div className="PasswordInput">
@@ -261,18 +191,18 @@ function RegistrationPage() {
                   className="text-lg bg-greyBlur"
                   required
                 />
-                <button type="button" className="w-7 text-xl" onClick={() => setShown(!shown)}>
+                <button type="button" className="w-7 text-xl" onClick={() => setShown(!shown)} aria-label={buttonAriaLabel}>
                   {buttonText}
                 </button>
               </div>
               <span className="error">{errors.password}</span>
             </div>
             <div className="checkboxStyle">
-              <label htmlFor="venueManager" className="text-xl">
+              <label htmlFor="venueManager" for="venueManager" className="text-xl">
                 Venue manager
               </label>
               <input type="hidden" name="venueManager" value="0" />
-              <input type="checkbox" name="venueManager" className="text-xl" />
+              <input type="checkbox" id="venueManager" name="venueManager" className="text-xl" />
             </div>
             <button type="submit" className="btnStyle text-xl w-32">
               Submit

@@ -34,6 +34,8 @@ const useVenues = create((set) => ({
         return (
           value === "" || /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?/.test(value)
         );
+      case "minInputLength":
+        return value.length >= 1;
       case "inputLength":
         return value.length >= 1 && value.length <= 20;
       case "inputLengthPassword":

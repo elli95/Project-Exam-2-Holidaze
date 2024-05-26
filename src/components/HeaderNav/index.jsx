@@ -37,7 +37,7 @@ function HeaderNav() {
       <Link to="/">
         <h1 className="text-5xl text-white">Holidaze</h1>
       </Link>
-      <FontAwesomeIcon icon={faMagnifyingGlass} onClick={handleSearchClick} className="lg:hidden text-white" />
+      <FontAwesomeIcon icon={faMagnifyingGlass} onClick={handleSearchClick} className="lg:hidden text-white" aria-label="Search" />
       <div
         className={`flex ${
           isSearchShown ? "show" : "hidden"
@@ -45,7 +45,7 @@ function HeaderNav() {
       >
         <SearchField onLinkClick={handleHideMenus} />
       </div>
-      <FontAwesomeIcon icon={faBars} onClick={handleNavClick} className="md:hidden text-white" />
+      <FontAwesomeIcon icon={faBars} onClick={handleNavClick} className="md:hidden text-white" aria-label="Menu" />
       <nav
         className={`flex ${
           isNavShown ? "show" : "hidden"
