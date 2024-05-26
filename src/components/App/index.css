@@ -267,11 +267,11 @@ img {
 }
 
 .highlightBooked {
-  background-color: yellow !important; /* Customize the styling as desired */
+  background-color: #f0f0f0 !important; /* Customize the styling as desired */
 }
 
 .highlightBooking {
-  background-color: rgb(94, 17, 217) !important; /* Customize the styling as desired */
+  background-color: #006edc !important; /* Customize the styling as desired */
 }
 
 /*Venue page*/
