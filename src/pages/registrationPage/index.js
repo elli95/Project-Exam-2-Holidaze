@@ -4,7 +4,7 @@ import useApiCall from "../../hooks/useApiCall";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
-import useValidation from "../../util/venueLocations";
+import useValidation from "../../util/useValidation";
 
 /**
  * RegistrationPage component renders a registration form for users to sign up.

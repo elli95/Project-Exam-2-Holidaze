@@ -4,7 +4,7 @@ import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { API_PROFILES } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
-import useValidation from "../../util/venueLocations";
+import useValidation from "../../util/useValidation";
 
 /**
  * Component to edit the user's profile information.

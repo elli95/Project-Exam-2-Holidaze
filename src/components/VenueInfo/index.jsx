@@ -8,7 +8,7 @@ import useApiCall from "../../hooks/useApiCall";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
 import useVenueApiCall from "../../hooks/useVenueApiCall";
-import useValidation from "../../util/venueLocations";
+import useValidation from "../../util/useValidation";
 
 /**
  * The VenueInfo component displays detailed information about a venue,

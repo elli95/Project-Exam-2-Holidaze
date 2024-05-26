@@ -4,7 +4,7 @@ import useApiCall from "../../hooks/useApiCall";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import useValidation from "../../util/venueLocations";
+import useValidation from "../../util/useValidation";
 
 /**
  * LoginPage component handles user login functionality.
