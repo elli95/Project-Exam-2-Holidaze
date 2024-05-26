@@ -5,8 +5,22 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 import { API_PROFILES } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import useVenues from "../../store/venueLocations";
-// import useBtnDividerEventHandlers from "../../hooks/useBtnDividerEventHandlers";
 
+/**
+ * Component to edit the user's profile information.
+ *
+ * @component
+ * @param {Object} props - The props object.
+ * @param {Function} props.setProfileData - Function to update the profile data in the parent component.
+ * @param {Function} props.setIsProfileEditShown - Function to toggle the profile edit form visibility.
+ * @param {Function} props.setIsUserManager - Function to set the user's manager status.
+ * @param {Function} props.setIsSectionAShown - Function to toggle the visibility of section A.
+ * @param {Function} props.setIsSectionBShown - Function to toggle the visibility of section B.
+ * @param {Function} props.setSectionAButtonDisabled - Function to disable the section A button.
+ * @param {Function} props.setSectionBButtonDisabled - Function to disable the section B button.
+ * @param {Function} props.handleCloseBtn - Function to handle closing the profile edit form.
+ * @returns {JSX.Element} The ProfileInfoEdit component.
+ */
 function ProfileInfoEdit({
   setProfileData,
   setIsProfileEditShown,
@@ -20,14 +34,9 @@ function ProfileInfoEdit({
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
-  // const [isVenueFormShown, setIsVenueFormShown] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // const [profileData, setProfileData] = useState();
-
   const { profileData } = useGETProfileData();
-
-  // const { setIsSectionAShown } = useBtnDividerEventHandlers();
 
   const [formState, setFormState] = useState({
     bio: "",
@@ -51,6 +60,13 @@ function ProfileInfoEdit({
     },
   });
 
+  /**
+   * Handles blur events on form fields to validate input.
+   *
+   * @param {Object} event - The blur event object.
+   * @param {string} event.target.name - The name of the input field.
+   * @param {string} event.target.value - The value of the input field.
+   */
   const handleBlur = (event) => {
     const { name, value } = event.target;
     const newErrors = { ...errors };
@@ -71,28 +87,28 @@ function ProfileInfoEdit({
 
   const apiCall = useApiCall();
 
-  // const handleCreateVenueForm = () => {
-  //   setIsVenueFormShown(!isVenueFormShown);
-  // };
-
+  /**
+   * Handles the form submission to update the user's profile information.
+   *
+   * @param {Object} event - The form submission event object.
+   * @param {HTMLFormElement} event.target - The form element.
+   */
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     let avatarUrl = event.target.elements["avatar.url"].value;
     let avatarAlt = event.target.elements["avatar.alt"].value;
     if (!avatarUrl) {
-      avatarUrl =
-        "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?q=80&w=2624&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+      avatarUrl = "https://images.unsplash.com/photo-1579547945413-497e1b99dac0";
     }
     if (!avatarAlt) {
-      avatarAlt = "This is a goldfish";
+      avatarAlt = "Profile Avatar";
     }
 
     let bannerUrl = event.target.elements["banner.url"].value;
     let bannerAlt = event.target.elements["banner.alt"].value;
     if (!bannerUrl) {
-      bannerUrl =
-        "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+      bannerUrl = "https://images.unsplash.com/photo-1457369804613-52c61a468e7d";
     }
     if (!bannerAlt) {
       bannerAlt = "A wall of books";
@@ -154,7 +170,6 @@ function ProfileInfoEdit({
     }
   };
 
-  console.log("try333", profileData);
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="self-end">
@@ -162,12 +177,6 @@ function ProfileInfoEdit({
           Close
         </button>
       </div>
-      {/* <div className="flex justify-center">
-        <button className="btnStyle w-44" onClick={handleCreateVenueForm}>
-          Edit Profile
-        </button>
-      </div> */}
-      {/* {isVenueFormShown && ( */}
       {!profileData.name ? (
         <div className="loading"></div>
       ) : (
@@ -175,9 +184,10 @@ function ProfileInfoEdit({
           <h2 className="font-semibold text-lg">Edit Profile Information</h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-64 sm:w-form500">
             <div className="flex flex-col">
-              <label htmlFor="name">User bio</label>
+              <label htmlFor="bio">User bio</label>
               <textarea
                 type="text"
+                id="bio"
                 name="bio"
                 placeholder="User bio"
                 minLength={3}
@@ -191,6 +201,7 @@ function ProfileInfoEdit({
               <label htmlFor="avatar.url">Venue avatar url</label>
               <input
                 type="text"
+                id="avatar.url"
                 name="avatar.url"
                 placeholder="User avatar url"
                 aria-label="User avatar url"
@@ -204,6 +215,7 @@ function ProfileInfoEdit({
               <label htmlFor="avatar.alt">Venue avatar alternative text</label>
               <input
                 type="text"
+                id="avatar.alt"
                 name="avatar.alt"
                 placeholder="User avatar alternative text"
                 aria-label="User avatar alternative text"
@@ -215,6 +227,7 @@ function ProfileInfoEdit({
               <label htmlFor="banner.url">Profile banner url</label>
               <input
                 type="text"
+                id="banner.url"
                 name="banner.url"
                 placeholder="Profile banner url"
                 aria-label="Profile banner url"
@@ -228,6 +241,7 @@ function ProfileInfoEdit({
               <label htmlFor="banner.alt">Profile banner alternative text</label>
               <input
                 type="text"
+                id="banner.alt"
                 name="banner.alt"
                 placeholder="Profile banner alternative text"
                 aria-label="Profile banner alternative text"
@@ -237,7 +251,14 @@ function ProfileInfoEdit({
             </div>
             <div className="checkboxStyle">
               <label htmlFor="venueManager">Venue Manager</label>
-              <input type="checkbox" name="venueManager" aria-label="Venue Manager" defaultChecked={profileData.venueManager} className="switch" />
+              <input
+                type="checkbox"
+                id="venueManager"
+                name="venueManager"
+                aria-label="Venue Manager"
+                defaultChecked={profileData.venueManager}
+                className="switch"
+              />
             </div>
             <button type="submit" className="btnStyle w-36 self-center mt-5">
               Save changes
@@ -247,7 +268,6 @@ function ProfileInfoEdit({
           {errorMessage && <span className="error flex justify-center pt-2.5 text-xl">{errorMessage}</span>}
         </div>
       )}
-      {/* )} */}
     </div>
   );
 }

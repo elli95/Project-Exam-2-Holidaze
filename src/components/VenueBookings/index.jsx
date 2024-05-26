@@ -1,29 +1,25 @@
-// import useFetchApi from "../../hooks/useFetchApi";
-// import { API_VENUES } from "../../shared/apis";
-// import { useState } from "react";
 import usePostApiKey from "../../hooks/usePostApiKey";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useApiCall from "../../hooks/useApiCall";
 import { useEffect, useState } from "react";
-// import useGETProfileData from "../../hooks/useGETProfileData";
-// import useVenueApiCall from "../../hooks/useVenueApiCall";
-// import { useParams } from "react-router-dom";
 import { API_PROFILES } from "../../shared/apis";
 
+/**
+ * Component to display bookings for a specific venue.
+ *
+ * @component
+ * @param {Object} props - The props object.
+ * @param {string} props.venueId - The ID of the venue for which to display bookings.
+ * @param {Function} props.handleCloseBtn - Function to handle closing the booking view.
+ * @returns {JSX.Element} The VenueBookings component.
+ */
 function VenueBookings({ venueId, handleCloseBtn }) {
-  // const { venues } = useFetchApi(API_VENUES + "/?_bookings=true");
-
   const [errorMessage, setErrorMessage] = useState("");
   const [booking, setBooking] = useState([]);
   const [venues, setVenues] = useState([]);
-  // const [inputValue, setInputValue] = useState("");
   const { apiKey } = usePostApiKey();
   const { accessToken, userInfo } = useLocalStorage();
   const apiCall = useApiCall();
-  // const { id } = useParams();
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [itemsPerPage] = useState(40);
-  // const { errorMessageVenues, venues, meta } = useVenueApiCall(currentPage, itemsPerPage);
   console.log("profileData", venues);
   console.log("venueId", venueId);
   console.log("userInfo", userInfo.name);
@@ -31,6 +27,9 @@ function VenueBookings({ venueId, handleCloseBtn }) {
 
   const [hasFetched, setHasFetched] = useState(false);
 
+  /**
+   * Fetches the user's profile data and their venue bookings.
+   */
   useEffect(() => {
     const fetchProfileUserVenueBooking = async () => {
       try {
@@ -55,21 +54,17 @@ function VenueBookings({ venueId, handleCloseBtn }) {
 
     if (userInfo.name && accessToken && apiKey.key && venueId && !hasFetched) {
       fetchProfileUserVenueBooking();
-      setHasFetched(true); // Mark as fetched to prevent future fetches
+      setHasFetched(true);
     }
   }, [apiCall, userInfo.name, accessToken, apiKey.key, venueId, hasFetched]);
 
-  // let venueBookingsFilter;
-
   useEffect(() => {
     if (venues) {
-      console.log("profileData venuesvenuesvenues", venues);
       const venueBookingsFilter = venues.filter((venue) => venue.id === venueId);
       setBooking(venueBookingsFilter);
     }
   }, [venues, venueId]);
 
-  console.log("profileData venuesvenuesvenues", booking);
   return (
     <div>
       <div className="flex justify-end mb-2.5">
