@@ -5,18 +5,19 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 import { API_VENUES } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import { useFormState } from "../../util/useFormState";
+import { ConfirmationModal } from "../../util/ConfirmationModal";
 
 /**
  * Component for editing a venue.
  *
  * @param {Object} props - The properties passed to the component.
- * @param {Function} props.setVenueIdToShow - Function to set the venue ID to show.
- * @param {Function} props.setIsVenueBookingsShown - Function to set the visibility of venue bookings.
+ * @param {Function} props.setVenueIdToShow - Function to set the id of the venue to show.
+ * @param {Function} props.setIsVenueBookingsShown - Function to set the visibility of the venue bookings.
  * @param {Function} props.setVenues - Function to set the list of venues.
- * @param {string} props.venueId - The ID of the venue being edited.
+ * @param {string} props.venueId - The ID of the venue to edit.
  * @param {Function} props.handleCloseBtn - Function to handle closing the venue edit form.
  * @param {Function} props.setIsCreateVenueShown - Function to set the visibility of the create venue form.
- * @param {Function} props.onDeleteVenue - Function to handle venue deletion.
+ * @param {Function} props.onDeleteVenue - Function to handle deletion of a venue.
  * @returns {JSX.Element} The JSX element representing the venue edit form.
  */
 function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venueId, handleCloseBtn, setIsCreateVenueShown, onDeleteVenue }) {
@@ -45,35 +46,6 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
       runCount.current += 1;
     }
   }, [editVenueFilter, handleAddImage]);
-
-  /**
-   * Confirmation modal component for confirming venue actions.
-   *
-   * @param {Object} props - The properties passed to the component.
-   * @param {Function} props.onConfirm - Function to confirm the action.
-   * @param {Function} props.onCancel - Function to cancel the action.
-   * @returns {JSX.Element} The JSX element representing the confirmation modal.
-   */
-  const ConfirmationModal = ({ onConfirm, onCancel }) => {
-    const message = actionType === "submit" ? "Are you sure you want to edit this booking?" : "Are you sure you want to delete this booking?";
-    return (
-      <div className="overlayCheckVenue w-box300 sm:w-box565 md:w-form580 lg:w-box850">
-        <div className="modulePositionVenue rounded-lg w-box245 sm:w-auto">
-          <div className="flex flex-col justify-center ">
-            <p className="text-xl text-center">{message}</p>
-            <div className="flex gap-5 justify-evenly pt-5">
-              <button className="btnStyle confirmBtn w-24 bg-green" onClick={onConfirm}>
-                Yes
-              </button>
-              <button className="btnStyle denyBtn w-24 bg-redish" onClick={onCancel}>
-                No
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   /**
    * Handles confirmation of venue update.
@@ -161,7 +133,16 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
           Close
         </button>
       </div>
-      {showModal && <ConfirmationModal onConfirm={confirmHandler} onCancel={handleCancel} />}
+      {showModal && (
+        <ConfirmationModal
+          message={actionType === "submit" ? "Are you sure you want to edit this venue?" : "Are you sure you want to delete this venue?"}
+          onConfirm={confirmHandler}
+          onCancel={handleCancel}
+          containerClassName="overlayCheckVenue w-box300 sm:w-box565 md:w-form580 lg:w-box850"
+          contentClassName="modulePositionVenue rounded-lg w-box245 sm:w-auto"
+          buttonClassName={{ confirm: "bg-green", deny: "bg-redish" }}
+        />
+      )}
       <div>
         {!editVenueFilter ? (
           <div className="loading"></div>

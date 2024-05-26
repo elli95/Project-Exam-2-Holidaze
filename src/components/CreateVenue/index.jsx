@@ -4,15 +4,16 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 import usePostApiKey from "../../hooks/usePostApiKey";
 import useApiCall from "../../hooks/useApiCall";
 import { useFormState } from "../../util/useFormState";
+import { ConfirmationModal } from "../../util/ConfirmationModal";
 
 /**
  * Component for creating a new venue.
  *
  * @param {Object} props - The properties passed to the component.
  * @param {Function} props.setVenues - Function to set the list of venues.
- * @param {Function} props.handleCloseBtn - Function to handle closing the create venue form.
+ * @param {Function} props.handleCloseBtn - Function to handle closing the venue creation form.
  * @param {Function} props.setIsCreateVenueShown - Function to set the visibility of the create venue form.
- * @returns {JSX.Element} The JSX element representing the create venue form.
+ * @returns {JSX.Element} The JSX element representing the venue creation form.
  */
 function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
   const { formState, errors, handleBlur, handleAddImage, handleRemoveImage, handleSubmit } = useFormState();
@@ -22,34 +23,6 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
   const [errorMessage, setErrorMessage] = useState("");
 
   const apiCall = useApiCall();
-
-  /**
-   * Confirmation modal component for confirming venue creation.
-   *
-   * @param {Object} props - The properties passed to the component.
-   * @param {Function} props.onConfirm - Function to confirm venue creation.
-   * @param {Function} props.onCancel - Function to cancel venue creation.
-   * @returns {JSX.Element} The JSX element representing the confirmation modal.
-   */
-  const ConfirmationModal = ({ onConfirm, onCancel }) => {
-    return (
-      <div className="overlayCheckVenue w-box300 sm:w-box565 md:w-form580 lg:w-box850">
-        <div className="modulePositionVenue rounded-lg w-box245 sm:w-auto">
-          <div className="flex flex-col justify-center ">
-            <p className="text-xl text-center">Create new Venue?</p>
-            <div className="flex gap-5 justify-evenly pt-5">
-              <button className="btnStyle confirmBtn w-24 bg-green" onClick={onConfirm}>
-                Yes
-              </button>
-              <button className="btnStyle denyBtn w-24 bg-redish" onClick={onCancel}>
-                No
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   /**
    * Handles confirmation of venue creation.
@@ -98,7 +71,16 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
           Close
         </button>
       </div>
-      {showModal && <ConfirmationModal onConfirm={handleConfirm} onCancel={handleCancel} />}
+      {showModal && (
+        <ConfirmationModal
+          message={"Create new Venue?"}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+          containerClassName="overlayCheckVenue w-box300 sm:w-box565 md:w-form580 lg:w-box850"
+          contentClassName="modulePositionVenue rounded-lg w-box245 sm:w-auto"
+          buttonClassName={{ confirm: "bg-green", deny: "bg-redish" }}
+        />
+      )}
 
       <div>
         <form onSubmit={(e) => handleSubmit(e, setShowModal)} className="flex flex-col venueEdit">

@@ -6,6 +6,7 @@ import { API_BOOKINGS } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
+import { ConfirmationModal } from "../../util/ConfirmationModal";
 
 /**
  * BookingEdit component allows users to edit their booking details.
@@ -117,24 +118,24 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
    * @param {function} onConfirm - Function to handle confirmation action.
    * @param {function} onCancel - Function to handle cancellation action.
    */
-  const ConfirmationModal = ({ onConfirm, onCancel }) => {
-    const message = actionType === "submit" ? "Are you sure you want to edit this booking?" : "Are you sure you want to cancel this booking?";
-    return (
-      <div className="overlayCheck bookingEditModuleHight" onTouchStart={(e) => e.stopPropagation()}>
-        <div className="modulePosition flex flex-col justify-center rounded-lg">
-          <p className="text-xl text-center">{message}</p>
-          <div className="flex gap-5 justify-evenly pt-5">
-            <button className="btnStyle confirmBtn w-24 bg-green" onClick={onConfirm}>
-              Yes
-            </button>
-            <button className="btnStyle denyBtn w-24 bg-redish" onClick={onCancel}>
-              No
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  // const ConfirmationModal = ({ onConfirm, onCancel }) => {
+  //   const message = actionType === "submit" ? "Are you sure you want to edit this booking?" : "Are you sure you want to cancel this booking?";
+  //   return (
+  //     <div className="overlayCheck bookingEditModuleHight" onTouchStart={(e) => e.stopPropagation()}>
+  //       <div className="modulePosition flex flex-col justify-center rounded-lg">
+  //         <p className="text-xl text-center">{message}</p>
+  //         <div className="flex gap-5 justify-evenly pt-5">
+  //           <button className="btnStyle confirmBtn w-24 bg-green" onClick={onConfirm}>
+  //             Yes
+  //           </button>
+  //           <button className="btnStyle denyBtn w-24 bg-redish" onClick={onCancel}>
+  //             No
+  //           </button>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   /**
    * Handles form submission for editing a booking.
@@ -371,7 +372,16 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
                 Cancel Booking
               </button>
             </div>
-            {showModal && <ConfirmationModal onConfirm={confirmHandler} onCancel={handleCancel} />}
+            {showModal && (
+              <ConfirmationModal
+                message={actionType === "submit" ? "Are you sure you want to edit this booking?" : "Are you sure you want to delete this booking?"}
+                onConfirm={confirmHandler}
+                onCancel={handleCancel}
+                containerClassName="overlayCheck bookingEditModuleHight"
+                contentClassName="modulePosition flex flex-col justify-center rounded-lg"
+                buttonClassName={{ confirm: "bg-green", deny: "bg-redish" }}
+              />
+            )}
 
             {errorMessage && <span className="error flex justify-center pt-2.5 text-xl">{errorMessage}</span>}
           </div>
