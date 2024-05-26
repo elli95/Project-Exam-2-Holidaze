@@ -119,7 +119,7 @@ function Venues() {
                 </div>
                 <div className="flex flex-col justify-between h-box180 gap-2.5 p-3 overflow-hidden">
                   <div className="flex justify-between">
-                    <h2 className="text-2xl whitespace-nowrap w-270 overflow-hidden">{venue.name}</h2>
+                    <h2 className="text-2xl whitespace-nowrap w-270 overflow-hidden">{venue.name || "Venue Name Not Available"}</h2>
 
                     <div className="flex gap-1 text-xl">
                       <p className="text-star">
