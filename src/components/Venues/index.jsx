@@ -128,9 +128,9 @@ function Venues() {
                       <p>{venue.rating}</p>
                     </div>
                   </div>
-                  <div className="flex gap-2.5 overflow-hidden ">
-                    <p className="text-lg overflow-hidden max-w-box150">{venue.location.city}</p>
-                    <h3 className="text-xl overflow-hidden max-w-box150">{venue.location.country}</h3>
+                  <div className="flex flex-col gap-2.5 overflow-hidden ">
+                    <p className="text-lg overflow-hidden">{venue.location.city || "City Not Available"}</p>
+                    <h3 className="text-xl overflow-hidden">{venue.location.country || "Country Not Available"}</h3>
                   </div>
                   <div className="flex h-10 gap-2.5">
                     {venue.meta.wifi && (
