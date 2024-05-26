@@ -25,7 +25,6 @@ function useVenueApiCall(currentPage, itemsPerPage) {
             "Content-Type": "application/json",
           },
         });
-        console.log(" response:", response);
         if (!response.ok) {
           const data = await response.json();
           console.error("There was an error:", data.errors);

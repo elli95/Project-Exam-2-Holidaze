@@ -24,7 +24,6 @@ function ProfileInfo() {
     setIsUserManager(fetchedProfileData.venueManager);
     setProfileData(fetchedProfileData);
   }, [fetchedProfileData]);
-  console.log("profileData", profileData);
 
   // Redirect to home if local storage is empty
   useEffect(() => {

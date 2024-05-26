@@ -27,7 +27,6 @@ function useGETProfileData() {
               "X-Noroff-API-Key": apiKey.key,
             },
           });
-          console.log("response:", response);
           if (!response.ok) {
             console.error("Error:", response.error[0].message);
           } else {

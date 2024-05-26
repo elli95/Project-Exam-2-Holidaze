@@ -148,15 +148,11 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
    * @param {number} index - The index of the image field to remove.
    */
   const handleRemoveImage = (index) => {
-    console.log("index after btn", index);
     if (formState.media.length > 1) {
       const newMedia = [...formState.media];
-      console.log("index after btn newMedia", newMedia);
-      console.log("index after btn", index);
       newMedia.splice(index, 1);
       setFormState({ ...formState, media: newMedia });
     }
-    console.log("index after btn formState", formState);
   };
 
   /**
@@ -214,11 +210,10 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
 
     for (let i = 0; i < media.length; i++) {
       if (!media[i].url) {
-        media[i].url =
-          "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?q=80&w=2624&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+        media[i].url = "https://images.unsplash.com/photo-1579547945413-497e1b99dac0";
       }
       if (!media[i].alt) {
-        media[i].alt = "This is a goldfish";
+        media[i].alt = "Venue";
       }
     }
 
@@ -246,12 +241,10 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
         lng: Number(event.target.elements["location.lng"].value),
       },
     };
-    console.log("Form submitted:", updatedFormState);
     setFormState(updatedFormState);
     setShowModal(true);
     setActionType("submit");
     setConfirmHandler(() => () => handleConfirm(updatedFormState));
-    console.log("handleConfirm:", confirmHandler);
   };
 
   /**
@@ -273,7 +266,6 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
         },
         updatedFormState
       );
-      console.log("try", updatedProfileData.data);
       if (updatedProfileData && !updatedProfileData.errors) {
         setVenues((prevVenues) =>
           prevVenues.map((venue) => (venue.id === updatedProfileData.data.id ? { ...venue, ...updatedProfileData.data } : venue))
@@ -281,7 +273,6 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
         setVenueIdToShow(null);
         setIsVenueBookingsShown(false);
       } else {
-        console.log("Error:", updatedProfileData);
         console.log("Error:", updatedProfileData.errors[0].message);
         setErrorMessage("There was an error: " + updatedProfileData.errors[0].message);
       }
@@ -294,7 +285,6 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
    * Handles deletion of the venue.
    */
   const handleDelete = async () => {
-    console.log("hello :D");
     setShowModal(true);
     setActionType("delete");
     setConfirmHandler(() => handleDeleteConfirm);
@@ -598,7 +588,6 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                         defaultValue={editVenueFilter[0].media[index]?.alt || ""}
                         className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                       />
-                      {console.log("index before btn", index)}
                       {index !== 0 && (
                         <button
                           type="button"

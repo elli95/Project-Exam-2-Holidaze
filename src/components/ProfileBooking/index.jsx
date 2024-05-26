@@ -17,6 +17,7 @@ function ProfileBooking() {
   const [venueIdToShow, setVenueIdToShow] = useState(null);
   const [validBookings, setValidBookings] = useState([]);
   const [bookingType, setBookingType] = useState("upcoming");
+  const [totalPrice, setTotalPrices] = useState([]);
   const { profileData } = useGETProfileData();
 
   const divRef = useRef(null);
@@ -65,6 +66,29 @@ function ProfileBooking() {
       setIsBookingEditFormShown(true);
     }
   };
+
+  /**
+   * A useEffect hook that calculates the total prices for valid bookings.
+   * The total price is calculated based on the duration of each booking and the price per day.
+   * It updates the state variable 'totalPrices' with the calculated total prices.
+   *
+   * @function calculateTotalPrices
+   * @returns {void}
+   */
+  useEffect(() => {
+    const calculateTotalPrices = () => {
+      const updatedTotalPrices = validBookings.map((booked) => {
+        const startDate = new Date(booked.dateFrom);
+        const endDate = new Date(booked.dateTo);
+        const daysDifference = Math.round((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+        const pricePerDay = booked.venue.price;
+        return daysDifference * pricePerDay;
+      });
+      setTotalPrices(updatedTotalPrices);
+    };
+
+    calculateTotalPrices();
+  }, [validBookings]);
 
   /**
    * Handles click outside the booking edit form to close it.
@@ -131,7 +155,7 @@ function ProfileBooking() {
                 validBookings.length < 4 ? "xxl:justify-center" : "xxl:justify-normal"
               }`}
             >
-              {validBookings.map((booked) => (
+              {validBookings.map((booked, index) => (
                 <div key={booked.id} className=" self-center w-box300 sm:w-box490 md:w-box340 lg:w-box400">
                   <Link to={`/venue/${booked.venue.id}`} className="profileVenues rounded-lg">
                     <div className="imgBox">
@@ -167,9 +191,12 @@ function ProfileBooking() {
                           <p>Guests:</p>
                           <p>{booked.guests}</p>
                         </div>
+                        {/* <div className="flex flex-row justify-between">
+                          <p>Total Price:</p> */}
+                        {/* <p>{booked.venue.price}</p> */}
                         <div className="flex flex-row justify-between">
                           <p>Total Price:</p>
-                          <p>{booked.venue.price}</p>
+                          <p>{totalPrice[index]}</p>
                         </div>
                       </div>
                     </div>

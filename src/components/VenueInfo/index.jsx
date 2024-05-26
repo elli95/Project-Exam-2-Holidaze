@@ -79,32 +79,14 @@ function VenueInfo() {
     }
   };
 
-  /**
-   * Runs logic to calculate the result when the start date or end date changes.
-   * Updates the result state with the calculated value.
-   */
-  // useEffect(() => {
-  //   if (startDate && endDate) {
-  //     const oneDay = 24 * 60 * 60 * 1000;
-  //     const daysDifference = Math.round(Math.abs((endDate - startDate) / oneDay) + 1);
-  //     console.log("daysDifference:", daysDifference);
-  //     const value = venue ? venue.price : 0;
-  //     const calculatedResult = daysDifference * value;
-  //     console.log("calculatedResult:", calculatedResult);
-  //     setResult(calculatedResult);
-  //   }
-  // }, [startDate, endDate, venue]);
   useEffect(() => {
     if (startDate && endDate) {
       const oneDay = 24 * 60 * 60 * 1000;
       const daysDifference = Math.round(Math.abs((endDate - startDate) / oneDay) + 1);
-      console.log("daysDifference:", daysDifference);
       const value = venue ? venue.price : 0;
       const calculatedResult = daysDifference * value;
-      console.log("calculatedResult:", calculatedResult);
       setResult(calculatedResult);
     } else {
-      // If either startDate or endDate is not selected, reset the result
       setResult(null);
     }
   }, [startDate, endDate, venue]);
@@ -183,7 +165,6 @@ function VenueInfo() {
       guests: Number(event.target.elements.guests.value),
       venueId: venue.id,
     };
-    console.log("updatedFormState", updatedFormState);
     setFormState(updatedFormState);
 
     apiCall(

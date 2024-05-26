@@ -91,7 +91,6 @@ function RegistrationPage() {
    */
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("This form Please correct them.");
     let avatarUrl = event.target.elements["avatar.url"].value;
     let avatarAlt = event.target.elements["avatar.alt"].value;
     if (!avatarUrl) {

@@ -6,7 +6,6 @@ import { API_BOOKINGS } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faWifi, faSquareParking, faMugHot, faPaw } from "@fortawesome/free-solid-svg-icons";
-import useValidation from "../../util/venueLocations";
 
 /**
  * BookingEdit component allows users to edit their booking details.
@@ -23,7 +22,6 @@ import useValidation from "../../util/venueLocations";
  * <BookingEdit setVenueIdToShow={setVenueIdToShow} setBooking={setBooking} venueId={venueId} handleCloseBtn={handleCloseBtn} onDeleteBooking={onDeleteBooking} />
  */
 function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, onDeleteBooking }) {
-  const { validateField } = useValidation;
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
   const { profileData } = useGETProfileData();
@@ -42,36 +40,6 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
     dateTo: "",
     guests: "",
   });
-
-  const [errors, setErrors] = useState({
-    dateFrom: "",
-    dateTo: "",
-    guests: "",
-  });
-
-  /**
-   * Handles the onBlur event for input fields.
-   * Performs validation based on the input field's name and updates errors state accordingly.
-   * @param {Event} event - The onBlur event object.
-   */
-  const handleBlur = (event) => {
-    const { name, value } = event.target;
-    const newErrors = { ...errors };
-
-    switch (name) {
-      case "dateFrom":
-      case "dateTo":
-        newErrors[name] = validateField(value, "date") ? "" : "You must choose an available date";
-        break;
-      case "guests":
-        newErrors[name] = validateField(value, "numbersOnly") ? "" : "Enter a valid number of guests";
-        break;
-      default:
-        break;
-    }
-
-    setErrors(newErrors);
-  };
 
   const apiCall = useApiCall();
 
@@ -190,7 +158,6 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
     setShowModal(true);
     setActionType("submit");
     setConfirmHandler(() => () => handleConfirm(updatedFormState));
-    console.log("handleConfirm:", confirmHandler);
   };
 
   /**
@@ -210,14 +177,12 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
         },
         updatedFormState
       );
-      console.log("try", updatedProfileData);
       if (!updatedProfileData.errors) {
         setBooking((prevVenues) =>
           prevVenues.map((venue) => (venue.id === updatedProfileData.data.id ? { ...venue, ...updatedProfileData.data } : venue))
         );
         handleCloseBtn();
       } else {
-        console.log("Error:", updatedProfileData);
         console.log("Error:", updatedProfileData.errors[0].message);
         setErrorMessage("There was an error: " + updatedProfileData.errors[0].message);
       }
@@ -369,10 +334,8 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
                     name="dateFrom"
                     min={currentDate.toISOString().split("T")[0]}
                     defaultValue={dateFrom}
-                    onBlur={handleBlur}
                     onChange={handleStartDateChange}
                   />
-                  <span className="error">{errors.dateFrom}</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <label htmlFor="dateTo">End Date:</label>
@@ -382,29 +345,19 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
                     name="dateTo"
                     min={currentDate.toISOString().split("T")[0]}
                     defaultValue={dateTo}
-                    onBlur={handleBlur}
                     onChange={handleEndDateChange}
                   />
-                  <span className="error">{errors.dateTo}</span>
                 </div>
               </div>
               <div className="flex justify-center my-2.5 gap-2">
                 <label htmlFor="guests">Guests:</label>
-                <select
-                  type="number"
-                  id="guests"
-                  name="guests"
-                  onBlur={handleBlur}
-                  defaultValue={editVenueFilter[0].guests}
-                  className="bg-greyBlur w-20 pl-1"
-                >
+                <select type="number" id="guests" name="guests" defaultValue={editVenueFilter[0].guests} className="bg-greyBlur w-20 pl-1">
                   {[...Array(editVenueFilter[0].venue.maxGuests)].map((_, index) => (
                     <option key={index + 1} value={index + 1}>
                       {index + 1}
                     </option>
                   ))}
                 </select>
-                <span className="error">{errors.guests}</span>
               </div>
               <p className="flex justify-center">Total: {result}</p>
               <div className="flex justify-center mt-4">

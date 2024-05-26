@@ -128,7 +128,6 @@ function ProfileInfoEdit({
       venueManager: event.target.querySelector('input[name="venueManager"]').checked,
     };
     setFormState(updatedFormState);
-    console.log("updatedFormState", updatedFormState);
 
     try {
       const updatedProfileData = await apiCall(
@@ -141,7 +140,6 @@ function ProfileInfoEdit({
         },
         updatedFormState
       );
-      console.log("try", updatedProfileData.data);
 
       if (!updatedProfileData.errors) {
         setProfileData({
@@ -159,9 +157,7 @@ function ProfileInfoEdit({
           setSectionAButtonDisabled(true);
           setSectionBButtonDisabled(false);
         }
-        console.log("try2", profileData);
       } else {
-        console.log("Error:", updatedProfileData);
         console.log("Error:", updatedProfileData.errors[0].message);
         setErrorMessage("There was an error: " + updatedProfileData.errors[0].message);
       }

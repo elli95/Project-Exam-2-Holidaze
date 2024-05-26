@@ -10,7 +10,6 @@ function usePostApiKey() {
   const [apiKey, setApiKey] = useState([]);
   const accessToken = useLocalStorage();
 
-  console.log("accessToken.accessToken", accessToken.accessToken);
   useEffect(() => {
     if (accessToken.accessToken.length > 0) {
       async function fetchApiKey() {
@@ -23,7 +22,6 @@ function usePostApiKey() {
             },
             body: JSON.stringify({ name: "API Key" }),
           });
-          console.log("response:", response);
           if (!response.ok) {
             console.error("Error:", response.error[0].message);
           } else {

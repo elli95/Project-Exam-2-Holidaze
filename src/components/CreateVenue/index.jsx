@@ -187,11 +187,10 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
 
     for (let i = 0; i < media.length; i++) {
       if (!media[i].url) {
-        media[i].url =
-          "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?q=80&w=2624&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+        media[i].url = "https://images.unsplash.com/photo-1579547945413-497e1b99dac0";
       }
       if (!media[i].alt) {
-        media[i].alt = "This is a goldfish";
+        media[i].alt = "Venue";
       }
     }
 
@@ -245,7 +244,6 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
         setVenues((prevVenues) => [...prevVenues, updatedProfileData.data]);
         setIsCreateVenueShown(false);
       } else {
-        console.log("Error:", updatedProfileData);
         console.log("Error:", updatedProfileData.errors[0].message);
         setErrorMessage("There was an error: " + updatedProfileData.errors[0].message);
       }
@@ -478,7 +476,6 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                     aria-label="User media alt"
                     className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                   />
-                  {console.log("index before btn", index)}
                   {index !== 0 && (
                     <button
                       type="button"

@@ -6,8 +6,6 @@ import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import useValidation from "../../util/venueLocations";
 
-console.log("123123123@stud.noroff.no or robinTest@stud.noroff.no or robin@stud.noroff.no");
-
 /**
  * LoginPage component handles user login functionality.
  * It allows users to input their email and password,
@@ -94,7 +92,6 @@ function LoginPage() {
           const { accessToken, ...userProfile } = data.data;
           localStorage.setItem("token", accessToken);
           localStorage.setItem("profile", JSON.stringify(userProfile));
-          console.log("data", data);
           window.location.href = "/profilePage";
         } else {
           setErrorMessage(data.errors[0].message);

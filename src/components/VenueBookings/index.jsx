@@ -19,13 +19,8 @@ function VenueBookings({ venueId, handleCloseBtn }) {
   const [venues, setVenues] = useState([]);
   const { apiKey } = usePostApiKey();
   const { accessToken, userInfo } = useLocalStorage();
-  const apiCall = useApiCall();
-  console.log("profileData", venues);
-  console.log("venueId", venueId);
-  console.log("userInfo", userInfo.name);
-  console.log("accessToken", accessToken);
-
   const [hasFetched, setHasFetched] = useState(false);
+  const apiCall = useApiCall();
 
   /**
    * Fetches the user's profile data and their venue bookings.
@@ -40,7 +35,6 @@ function VenueBookings({ venueId, handleCloseBtn }) {
         });
 
         if (data) {
-          console.log("fetchProfileUserVenueBooking", data);
           setVenues(data.data);
         } else {
           const errorData = await data.json();
