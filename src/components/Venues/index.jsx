@@ -106,7 +106,9 @@ function Venues() {
         )}
         <div className={`${!filteredVenues.length > 0 ? "" : "pt-10"} venueSection`}>
           {!displayVenues ? (
-            <div className="loading"></div>
+            <div className="flex justify-center">
+              <div className="loading flex justify-center"></div>
+            </div>
           ) : (
             displayVenues.map((venue) => (
               <Link key={venue.id} to={`/venue/${venue.id}`} className=" rounded">

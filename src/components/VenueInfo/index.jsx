@@ -111,7 +111,11 @@ function VenueInfo() {
   }
 
   if (!venue) {
-    return <div className="loading"></div>;
+    return (
+      <div className="flex justify-center">
+        <div className="loading flex justify-center"></div>
+      </div>
+    );
   }
 
   /**

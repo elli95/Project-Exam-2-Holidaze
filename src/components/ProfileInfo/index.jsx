@@ -74,7 +74,9 @@ function ProfileInfo() {
   return (
     <div className="flex flex-col items-center">
       {!profileData.avatar ? (
-        <div className="loading"></div>
+        <div className="flex justify-center">
+          <div className="loading flex justify-center"></div>
+        </div>
       ) : (
         <>
           <div className="absolute left-0 z-0 w-full overflow-hidden self-center max-h-20 md:max-h-28 lg:max-h-32">

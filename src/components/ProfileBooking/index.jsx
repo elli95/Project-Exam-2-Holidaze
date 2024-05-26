@@ -226,7 +226,9 @@ function ProfileBooking() {
               ))}
             </div>
           ) : (
-            <div className="loading flex self-center"></div>
+            <div className="flex justify-center">
+              <div className="loading flex justify-center"></div>
+            </div>
           )}
         </div>
       </div>

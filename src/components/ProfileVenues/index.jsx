@@ -233,7 +233,9 @@ function ProfileVenues() {
               </div>
             )
           ) : (
-            <div className="loading"></div>
+            <div className="flex justify-center">
+              <div className="loading flex justify-center"></div>
+            </div>
           )}
         </div>
       )}

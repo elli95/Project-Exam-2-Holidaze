@@ -110,7 +110,11 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
   }, [editVenueFilter]);
 
   if (!editVenueFilter) {
-    return <div className="loading"></div>;
+    return (
+      <div className="flex justify-center">
+        <div className="loading flex justify-center"></div>
+      </div>
+    );
   }
 
   /**
@@ -224,7 +228,9 @@ function BookingEdit({ setVenueIdToShow, setBooking, venueId, handleCloseBtn, on
       </div>
       <div className="flex justify-center">
         {!editVenueFilter ? (
-          <div className="loading flex self-center"></div>
+          <div className="flex justify-center">
+            <div className="loading flex justify-center"></div>
+          </div>
         ) : (
           <div>
             <div>

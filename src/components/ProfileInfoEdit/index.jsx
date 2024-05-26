@@ -174,7 +174,9 @@ function ProfileInfoEdit({
         </button>
       </div>
       {!profileData.name ? (
-        <div className="loading"></div>
+        <div className="flex justify-center">
+          <div className="loading flex justify-center"></div>
+        </div>
       ) : (
         <div className="flex flex-col items-center venueEdit w-72 sm:w-formDiv35">
           <h2 className="font-semibold text-lg">Edit Profile Information</h2>

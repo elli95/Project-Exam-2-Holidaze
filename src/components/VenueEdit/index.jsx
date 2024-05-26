@@ -145,7 +145,9 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
       )}
       <div>
         {!editVenueFilter ? (
-          <div className="loading"></div>
+          <div className="flex justify-center">
+            <div className="loading flex justify-center"></div>
+          </div>
         ) : (
           <div>
             <form
