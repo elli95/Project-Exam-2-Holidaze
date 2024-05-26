@@ -331,7 +331,11 @@ function VenueInfo() {
             </div>
           </div>
           <div className="flex flex-col items-center self-center gap-5 lg:pt-5 lg:px-5 xl:px-12">
-            {localStorage.length > 0 ? <h2 className="text-2xl font-bold">Book Venue</h2> : <h2 className="text-2xl font-bold">Available Venues</h2>}
+            {localStorage.length > 0 ? (
+              <h2 className="text-2xl font-bold">Book Venue</h2>
+            ) : (
+              <h2 className="text-2xl font-bold">Available Venue Dates</h2>
+            )}
             <form onSubmit={handleSubmit} className="flex flex-col items-center venueEdit gap-2.5">
               <div>
                 {localStorage.length > 0 && <p className="flex justify-center text-xl font-semibold">Choose a date</p>}
