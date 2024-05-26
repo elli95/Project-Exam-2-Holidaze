@@ -1,13 +1,16 @@
-// import ProfileBookingVenuesInfo from "../ProfileBookingVenuesInfo";
 import ProfileInfoEdit from "../ProfileInfoEdit";
-// import CreateVenue from "../CreateVenue";
 import useGETProfileData from "../../hooks/useGETProfileData";
 import { useEffect, useRef, useState } from "react";
 import useBtnDividerEventHandlers from "../../hooks/useBtnDividerEventHandlers";
 import ProfileBooking from "../ProfileBooking";
 import ProfileVenues from "../ProfileVenues";
-// import useLocalStorage from "../../hooks/useLocalStorage";
 
+/**
+ * Component that displays the profile information of a user and allows editing.
+ * It includes functionality to switch between viewing profile bookings and venues.
+ *
+ * @component
+ */
 function ProfileInfo() {
   const [profileData, setProfileData] = useState({});
   const [isUserManager, setIsUserManager] = useState();
@@ -16,30 +19,33 @@ function ProfileInfo() {
 
   const divRef = useRef(null);
 
+  // Fetch profile data and set initial state
   useEffect(() => {
     setIsUserManager(fetchedProfileData.venueManager);
     setProfileData(fetchedProfileData);
   }, [fetchedProfileData]);
   console.log("profileData", profileData);
 
+  // Redirect to home if local storage is empty
   useEffect(() => {
     if (localStorage.length === 0) {
       window.location.href = "/";
     }
   }, []);
 
+  // Handle showing profile booking section
   const handleSeeProfileBooking = () => {
     setIsProfileEditShown(true);
   };
 
+  // Handle click outside to close the profile edit section
   const handleClickOutside = (event) => {
-    // setTimeout(() => {
     if (divRef.current && !divRef.current.contains(event.target)) {
       setIsProfileEditShown(false);
     }
-    // }, 0);
   };
 
+  // Add and remove event listener for click outside
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -47,6 +53,7 @@ function ProfileInfo() {
     };
   }, []);
 
+  // Event handlers for section toggles
   const {
     isSectionAShown,
     isSectionBShown,
@@ -60,11 +67,11 @@ function ProfileInfo() {
     handleSectionBClick,
   } = useBtnDividerEventHandlers();
 
+  // Handle close button for profile edit
   const handleCloseBtn = () => {
     setIsProfileEditShown(false);
   };
 
-  console.log("isSectionABShown", isSectionAShown, isSectionBShown);
   return (
     <div className="flex flex-col items-center">
       {!profileData.avatar ? (
@@ -78,11 +85,11 @@ function ProfileInfo() {
             {profileData.avatar && <img src={profileData.avatar.url} alt={profileData.avatar.alt} className="rounded-full object-cover" />}
           </div>
           <div className="text-center pb-1.5">
-            <h1 className="text-center font-bold">{profileData.name}</h1>
-            <p className="italic">{profileData.email}</p>
+            <h1 className="text-center font-bold text-xl">{profileData.name}</h1>
+            <p className="italic text-lg">{profileData.email}</p>
           </div>
           {profileData.bio && (
-            <div className="bg-white px-5 border-solid border-t-2 border-b-2 max-w-md shadow-lg shadow-black w-270 sm:w-375">
+            <div className="bg-white px-5 border-solid border-t-2 border-b-2 max-w-md shadow-lg text-lg shadow-black w-270 sm:w-375">
               <p className="my-2.5">{profileData.bio}</p>
             </div>
           )}
