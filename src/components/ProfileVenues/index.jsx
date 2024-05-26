@@ -267,16 +267,16 @@ function ProfileVenues() {
     <div className="flex flex-col items-center">
       {profileData?.venueManager && (
         <div className="flex-col mt-5">
+          <div className="flex justify-center mb-5">
+            <button className="bg-white btnStyle w-44" onClick={handleSeeCreateVenue}>
+              Create new Venue
+            </button>
+          </div>
           {profileData.bookings ? (
             venues.length === 0 ? (
               <p>No venues found.</p>
             ) : (
               <div>
-                <div className="flex justify-center mb-5">
-                  <button className="bg-white btnStyle w-44" onClick={handleSeeCreateVenue}>
-                    Create new Venue
-                  </button>
-                </div>
                 {isCreateVenueShown && (
                   <div className="overlay">
                     <div ref={divRef} className="modulePosition w-box340 h-box700 h-5/6 rounded-lg border-2 border-greyBlur sm:w-box610 lg:w-box900">
