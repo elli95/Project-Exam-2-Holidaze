@@ -333,7 +333,7 @@ function VenueInfo() {
           </div>
           <div className="flex flex-col items-center self-center gap-5 lg:pt-5 lg:px-5 xl:px-12">
             {localStorage.length > 0 ? <h2 className="text-2xl font-bold">Book Venue</h2> : <h2 className="text-2xl font-bold">Available Venues</h2>}
-            <form onSubmit={handleSubmit} className="flex flex-col venueEdit gap-2.5">
+            <form onSubmit={handleSubmit} className="flex flex-col items-center venueEdit gap-2.5">
               <div>
                 {localStorage.length > 0 && <p className="text-xl font-semibold">Choose a date</p>}
                 <Calendar
@@ -391,8 +391,10 @@ function VenueInfo() {
                   </button>
                 </>
               )}
-              {successMessage && <span className="error">{successMessage}</span>}
-              {errorMessage && <span className="error">{errorMessage}</span>}
+              <div className="flex flex-cal justify-center">
+                {successMessage && <span className="text-lg text-center max-w-64">{successMessage}</span>}
+                {errorMessage && <span className="error text-lg text-center max-w-64">{errorMessage}</span>}
+              </div>
             </form>
           </div>
         </div>
