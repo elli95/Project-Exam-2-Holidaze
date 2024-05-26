@@ -5,13 +5,20 @@ import usePostApiKey from "../../hooks/usePostApiKey";
 import useApiCall from "../../hooks/useApiCall";
 import useVenues from "../../store/venueLocations";
 
+/**
+ * Component for creating a new venue.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {Function} props.setVenues - Function to set the list of venues.
+ * @param {Function} props.handleCloseBtn - Function to handle closing the create venue form.
+ * @param {Function} props.setIsCreateVenueShown - Function to set the visibility of the create venue form.
+ * @returns {JSX.Element} The JSX element representing the create venue form.
+ */
 function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
   const { accessToken } = useLocalStorage();
-
   const [showModal, setShowModal] = useState(false);
-  // const [confirmHandler, setConfirmHandler] = useState(null);
 
   const [errorMessage, setErrorMessage] = useState("");
   const [formState, setFormState] = useState({
@@ -55,6 +62,11 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
     maxGuests: "",
   });
 
+  /**
+   * Handles blur events on form fields to perform validation.
+   *
+   * @param {Event} event - The blur event.
+   */
   const handleBlur = (event) => {
     const { name, value } = event.target;
     const newErrors = { ...errors };
@@ -68,8 +80,10 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
     } else {
       switch (name) {
         case "name":
+          newErrors[name] = validateField(value, "inputLength") ? "" : "You must enter a name between 1 to 20 characters";
+          break;
         case "description":
-          newErrors[name] = validateField(value, "inputLength") ? "" : "You must enter at least 1 characters";
+          newErrors[name] = validateField(value, "minInputLength") ? "" : "You must enter a description";
           break;
         case "price":
         case "maxGuests":
@@ -85,6 +99,9 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
 
   const apiCall = useApiCall();
 
+  /**
+   * Adds a new image field to the form state.
+   */
   const handleAddImage = () => {
     setFormState({
       ...formState,
@@ -92,6 +109,11 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
     });
   };
 
+  /**
+   * Removes an image field from the form state.
+   *
+   * @param {number} index - The index of the image field to remove.
+   */
   const handleRemoveImage = (index) => {
     if (formState.media.length > 1) {
       const newMedia = [...formState.media];
@@ -100,6 +122,14 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
     }
   };
 
+  /**
+   * Confirmation modal component for confirming venue creation.
+   *
+   * @param {Object} props - The properties passed to the component.
+   * @param {Function} props.onConfirm - Function to confirm venue creation.
+   * @param {Function} props.onCancel - Function to cancel venue creation.
+   * @returns {JSX.Element} The JSX element representing the confirmation modal.
+   */
   const ConfirmationModal = ({ onConfirm, onCancel }) => {
     return (
       <div className="overlayCheckVenue w-box300 sm:w-box565 md:w-form580 lg:w-box850">
@@ -119,6 +149,12 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
       </div>
     );
   };
+
+  /**
+   * Handles form submission.
+   *
+   * @param {Event} event - The form submission event.
+   */
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -173,11 +209,13 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
         lng: Number(event.target.elements["location.lng"].value),
       },
     };
-    console.log("Venue form submitted:", updatedFormState);
     setFormState(updatedFormState);
     setShowModal(true);
   };
 
+  /**
+   * Handles confirmation of venue creation.
+   */
   const handleConfirm = async () => {
     setShowModal(false);
 
@@ -192,16 +230,8 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
         },
         formState
       );
-      // console.log("try", updatedProfileData);
+
       if (updatedProfileData && !updatedProfileData.errors) {
-        // setVenueBookingData((prevState) => {
-        //   let newState = { ...prevState };
-        //   if (!newState.venues) {
-        //     newState.venues = [];
-        //   }
-        //   newState.venues.push(updatedProfileData.data);
-        //   return newState;
-        // });
         setVenues((prevVenues) => [...prevVenues, updatedProfileData.data]);
         setIsCreateVenueShown(false);
       } else {
@@ -214,6 +244,9 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
     }
   };
 
+  /**
+   * Handles cancellation of venue creation.
+   */
   const handleCancel = () => {
     setShowModal(false);
   };
@@ -238,6 +271,7 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                 <label htmlFor="name">Venue name</label>
                 <input
                   type="text"
+                  id="name"
                   name="name"
                   placeholder="Venue name"
                   aria-label="Venue Name"
@@ -248,9 +282,10 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                 <span className="error">{errors.name}</span>
               </div>
               <div className="flex flex-col">
-                <label htmlFor="Venue description">Venue description</label>
+                <label htmlFor="description">Venue description</label>
                 <input
                   type="text"
+                  id="description"
                   name="description"
                   placeholder="Venue description"
                   aria-label="Venue description"
@@ -265,6 +300,7 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                 <label htmlFor="price">Venue price</label>
                 <input
                   type="number"
+                  id="price"
                   name="price"
                   placeholder="Venue price"
                   aria-label="Venue price"
@@ -277,17 +313,9 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
               </div>
               <div className="flex flex-col">
                 <label htmlFor="maxGuests">Max guests</label>
-                {/* <input
-                  type="number"
-                  name="maxGuests"
-                  aria-label="Max guests"
-                  onBlur={handleBlur}
-                  max={100}
-                  className="bg-greyBlur w-box280 sm:w-box490 pl-1"
-                  required
-                /> */}
                 <select
                   type="number"
+                  id="maxGuests"
                   name="maxGuests"
                   onBlur={handleBlur}
                   aria-label="Max guests"
@@ -304,8 +332,7 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
               </div>
               <div className="flex flex-col">
                 <label htmlFor="rating">Venue rating</label>
-                {/* <input type="number" name="rating" max={5} className="bg-greyBlur w-box280 sm:w-box490 pl-1" /> */}
-                <select type="number" name="rating" aria-label="Venue rating" className="bg-greyBlur w-box280 sm:w-box490 pl-1">
+                <select type="number" id="rating" name="rating" aria-label="Venue rating" className="bg-greyBlur w-box280 sm:w-box490 pl-1">
                   {optionsRating.map((option) => (
                     <option key={option} value={option}>
                       {option}
@@ -318,19 +345,19 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
               <h2>Amenities</h2>
               <div className="flex justify-between bg-greyBlur px-1">
                 <label htmlFor="meta.wifi">Wifi availability</label>
-                <input type="checkbox" name="meta.wifi" aria-label="Wifi availability" />
+                <input type="checkbox" id="meta.wifi" name="meta.wifi" aria-label="Wifi availability" />
               </div>
               <div className="flex justify-between px-1">
                 <label htmlFor="meta.parking">Parking availability</label>
-                <input type="checkbox" name="meta.parking" aria-label="Parking availability" />
+                <input type="checkbox" id="meta.parking" name="meta.parking" aria-label="Parking availability" />
               </div>
               <div className="flex justify-between bg-greyBlur px-1">
                 <label htmlFor="meta.breakfast">Breakfast availability</label>
-                <input type="checkbox" name="meta.breakfast" aria-label="Breakfast availability" />
+                <input type="checkbox" id="meta.breakfast" name="meta.breakfast" aria-label="Breakfast availability" />
               </div>
               <div className="flex justify-between px-1">
                 <label htmlFor="meta.pets">Pets availability</label>
-                <input type="checkbox" name="meta.pets" aria-label="Pets availability" />
+                <input type="checkbox" id="meta.pets" name="meta.pets" aria-label="Pets availability" />
               </div>
             </div>
             <div className="flex flex-col gap-2.5">
@@ -339,6 +366,7 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                 <label htmlFor="location.address">Venue address</label>
                 <input
                   type="text"
+                  id="location.address"
                   name="location.address"
                   placeholder="Venue address"
                   minLength={3}
@@ -350,6 +378,7 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                 <label htmlFor="location.city">Venue city</label>
                 <input
                   type="text"
+                  id="location.city"
                   name="location.city"
                   placeholder="Venue city"
                   minLength={3}
@@ -361,6 +390,7 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                 <label htmlFor="location.zip">Venue zip</label>
                 <input
                   type="number"
+                  id="location.zip"
                   name="location.zip"
                   placeholder="Venue zip"
                   minLength={3}
@@ -372,6 +402,7 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                 <label htmlFor="location.country">Venue country</label>
                 <input
                   type="text"
+                  id="location.country"
                   name="location.country"
                   placeholder="Venue country"
                   minLength={3}
@@ -383,6 +414,7 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                 <label htmlFor="location.continent">Venue continent</label>
                 <input
                   type="text"
+                  id="location.continent"
                   name="location.continent"
                   placeholder="Venue continent"
                   minLength={3}
@@ -394,6 +426,7 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                 <label htmlFor="location.lat">Venue latitude</label>
                 <input
                   type="number"
+                  id="location.lat"
                   name="location.lat"
                   placeholder="Venue latitude"
                   minLength={3}
@@ -405,6 +438,7 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                 <label htmlFor="location.lng">Venue longitude </label>
                 <input
                   type="number"
+                  id="location.lng"
                   name="location.lng"
                   placeholder="Venue longitude"
                   minLength={3}
@@ -420,6 +454,7 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                   <label htmlFor={`media.url.${index}`}>Venue media url</label>
                   <input
                     type="text"
+                    id={`media.url.${index}`}
                     name={`media.url.${index}`}
                     placeholder="User media url"
                     aria-label="User media url"
@@ -430,6 +465,7 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                   <label htmlFor={`media.alt.${index}`}>Venue media alt</label>
                   <input
                     type="text"
+                    id={`media.alt.${index}`}
                     name={`media.alt.${index}`}
                     placeholder="User media alt"
                     aria-label="User media alt"
