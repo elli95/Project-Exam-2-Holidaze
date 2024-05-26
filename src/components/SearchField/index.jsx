@@ -54,7 +54,7 @@ function SearchField({ onLinkClick }) {
 
   return (
     <div>
-      <label htmlFor="Search" for="Search" className="wave-fix">
+      <label htmlFor="Search" for="Search" className="wave-fix text-white">
         Search
       </label>
       <input
