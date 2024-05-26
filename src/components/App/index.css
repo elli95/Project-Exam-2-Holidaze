@@ -78,20 +78,6 @@ img {
   }
 }
 
-/*Meta icon style*/
-
-/* .metaIconTrue,
-.metaIconFalse {
-  display: inline-block;
-  align-self: center;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  padding: 2px 8px;
-  position: relative;
-  font-size: 1.3rem;
-} */
-
 .metaIconTrue {
   display: inline-block;
   align-self: center;
@@ -104,30 +90,6 @@ img {
   background: #5ae25a !important;
   border: 2px solid #259a25;
 }
-
-/* .metaIconTrue {
-  background: #5ae25a;
-  border: 2px solid #259a25;
-} */
-
-/* .metaIconFalse {
-  background-color: lightgray;
-  border: 2px solid red;
-} */
-
-/* .metaIconFalse::after {
-  content: "X";
-  color: rgba(255, 0, 0, 0.47);
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  font-size: 45px;
-  font-weight: 100;
-  text-align: center;
-  line-height: 29px;
-} */
 
 /* button style */
 .btnStyle {
@@ -346,7 +308,6 @@ img {
 .loginFormContainer input {
   border: 1px solid rgb(126, 125, 125);
   border-radius: 5px;
-  /* background-color: rgb(237, 237, 237); */
 }
 
 .PasswordInput {
@@ -358,10 +319,6 @@ img {
 .PasswordInput input {
   width: 265px !important;
 }
-
-/*Profile page*/
-/* .venueEdit {
-} */
 
 /*react calendar*/
 .react-calendar {
@@ -523,28 +480,12 @@ img {
 
 /*media*/
 
-@media (max-width: 1024px) {
-  .PasswordInput input {
-    width: 452px !important;
-  }
-  .headerImg {
-    position: fixed !important;
-  }
-}
-
 @media (min-width: 768px) {
   .headerMenu {
     position: initial !important;
     background: none;
   }
 }
-
-/* @media (min-width: 640px) {
-  .mainDiv {
-    padding: 20px;
-    margin: 52px 0px 0px 0px;
-  }
-} */
 
 @media (min-width: 1024px) {
   .headerSearch {
@@ -554,5 +495,14 @@ img {
 
   .PasswordInput input {
     width: 565px !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .PasswordInput input {
+    width: 452px !important;
+  }
+  .headerImg {
+    position: fixed !important;
   }
 }

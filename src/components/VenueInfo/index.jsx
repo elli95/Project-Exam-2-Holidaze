@@ -83,6 +83,17 @@ function VenueInfo() {
    * Runs logic to calculate the result when the start date or end date changes.
    * Updates the result state with the calculated value.
    */
+  // useEffect(() => {
+  //   if (startDate && endDate) {
+  //     const oneDay = 24 * 60 * 60 * 1000;
+  //     const daysDifference = Math.round(Math.abs((endDate - startDate) / oneDay) + 1);
+  //     console.log("daysDifference:", daysDifference);
+  //     const value = venue ? venue.price : 0;
+  //     const calculatedResult = daysDifference * value;
+  //     console.log("calculatedResult:", calculatedResult);
+  //     setResult(calculatedResult);
+  //   }
+  // }, [startDate, endDate, venue]);
   useEffect(() => {
     if (startDate && endDate) {
       const oneDay = 24 * 60 * 60 * 1000;
@@ -92,6 +103,9 @@ function VenueInfo() {
       const calculatedResult = daysDifference * value;
       console.log("calculatedResult:", calculatedResult);
       setResult(calculatedResult);
+    } else {
+      // If either startDate or endDate is not selected, reset the result
+      setResult(null);
     }
   }, [startDate, endDate, venue]);
 
@@ -335,7 +349,7 @@ function VenueInfo() {
             {localStorage.length > 0 ? <h2 className="text-2xl font-bold">Book Venue</h2> : <h2 className="text-2xl font-bold">Available Venues</h2>}
             <form onSubmit={handleSubmit} className="flex flex-col items-center venueEdit gap-2.5">
               <div>
-                {localStorage.length > 0 && <p className="text-xl font-semibold">Choose a date</p>}
+                {localStorage.length > 0 && <p className="flex justify-center text-xl font-semibold">Choose a date</p>}
                 <Calendar
                   onChange={onDateChange}
                   value={formState.dateFrom}
@@ -350,8 +364,6 @@ function VenueInfo() {
                         selectedRange.to.setHours(23, 59, 59, 999);
 
                         if (date >= selectedRange.from && date <= selectedRange.to) {
-                          console.log("startDate", startDate);
-                          console.log("endDate", endDate);
                           return "highlightBooking";
                         }
                       }
@@ -364,10 +376,11 @@ function VenueInfo() {
                     return "available";
                   }}
                   tileDisabled={({ date }) => {
-                    return (
-                      bookedDates.some((booking) => date >= booking.from && date <= booking.to) ||
-                      (startDate && endDate && (date < startDate || date > endDate))
-                    );
+                    const currentDate = new Date();
+                    const isOldDate = date < currentDate;
+                    const isBookedDate = bookedDates.some((booking) => date >= booking.from && date <= booking.to);
+
+                    return isOldDate || isBookedDate;
                   }}
                   minDate={new Date()}
                 />
