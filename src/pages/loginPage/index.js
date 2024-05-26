@@ -8,6 +8,14 @@ import { Link } from "react-router-dom";
 
 console.log("123123123@stud.noroff.no or robinTest@stud.noroff.no or robin@stud.noroff.no");
 
+/**
+ * LoginPage component handles user login functionality.
+ * It allows users to input their email and password,
+ * validate the input fields, and submit the login form.
+ * Upon successful login, it redirects the user to the profile page.
+ * @returns {JSX.Element} LoginPage component
+ */
+
 function LoginPage() {
   const { validateField } = useVenues();
   const [errorMessage, setErrorMessage] = useState("");
@@ -15,6 +23,7 @@ function LoginPage() {
   const [shown, setShown] = useState(false);
   const type = shown ? "text" : "password";
   const buttonText = shown ? <FontAwesomeIcon icon={faEyeSlash} /> : <FontAwesomeIcon icon={faEye} />;
+  const buttonAriaLabel = shown ? "Hide password" : "Show password";
 
   const [formState, setFormState] = useState({
     email: "",
@@ -28,6 +37,12 @@ function LoginPage() {
 
   const apiCall = useApiCall();
 
+  /**
+   * Handles onBlur event for form input fields.
+   * Validates the input value based on the field name.
+   * Updates the error state if validation fails.
+   * @param {Event} event - The onBlur event object
+   */
   const handleBlur = (event) => {
     const { name, value } = event.target;
     const newErrors = { ...errors };
@@ -48,6 +63,14 @@ function LoginPage() {
     setErrors(newErrors);
   };
 
+  /**
+   * Handles form submission event.
+   * Sends a POST request to the login API endpoint with user credentials.
+   * If login is successful, it stores the access token and user profile data in localStorage.
+   * Redirects the user to the profile page.
+   * If login fails, sets the error message state.
+   * @param {Event} event - The form submission event object
+   */
   const handleSubmit = async (event) => {
     event.preventDefault();
     const updatedFormState = {
@@ -92,6 +115,7 @@ function LoginPage() {
               </label>
               <input
                 type="text"
+                id="email"
                 name="email"
                 placeholder="Your Email"
                 onBlur={handleBlur}
@@ -108,6 +132,7 @@ function LoginPage() {
               <div className="PasswordInput">
                 <input
                   type={type}
+                  id="password"
                   name="password"
                   placeholder="Password"
                   minLength={8}
@@ -116,7 +141,7 @@ function LoginPage() {
                   className="text-lg bg-greyBlur"
                   required
                 />
-                <button type="button" className="w-7 text-xl" onClick={() => setShown(!shown)}>
+                <button type="button" className="w-7 text-xl" onClick={() => setShown(!shown)} aria-label={buttonAriaLabel}>
                   {buttonText}
                 </button>
               </div>
