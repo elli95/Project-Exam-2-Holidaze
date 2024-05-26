@@ -7,7 +7,7 @@ import VenueInfo from "../../components/VenueInfo";
  */
 function VenuePage() {
   return (
-    <div className="mainDiv py-10 mt-10 lg:mt-0">
+    <div className="mainDiv imgCover py-10 mt-10 lg:mt-0">
       <VenueInfo />
     </div>
   );

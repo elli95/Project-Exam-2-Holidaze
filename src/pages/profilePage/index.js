@@ -10,7 +10,7 @@ import ProfileInfo from "../../components/ProfileInfo";
  */
 function ProfilePage() {
   return (
-    <div className="mainDiv py-8 mt-10 lg:pt-0 lg:mt-0">
+    <div className="mainDiv imgCover py-8 mt-10 lg:pt-0 lg:mt-0">
       <ProfileInfo />
     </div>
   );
