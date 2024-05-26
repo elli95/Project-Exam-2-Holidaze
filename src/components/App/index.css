@@ -480,17 +480,6 @@ img {
 
 /*media*/
 
-@media (min-width: 768px) {
-  .headerMenu {
-    position: initial !important;
-    background: none;
-  }
-
-  .react-calendar {
-    width: 400px;
-  }
-}
-
 @media (min-width: 1024px) {
   .headerSearch {
     position: initial !important;
@@ -509,6 +498,18 @@ img {
   .headerImg {
     position: fixed !important;
   }
+}
+
+@media (min-width: 768px) {
+  .headerMenu {
+    position: initial !important;
+    background: none;
+  }
+
+  .react-calendar {
+    width: 400px;
+  }
+
   .headerMenu {
     position: initial !important;
   }
