@@ -6,6 +6,19 @@ import { API_VENUES } from "../../shared/apis";
 import useApiCall from "../../hooks/useApiCall";
 import useVenues from "../../store/venueLocations";
 
+/**
+ * Component for editing a venue.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {Function} props.setVenueIdToShow - Function to set the venue ID to show.
+ * @param {Function} props.setIsVenueBookingsShown - Function to set the visibility of venue bookings.
+ * @param {Function} props.setVenues - Function to set the list of venues.
+ * @param {string} props.venueId - The ID of the venue being edited.
+ * @param {Function} props.handleCloseBtn - Function to handle closing the venue edit form.
+ * @param {Function} props.setIsCreateVenueShown - Function to set the visibility of the create venue form.
+ * @param {Function} props.onDeleteVenue - Function to handle venue deletion.
+ * @returns {JSX.Element} The JSX element representing the venue edit form.
+ */
 function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venueId, handleCloseBtn, setIsCreateVenueShown, onDeleteVenue }) {
   const { validateField } = useVenues();
   const { apiKey } = usePostApiKey();
@@ -61,8 +74,17 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
     ],
     price: "",
     maxGuests: "",
+    location: {
+      lat: "",
+      lng: "",
+    },
   });
 
+  /**
+   * Handles blur events on form fields to perform validation.
+   *
+   * @param {Event} event - The blur event.
+   */
   const handleBlur = (event) => {
     const { name, value } = event.target;
     const newErrors = { ...errors };
@@ -76,12 +98,20 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
     } else {
       switch (name) {
         case "name":
+          newErrors[name] = validateField(value, "inputLength") ? "" : "You must enter a name between 1 to 20 characters";
+          break;
         case "description":
-          newErrors[name] = validateField(value, "inputLength") ? "" : "You must enter at least 1 characters";
+          newErrors[name] = validateField(value, "minInputLength") ? "" : "You must enter a description";
           break;
         case "price":
         case "maxGuests":
           newErrors[name] = validateField(value, "numbersOnly") ? "" : "Value must be a number";
+          break;
+        case "location.lat":
+          newErrors.location.lat = validateField(value, "latitude") ? "" : "Latitude must be between -90 and 90";
+          break;
+        case "location.lng":
+          newErrors.location.lng = validateField(value, "longitude") ? "" : "Longitude must be between -180 and 180";
           break;
         default:
           break;
@@ -93,32 +123,18 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
 
   const apiCall = useApiCall();
 
-  // const handleAddImage = () => {
-  //   setFormState({
-  //     ...formState,
-  //     media: [...formState.media, { url: "", alt: "" }],
-  //   });
-  // };
-
+  /**
+   * Adds a new image field to the form state.
+   */
   const handleAddImage = () => {
-    // const handleAddImage =
-    //   (() => {
     setFormState((prevState) => ({
       ...prevState,
       media: [...prevState.media, { url: "", alt: "" }],
     }));
   };
-  // },
-  // []);
 
   const runCount = useRef(0);
 
-  // useEffect(() => {
-  //   if (editVenueFilter && runCount.current < editVenueFilter[0].media.length - 1) {
-  //     handleAddImage(editVenueFilter[0].media[runCount.current]);
-  //     runCount.current += 1;
-  //   }
-  // }, [editVenueFilter, handleAddImage]);
   useEffect(() => {
     if (editVenueFilter && runCount.current < editVenueFilter[0].media.length - 1) {
       handleAddImage(editVenueFilter[0].media[runCount.current]);
@@ -126,6 +142,11 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
     }
   }, [editVenueFilter]);
 
+  /**
+   * Removes an image field from the form state.
+   *
+   * @param {number} index - The index of the image field to remove.
+   */
   const handleRemoveImage = (index) => {
     console.log("index after btn", index);
     if (formState.media.length > 1) {
@@ -138,6 +159,14 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
     console.log("index after btn formState", formState);
   };
 
+  /**
+   * Confirmation modal component for confirming venue actions.
+   *
+   * @param {Object} props - The properties passed to the component.
+   * @param {Function} props.onConfirm - Function to confirm the action.
+   * @param {Function} props.onCancel - Function to cancel the action.
+   * @returns {JSX.Element} The JSX element representing the confirmation modal.
+   */
   const ConfirmationModal = ({ onConfirm, onCancel }) => {
     const message = actionType === "submit" ? "Are you sure you want to edit this booking?" : "Are you sure you want to delete this booking?";
     return (
@@ -159,6 +188,11 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
     );
   };
 
+  /**
+   * Handles form submission.
+   *
+   * @param {Event} event - The form submission event.
+   */
   const handleSubmit = (event) => {
     event.preventDefault();
     const media = [];
@@ -188,7 +222,6 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
       }
     }
 
-    console.log("media--media--media", media);
     const updatedFormState = {
       ...formState,
       name: event.target.elements.name.value,
@@ -221,6 +254,11 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
     console.log("handleConfirm:", confirmHandler);
   };
 
+  /**
+   * Handles confirmation of venue update.
+   *
+   * @param {Object} updatedFormState - The updated form state.
+   */
   const handleConfirm = async (updatedFormState) => {
     setShowModal(false);
 
@@ -250,10 +288,11 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
     } catch (error) {
       console.error("Failed to update profile:", error);
     }
-    // Samme Kode!!
   };
-  console.log("formState", formState);
 
+  /**
+   * Handles deletion of the venue.
+   */
   const handleDelete = async () => {
     console.log("hello :D");
     setShowModal(true);
@@ -261,6 +300,9 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
     setConfirmHandler(() => handleDeleteConfirm);
   };
 
+  /**
+   * Handles confirmation of venue deletion.
+   */
   const handleDeleteConfirm = async () => {
     setShowModal(false);
 
@@ -284,6 +326,9 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
     }
   };
 
+  /**
+   * Handles cancellation of the action.
+   */
   const handleCancel = () => {
     setShowModal(false);
   };
@@ -311,6 +356,7 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                     <label htmlFor="name">Venue name</label>
                     <input
                       type="text"
+                      id="name"
                       name="name"
                       placeholder="Venue name"
                       aria-label="Venue Name"
@@ -322,9 +368,10 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                     <span className="error">{errors.name}</span>
                   </div>
                   <div className="flex flex-col">
-                    <label htmlFor="Venue description">Venue description</label>
+                    <label htmlFor="description">Venue description</label>
                     <input
                       type="text"
+                      id="description"
                       name="description"
                       placeholder="Venue description"
                       aria-label="Venue description"
@@ -340,6 +387,7 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                     <label htmlFor="price">Venue price</label>
                     <input
                       type="number"
+                      id="price"
                       name="price"
                       placeholder="Venue price"
                       aria-label="Venue price"
@@ -356,6 +404,7 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
 
                     <select
                       type="number"
+                      id="maxGuests"
                       name="maxGuests"
                       onBlur={handleBlur}
                       aria-label="Max guests"
@@ -369,21 +418,13 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                         </option>
                       ))}
                     </select>
-                    {/* <input
-                      type="number"
-                      name="maxGuests"
-                      aria-label="Max guests"
-                      onBlur={handleBlur}
-                      defaultValue={editVenueFilter[0].maxGuests}
-                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
-                      required
-                    /> */}
                     <span className="error">{errors.maxGuests}</span>
                   </div>
                   <div className="flex flex-col">
                     <label htmlFor="rating">Venue rating</label>
                     <select
                       type="number"
+                      id="rating"
                       name="rating"
                       aria-label="Venue rating"
                       defaultValue={editVenueFilter[0].rating}
@@ -395,30 +436,35 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                         </option>
                       ))}
                     </select>
-                    {/* <input
-                      type="number"
-                      name="rating"
-                      aria-label="Venue rating"
-                      max={5}
-                      defaultValue={editVenueFilter[0].rating}
-                      className="bg-greyBlur w-box280 sm:w-box490 pl-1"
-                    /> */}
                   </div>
                 </div>
                 <div className="flex flex-col w-box280 sm:w-box490 gap-2.5">
                   <h2>Amenities</h2>
                   <div className="flex justify-between bg-greyBlur px-1">
                     <label htmlFor="meta.wifi">Wifi availability</label>
-                    <input type="checkbox" name="meta.wifi" aria-label="Wifi availability" defaultChecked={editVenueFilter[0].meta.wifi} />
+                    <input
+                      type="checkbox"
+                      id="meta.wifi"
+                      name="meta.wifi"
+                      aria-label="Wifi availability"
+                      defaultChecked={editVenueFilter[0].meta.wifi}
+                    />
                   </div>
                   <div className="flex justify-between px-1">
                     <label htmlFor="meta.parking">Parking availability</label>
-                    <input type="checkbox" name="meta.parking" aria-label="Parking availability" defaultChecked={editVenueFilter[0].meta.parking} />
+                    <input
+                      type="checkbox"
+                      id="meta.parking"
+                      name="meta.parking"
+                      aria-label="Parking availability"
+                      defaultChecked={editVenueFilter[0].meta.parking}
+                    />
                   </div>
                   <div className="flex justify-between bg-greyBlur px-1">
                     <label htmlFor="meta.breakfast">Breakfast availability</label>
                     <input
                       type="checkbox"
+                      id="meta.breakfast"
                       name="meta.breakfast"
                       aria-label="Breakfast availability"
                       defaultChecked={editVenueFilter[0].meta.breakfast}
@@ -426,7 +472,13 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                   </div>
                   <div className="flex justify-between px-1">
                     <label htmlFor="meta.pets">Pets availability</label>
-                    <input type="checkbox" name="meta.pets" aria-label="Pets availability" defaultChecked={editVenueFilter[0].meta.pets} />
+                    <input
+                      type="checkbox"
+                      id="meta.pets"
+                      name="meta.pets"
+                      aria-label="Pets availability"
+                      defaultChecked={editVenueFilter[0].meta.pets}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col gap-2.5">
@@ -435,9 +487,9 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                     <label htmlFor="location.address">Venue address</label>
                     <input
                       type="text"
+                      id="location.address"
                       name="location.address"
                       placeholder="Venue address"
-                      minLength={3}
                       aria-label="Venue address"
                       defaultValue={editVenueFilter[0].location.address}
                       className="bg-greyBlur w-box280 sm:w-box490 pl-1"
@@ -447,9 +499,9 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                     <label htmlFor="location.city">Venue city</label>
                     <input
                       type="text"
+                      id="location.city"
                       name="location.city"
                       placeholder="Venue city"
-                      minLength={3}
                       aria-label="Venue city"
                       defaultValue={editVenueFilter[0].location.city}
                       className="bg-greyBlur w-box280 sm:w-box490 pl-1"
@@ -459,9 +511,9 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                     <label htmlFor="location.zip">Venue zip</label>
                     <input
                       type="number"
+                      id="location.zip"
                       name="location.zip"
                       placeholder="Venue zip"
-                      minLength={3}
                       aria-label="Venue zip"
                       defaultValue={editVenueFilter[0].location.zip}
                       className="bg-greyBlur w-box280 sm:w-box490 pl-1"
@@ -471,9 +523,9 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                     <label htmlFor="location.country">Venue country</label>
                     <input
                       type="text"
+                      id="location.country"
                       name="location.country"
                       placeholder="Venue country"
-                      minLength={3}
                       aria-label="Venue country"
                       defaultValue={editVenueFilter[0].location.country}
                       className="bg-greyBlur w-box280 sm:w-box490 pl-1"
@@ -483,9 +535,9 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                     <label htmlFor="location.continent">Venue continent</label>
                     <input
                       type="text"
+                      id="location.continent"
                       name="location.continent"
                       placeholder="Venue continent"
-                      minLength={3}
                       aria-label="Venue continent"
                       defaultValue={editVenueFilter[0].location.continent}
                       className="bg-greyBlur w-box280 sm:w-box490 pl-1"
@@ -495,25 +547,29 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                     <label htmlFor="location.lat">Venue latitude</label>
                     <input
                       type="number"
+                      id="location.lat"
                       name="location.lat"
+                      onBlur={handleBlur}
                       placeholder="Venue latitude"
-                      minLength={3}
                       aria-label="Venue latitude"
                       defaultValue={editVenueFilter[0].location.lat}
                       className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                     />
+                    <span className="error">{errors.location.lat}</span>
                   </div>
                   <div className="flex flex-col">
                     <label htmlFor="location.lng">Venue longitude </label>
                     <input
                       type="number"
+                      id="location.lng"
                       name="location.lng"
+                      onBlur={handleBlur}
                       placeholder="Venue longitude"
-                      minLength={3}
                       aria-label="Venue longitude"
                       defaultValue={editVenueFilter[0].location.lng}
                       className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                     />
+                    <span className="error">{errors.location.lng}</span>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2.5">
@@ -523,6 +579,7 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                       <label htmlFor={`media.url.${index}`}>Venue media url</label>
                       <input
                         type="text"
+                        id={`media.url.${index}`}
                         name={`media.url.${index}`}
                         placeholder="User media url"
                         aria-label="User media url"
@@ -534,6 +591,7 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                       <label htmlFor={`media.alt.${index}`}>Venue media alt</label>
                       <input
                         type="text"
+                        id={`media.alt.${index}`}
                         name={`media.alt.${index}`}
                         placeholder="User media alt"
                         aria-label="User media alt"
@@ -565,7 +623,6 @@ function VenueEdit({ setVenueIdToShow, setIsVenueBookingsShown, setVenues, venue
                 </button>
               </div>
             </form>
-            {/* {showModal && <ConfirmationModal onConfirm={confirmHandler} onCancel={handleCancel} />} */}
             <div className="flex justify-center mt-5">
               <button type="delete" className="btnStyle alternativeBtnStyle w-form500" onClick={handleDelete}>
                 Delete Booking

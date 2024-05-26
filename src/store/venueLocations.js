@@ -44,9 +44,12 @@ const useVenues = create((set) => ({
       case "date":
         const date = new Date(value);
         return !isNaN(date.getTime());
-      // return !isNaN(Date.parse(value));
       case "numbersOnly":
         return /^\d+$/.test(value);
+      case "latitude":
+        return value >= -90 && value <= 90;
+      case "longitude":
+        return value >= -180 && value <= 180;
       default:
         return true;
     }

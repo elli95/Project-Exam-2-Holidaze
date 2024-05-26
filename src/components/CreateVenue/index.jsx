@@ -60,6 +60,10 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
     ],
     price: "",
     maxGuests: "",
+    location: {
+      lat: "",
+      lng: "",
+    },
   });
 
   /**
@@ -88,6 +92,12 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
         case "price":
         case "maxGuests":
           newErrors[name] = validateField(value, "numbersOnly") ? "" : "Value must be a number";
+          break;
+        case "location.lat":
+          newErrors.location.lat = validateField(value, "latitude") ? "" : "Latitude must be between -90 and 90";
+          break;
+        case "location.lng":
+          newErrors.location.lng = validateField(value, "longitude") ? "" : "Longitude must be between -180 and 180";
           break;
         default:
           break;
@@ -369,7 +379,6 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                   id="location.address"
                   name="location.address"
                   placeholder="Venue address"
-                  minLength={3}
                   aria-label="Venue address"
                   className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                 />
@@ -381,7 +390,6 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                   id="location.city"
                   name="location.city"
                   placeholder="Venue city"
-                  minLength={3}
                   aria-label="Venue city"
                   className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                 />
@@ -393,7 +401,6 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                   id="location.zip"
                   name="location.zip"
                   placeholder="Venue zip"
-                  minLength={3}
                   aria-label="Venue zip"
                   className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                 />
@@ -405,7 +412,6 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                   id="location.country"
                   name="location.country"
                   placeholder="Venue country"
-                  minLength={3}
                   aria-label="Venue country"
                   className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                 />
@@ -417,7 +423,6 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                   id="location.continent"
                   name="location.continent"
                   placeholder="Venue continent"
-                  minLength={3}
                   aria-label="Venue continent"
                   className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                 />
@@ -428,11 +433,12 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                   type="number"
                   id="location.lat"
                   name="location.lat"
+                  onBlur={handleBlur}
                   placeholder="Venue latitude"
-                  minLength={3}
                   aria-label="Venue latitude"
                   className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                 />
+                <span className="error">{errors.location.lat}</span>
               </div>
               <div className="flex flex-col">
                 <label htmlFor="location.lng">Venue longitude </label>
@@ -440,11 +446,12 @@ function CreateVenue({ setVenues, handleCloseBtn, setIsCreateVenueShown }) {
                   type="number"
                   id="location.lng"
                   name="location.lng"
+                  onBlur={handleBlur}
                   placeholder="Venue longitude"
-                  minLength={3}
                   aria-label="Venue longitude"
                   className="bg-greyBlur w-box280 sm:w-box490 pl-1"
                 />
+                <span className="error">{errors.location.lng}</span>
               </div>
             </div>
             <div className="flex flex-col gap-2.5">
