@@ -3,23 +3,36 @@ import { Link } from "react-router-dom";
 import BookingEdit from "../BookingEdit";
 import useGETProfileData from "../../hooks/useGETProfileData";
 import { format } from "date-fns";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
 
+/**
+ * Component for displaying and managing profile bookings.
+ *
+ * @component
+ */
 function ProfileBooking() {
   const [bookings, setBooking] = useState([]);
   const [isBookingEditFormShown, setIsBookingEditFormShown] = useState(false);
   const [venueIdToShow, setVenueIdToShow] = useState(null);
   const [validBookings, setValidBookings] = useState([]);
-  const { profileData } = useGETProfileData();
   const [bookingType, setBookingType] = useState("upcoming");
+  const { profileData } = useGETProfileData();
 
   const divRef = useRef(null);
 
+  /**
+   * Effect to set the bookings when profileData is loaded.
+   */
   useEffect(() => {
     if (profileData && profileData.bookings) {
       setBooking(profileData.bookings);
     }
   }, [profileData]);
 
+  /**
+   * Effect to filter the bookings based on the current booking type.
+   */
   useEffect(() => {
     if (bookings) {
       const currentDate = new Date();
@@ -38,6 +51,11 @@ function ProfileBooking() {
     }
   }, [bookings, bookingType]);
 
+  /**
+   * Toggles the display of the booking edit form for a specific venue.
+   *
+   * @param {string} id - The ID of the venue to show/edit.
+   */
   const handleCreateVenueForm = (id) => {
     if (venueIdToShow === id) {
       setVenueIdToShow(null);
@@ -48,6 +66,11 @@ function ProfileBooking() {
     }
   };
 
+  /**
+   * Handles click outside the booking edit form to close it.
+   *
+   * @param {Event} event - The mouse click event.
+   */
   const handleClickOutside = (event) => {
     if (divRef.current && !divRef.current.contains(event.target)) {
       setIsBookingEditFormShown(false);
@@ -55,6 +78,9 @@ function ProfileBooking() {
     }
   };
 
+  /**
+   * Effect to add event listener for detecting clicks outside the booking edit form.
+   */
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -62,11 +88,19 @@ function ProfileBooking() {
     };
   }, []);
 
+  /**
+   * Closes the booking edit form.
+   */
   const handleCloseBtn = () => {
     setVenueIdToShow(null);
     setIsBookingEditFormShown(false);
   };
 
+  /**
+   * Deletes a venue from the bookings list.
+   *
+   * @param {string} venueId - The ID of the venue to delete.
+   */
   const handleDeleteVenue = (venueId) => {
     setBooking((prevBookings) => prevBookings.filter((booking) => booking.id !== venueId));
   };
@@ -86,83 +120,84 @@ function ProfileBooking() {
               Outdated
             </button>
           </div>
-          {bookingType === "upcoming" && <p className="text-center text-2xl p-2.5">Current Upcoming Bookings</p>}
-          {bookingType === "active" && <p className="text-center text-2xl p-2.5">Current Active Bookings</p>}
-          {bookingType === "outdated" && <p className="text-center text-2xl p-2.5">Current Outdated Bookings</p>}
+          {bookingType === "upcoming" && <h2 className="text-center text-2xl p-2.5">Current Upcoming Bookings</h2>}
+          {bookingType === "active" && <h2 className="text-center text-2xl p-2.5">Current Active Bookings</h2>}
+          {bookingType === "outdated" && <h2 className="text-center text-2xl p-2.5">Current Outdated Bookings</h2>}
           {profileData.bookings ? (
-            profileData.bookings.length === 0 ? (
-              <p className="text-xl">No bookings found.</p>
-            ) : (
-              <div
-                className={`flex flex-1 flex-col flex-wrap gap-7 md:flex-row md:gap-5 md:w-box700 lg:w-box820 xl:w-box1240 xxl:w-box1660 ${
-                  validBookings.length < 2 ? "md:justify-center" : "md:justify-normal"
-                } ${validBookings.length < 3 ? "xl:justify-center" : "xl:justify-normal"} ${
-                  validBookings.length < 4 ? "xxl:justify-center" : "xxl:justify-normal"
-                }`}
-              >
-                {validBookings.map((booked) => (
-                  <div key={booked.id} className=" self-center w-box300 sm:w-box490 md:w-box340 lg:w-box400">
-                    <Link to={`/venue/${booked.venue.id}`} className="profileVenues rounded-lg">
-                      <div className="imgBox">
-                        {booked.venue.media[0] ? (
-                          <img src={booked.venue.media[0].url} alt={booked.venue.media[0].alt} />
-                        ) : (
-                          <img src="https://images.unsplash.com/photo-1579547945413-497e1b99dac0" alt="Venue" />
-                        )}
-                      </div>
-                      <div className="h-48 p-3 text-lg">
-                        <div className="flex justify-between text-xl">
-                          <h2>{booked.venue.name}</h2>
-                          <p>⭐{booked.venue.rating}</p>
-                        </div>
-                        <div className="flex justify-between">
-                          <h3>Country: {booked.venue.location.country}</h3>
-                        </div>
-                        <div className="flex flex-col">
-                          <div className="flex flex-row justify-between">
-                            <p>Date From:</p>
-                            <p>{format(new Date(booked.dateFrom), "dd MMM yyyy")}</p>
-                          </div>
-                          <div className="flex flex-row justify-between">
-                            <p>Date To:</p>
-                            <p>{format(new Date(booked.dateTo), "dd MMM yyyy")}</p>
-                          </div>
-                          <div className="flex flex-row justify-between">
-                            <p>Guests:</p>
-                            <p>{booked.guests}</p>
-                          </div>
-                          <div className="flex flex-row justify-between">
-                            <p>Total Price:</p>
-                            <p>{booked.venue.price}</p>
-                          </div>
+            <div
+              className={`flex flex-1 flex-col flex-wrap gap-7 md:flex-row md:gap-5 md:w-box700 lg:w-box820 xl:w-box1240 xxl:w-box1660 ${
+                validBookings.length < 2 ? "md:justify-center" : "md:justify-normal"
+              } ${validBookings.length < 3 ? "xl:justify-center" : "xl:justify-normal"} ${
+                validBookings.length < 4 ? "xxl:justify-center" : "xxl:justify-normal"
+              }`}
+            >
+              {validBookings.map((booked) => (
+                <div key={booked.id} className=" self-center w-box300 sm:w-box490 md:w-box340 lg:w-box400">
+                  <Link to={`/venue/${booked.venue.id}`} className="profileVenues rounded-lg">
+                    <div className="imgBox">
+                      {booked.venue.media[0] ? (
+                        <img src={booked.venue.media[0].url} alt={booked.venue.media[0].alt} />
+                      ) : (
+                        <img src="https://images.unsplash.com/photo-1579547945413-497e1b99dac0" alt="Venue" />
+                      )}
+                    </div>
+                    <div className="h-48 p-3 text-lg">
+                      <div className="flex justify-between text-xl">
+                        <h2>{booked.venue.name}</h2>
+                        <div className="flex gap-1 text-xl">
+                          <p className="text-star">
+                            <FontAwesomeIcon icon={faStar} />
+                          </p>
+                          <p>{booked.venue.rating}</p>
                         </div>
                       </div>
-                    </Link>
-                    {bookingType === "upcoming" && (
-                      <button
-                        className="btnStyle alternativeBtnStyle w-box300 sm:w-box490 md:w-box340 lg:w-box400"
-                        onClick={() => handleCreateVenueForm(booked.id)}
-                      >
-                        Edit Booking
-                      </button>
-                    )}
-                    {venueIdToShow === booked.id && isBookingEditFormShown && (
-                      <div className="overlay ">
-                        <div ref={divRef} className="modulePosition w-box340 h-box700 rounded-lg border-2 border-greyBlur md:w-box610 lg:w-box900">
-                          <BookingEdit
-                            setVenueIdToShow={setVenueIdToShow}
-                            setBooking={setBooking}
-                            onDeleteBooking={handleDeleteVenue}
-                            venueId={booked.id}
-                            handleCloseBtn={handleCloseBtn}
-                          />
+                      <div className="flex justify-between">
+                        <h3>Country: {booked.venue.location.country}</h3>
+                      </div>
+                      <div className="flex flex-col">
+                        <div className="flex flex-row justify-between">
+                          <p>Date From:</p>
+                          <p>{format(new Date(booked.dateFrom), "dd MMM yyyy")}</p>
+                        </div>
+                        <div className="flex flex-row justify-between">
+                          <p>Date To:</p>
+                          <p>{format(new Date(booked.dateTo), "dd MMM yyyy")}</p>
+                        </div>
+                        <div className="flex flex-row justify-between">
+                          <p>Guests:</p>
+                          <p>{booked.guests}</p>
+                        </div>
+                        <div className="flex flex-row justify-between">
+                          <p>Total Price:</p>
+                          <p>{booked.venue.price}</p>
                         </div>
                       </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )
+                    </div>
+                  </Link>
+                  {bookingType === "upcoming" && (
+                    <button
+                      className="btnStyle alternativeBtnStyle w-box300 sm:w-box490 md:w-box340 lg:w-box400"
+                      onClick={() => handleCreateVenueForm(booked.id)}
+                    >
+                      Edit Booking
+                    </button>
+                  )}
+                  {venueIdToShow === booked.id && isBookingEditFormShown && (
+                    <div className="overlay ">
+                      <div ref={divRef} className="modulePosition w-box340 h-box700 rounded-lg border-2 border-greyBlur md:w-box610 lg:w-box900">
+                        <BookingEdit
+                          setVenueIdToShow={setVenueIdToShow}
+                          setBooking={setBooking}
+                          onDeleteBooking={handleDeleteVenue}
+                          venueId={booked.id}
+                          handleCloseBtn={handleCloseBtn}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           ) : (
             <div className="loading flex self-center"></div>
           )}
