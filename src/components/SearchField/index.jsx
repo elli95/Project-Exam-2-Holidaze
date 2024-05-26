@@ -1,42 +1,38 @@
-// import { API_VENUES } from "../../shared/apis";
-// import useFetchApi from "../../hooks/useFetchApi";
 import { useEffect, useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-// import usePostApiKey from "../../hooks/usePostApiKey";
-// import useLocalStorage from "../../hooks/useLocalStorage";
-// import useApiCall from "../../hooks/useApiCall";
-// import useAllVenuesApiCall from "../../hooks/useAllVenuesApiCall";
 import useVenueApiCall from "../../hooks/useVenueApiCall";
 
+/**
+ * SearchField component renders a search input field with dynamic search functionality
+ * that filters venues based on the user's input.
+ * It also displays a dropdown list of filtered venues.
+ *
+ * @component
+ * @param {function} onLinkClick - Function to handle link clicks.
+ * @returns {JSX.Element} The rendered search field component.
+ */
+
 function SearchField({ onLinkClick }) {
-  // const { venues, isError } = useFetchApi(API_VENUES);
-  // const [venues, setVenue] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  // const { apiKey } = usePostApiKey();
-  // const { accessToken } = useLocalStorage();
-  // const apiCall = useApiCall();
   const inputRef = useRef();
   const listRef = useRef();
-
-  // const { allVenues } = useAllVenuesApiCall();
-  // const fetchApiData = () => {
   const currentPage = 1;
   const itemsPerPage = 100;
   const { errorMessageVenues, venues } = useVenueApiCall(currentPage, itemsPerPage);
-  // };
-  // const navigate = useNavigate();
   const location = useLocation();
 
+  /**
+   * Handles the change event of the search input field.
+   * @param {Object} input - The input event object.
+   */
   const inputValueChange = (input) => {
     const newValue = input.target.value;
     setInputValue(newValue);
   };
 
-  // useEffect(() => {
   const filteredVenues = venues.filter((venueData) => venueData.name.toLowerCase().includes(inputValue.toLowerCase()));
-  // }, []);
-  console.log("filteredVenues", filteredVenues);
 
+  // Close dropdown when clicked outside the input field or dropdown list
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (inputRef.current && !inputRef.current.contains(event.target) && listRef.current && !listRef.current.contains(event.target)) {
@@ -51,6 +47,7 @@ function SearchField({ onLinkClick }) {
     };
   }, []);
 
+  // Clear input value when the location changes
   useEffect(() => {
     setInputValue("");
   }, [location]);
@@ -63,7 +60,6 @@ function SearchField({ onLinkClick }) {
         type="text"
         placeholder="Search"
         value={inputValue}
-        // onClick={fetchApiData}
         onChange={inputValueChange}
         className="rounded-lg p-2 max-h-10 text-xl w-80 h-10 lg:w-96 z-20 relative"
       ></input>
@@ -80,7 +76,6 @@ function SearchField({ onLinkClick }) {
           {errorMessageVenues && <span className="error flex justify-center pt-2.5 text-xl">{errorMessageVenues}</span>}
         </ul>
       )}
-      {/* {!inputValue && <div className="loading"></div>} */}
     </div>
   );
 }

@@ -1,4 +1,3 @@
-// import "./index.css";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faBars } from "@fortawesome/free-solid-svg-icons";
@@ -6,19 +5,36 @@ import { Link } from "react-router-dom";
 import SearchField from "../SearchField";
 import useLocalStorage from "../../hooks/useLocalStorage";
 
+/**
+ * HeaderNav component renders the navigation bar for the Holidaze application.
+ * It includes the brand logo, search button, and navigation menu with login/logout functionality.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered header navigation component.
+ */
+
 function HeaderNav() {
   const { accessToken, clearLocalStorage } = useLocalStorage();
   const [isSearchShown, setIsSearchShown] = useState(false);
   const [isNavShown, setIsNavShown] = useState(false);
 
+  /**
+   * Toggles the visibility of the search field.
+   */
   const handleSearchClick = () => {
     setIsSearchShown(!isSearchShown);
   };
 
+  /**
+   * Toggles the visibility of the navigation menu.
+   */
   const handleNavClick = () => {
     setIsNavShown(!isNavShown);
   };
 
+  /**
+   * Hides both the search field and navigation menu.
+   */
   const handleHideMenus = () => {
     setIsSearchShown(false);
     setIsNavShown(false);
@@ -26,9 +42,11 @@ function HeaderNav() {
 
   const isLoggedIn = accessToken.length > 0;
 
+  /**
+   * Clears the local storage and redirects to the homepage on logout.
+   */
   const handleLogoutClick = () => {
     clearLocalStorage();
-    // window.location.reload(false);
     window.location.href = "/";
   };
 

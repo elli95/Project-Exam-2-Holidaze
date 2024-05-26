@@ -6,6 +6,15 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 
+/**
+ * RegistrationPage component renders a registration form for users to sign up.
+ * It includes input fields for name, email, avatar URL, password, and a checkbox for venue manager.
+ * Upon successful registration, it displays a success message and a link to the login page.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered registration form component.
+ */
+
 function RegistrationPage() {
   const { validateField } = useVenues();
   const [successMessage, setSuccessMessage] = useState(false);
@@ -38,6 +47,12 @@ function RegistrationPage() {
 
   const apiCall = useApiCall();
 
+  /**
+   * Handles input blur events and validates the input fields.
+   * Updates the errors state based on validation results.
+   *
+   * @param {Event} event - The blur event object.
+   */
   const handleBlur = (event) => {
     const { name, value } = event.target;
     const newErrors = { ...errors };
@@ -67,6 +82,13 @@ function RegistrationPage() {
     setErrors(newErrors);
   };
 
+  /**
+   * Handles form submission events.
+   * Performs form data validation and sends a POST request to register the user.
+   * Displays success or error messages based on the registration outcome.
+   *
+   * @param {Event} event - The form submission event object.
+   */
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("This form Please correct them.");
