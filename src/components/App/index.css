@@ -1,14 +1,3 @@
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
-
-/* main {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-  margin: 52px 0px 0px 0px;
-  min-height: 100vh;
-} */
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 /* reference: https://blog.pope.tech/2020/02/28/missing-form-label-search/ */
@@ -36,14 +25,6 @@ body {
 .noHeaderImg {
   background-image: url(../../images/joshua-bartell-6vvIBTvL90A-unsplash.webp);
 }
-
-/* .headerImg {
-  position: fixed !important;
-} */
-
-/* .mainDivHome {
-  background-image: url(../../images/mink-mingle-AlEyuIKuSmc-unsplash.jpg);
-} */
 
 .imgCover {
   position: relative;
@@ -99,7 +80,7 @@ img {
 
 /*Meta icon style*/
 
-.metaIconTrue,
+/* .metaIconTrue,
 .metaIconFalse {
   display: inline-block;
   align-self: center;
@@ -109,19 +90,32 @@ img {
   padding: 2px 8px;
   position: relative;
   font-size: 1.3rem;
-}
+} */
 
 .metaIconTrue {
+  display: inline-block;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 2px 8px;
+  position: relative;
+  font-size: 1.3rem;
   background: #5ae25a;
   border: 2px solid #259a25;
 }
 
-.metaIconFalse {
+/* .metaIconTrue {
+  background: #5ae25a;
+  border: 2px solid #259a25;
+} */
+
+/* .metaIconFalse {
   background-color: lightgray;
   border: 2px solid red;
-}
+} */
 
-.metaIconFalse::after {
+/* .metaIconFalse::after {
   content: "X";
   color: rgba(255, 0, 0, 0.47);
   position: absolute;
@@ -133,7 +127,7 @@ img {
   font-weight: 100;
   text-align: center;
   line-height: 29px;
-}
+} */
 
 /* button style */
 .btnStyle {
@@ -190,12 +184,6 @@ img {
   gap: inherit !important;
 }
 
-/* .switch {
-  width: 34px;
-  height: 34px;
-  color: #05ff26;
-} */
-
 /*Form style*/
 
 .formStyle {
@@ -209,7 +197,6 @@ img {
 .formStyle form div {
   display: flex;
   flex-direction: column;
-  /* padding: 0px 5px; */
 }
 
 .formStyle form div input,
@@ -219,7 +206,6 @@ img {
   border: 2px solid gray;
   border-radius: 5px;
   padding: 0.5rem;
-  /* width: 280px; */
   align-self: center;
 }
 
@@ -277,6 +263,9 @@ img {
   overflow: auto;
 }
 
+.bookingEditModuleHight {
+  height: 100vh !important;
+}
 /* Homepage */
 
 .venueSection {
