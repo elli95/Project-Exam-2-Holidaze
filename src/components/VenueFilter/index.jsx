@@ -3,8 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import useAllVenuesApiCall from "../../hooks/useAllVenuesApiCall";
 
+/**
+ * Component for filtering venue data based on user input.
+ * @param {Function} setFilteredVenues - Function to set the filtered venue data.
+ * @returns {JSX.Element} - JSX element representing the venue filter form.
+ */
 function VenueFilter({ setFilteredVenues }) {
-  // const [venues, setVenues] = useState([]);
   const [filters, setFilters] = useState({
     title: "",
     location: {
@@ -21,6 +25,9 @@ function VenueFilter({ setFilteredVenues }) {
 
   const { allVenues, isLoading } = useAllVenuesApiCall();
 
+  /**
+   * Applies filters to the venue data.
+   */
   const applyFilters = useCallback(() => {
     if (!isLoading) {
       const filteredData = allVenues.filter((item) => {
@@ -64,18 +71,16 @@ function VenueFilter({ setFilteredVenues }) {
     }
   }, [allVenues, isLoading, setFilteredVenues, filters]);
 
-  // useEffect(() => {
-  //   if (!isLoading && !filtersCleared) {
-  //     applyFilters();
-  //   }
-  // }, [allVenues, filters, isLoading, filtersCleared]);
   useEffect(() => {
     if (!isLoading && !filtersCleared) {
       applyFilters();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allVenues, filters, isLoading, filtersCleared, applyFilters]);
 
+  /**
+   * Handles changes in input fields.
+   * @param {Event} event - The event object.
+   */
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
     const parsedValue = type === "radio" ? parseFloat(value) : value;
@@ -97,12 +102,19 @@ function VenueFilter({ setFilteredVenues }) {
     }
   };
 
+  /**
+   * Handles form submission.
+   * @param {Event} event - The event object.
+   */
   const handleSubmit = (event) => {
     event.preventDefault();
     setFiltersCleared(false);
     applyFilters();
   };
 
+  /**
+   * Clears all filters and resets the form.
+   */
   const handleClearFilter = () => {
     setFilters({
       title: "",
@@ -121,28 +133,49 @@ function VenueFilter({ setFilteredVenues }) {
     setFiltersCleared(true);
   };
 
-  //console.log("filterdData filters:", filters);
-
   return (
     <div className="flex justify-center venueEdit">
       <form id="filterForm" onSubmit={handleSubmit} className="flex flex-col justify-center rounded p-7 gap-2.5 max-w-box700 venueFilterBox">
-        <input type="text" name="name" onChange={handleChange} placeholder="name" className="w-5/6 text-lg sm:w-box570" />
+        <label htmlFor="name" className="wave-fix ">
+          Name
+        </label>
+        <input type="text" id="name" name="name" onChange={handleChange} placeholder="Name" className="w-5/6 text-lg sm:w-box570" />
+
         <div className="flex flex-wrap gap-2.5 justify-center">
-          <input type="text" name="location.country" onChange={handleChange} placeholder="Country" className="w-5/6 text-lg sm:w-box280" />
-          <input type="text" name="location.city" onChange={handleChange} placeholder="City" className="w-5/6 text-lg sm:w-box280" />
+          <div>
+            <label htmlFor="country" className="wave-fix ">
+              Country
+            </label>
+            <input
+              type="text"
+              id="country"
+              name="location.country"
+              onChange={handleChange}
+              placeholder="Country"
+              className="w-5/6 text-lg sm:w-box280"
+            />
+          </div>
+          <div>
+            <label htmlFor="city" className="wave-fix ">
+              City
+            </label>
+            <input type="text" id="city" name="location.city" onChange={handleChange} placeholder="City" className="w-5/6 text-lg sm:w-box280" />
+          </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-2.5 justify-center  sm:justify-between">
           <div className="flex flex-col gap-2.5">
-            <div className="flex gap-2.5 justify-center text-lg">
-              {[1, 2, 3, 4, 5].map((rating) => (
-                <label key={rating}>
-                  <input type="radio" name="rating" value={rating} onChange={handleChange} className="mr-1" />
-
-                  <FontAwesomeIcon icon={faStar} className="text-star" />
-                  {rating}
-                </label>
-              ))}
-            </div>
+            <fieldset>
+              <legend>Rating</legend>
+              <div className="flex gap-2.5 justify-center text-lg">
+                {[1, 2, 3, 4, 5].map((rating) => (
+                  <label key={rating}>
+                    <input type="radio" name="rating" value={rating} onChange={handleChange} className="mr-1" />
+                    <FontAwesomeIcon icon={faStar} className="text-star" />
+                    {rating}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
             <div className="flex flex-wrap gap-2.5 justify-center text-lg">
               <label className="flex gap-1">
                 <input type="checkbox" name="wifi" onChange={handleChange} />

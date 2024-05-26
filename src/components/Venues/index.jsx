@@ -5,34 +5,33 @@ import { faStar, faAnglesLeft, faAnglesRight, faWifi, faSquareParking, faMugHot,
 import VenueFilter from "../VenueFilter";
 import useVenueApiCall from "../../hooks/useVenueApiCall";
 
+/**
+ * Venues Component
+ * Displays a list of venues with pagination and filtering functionality.
+ * @returns JSX.Element
+ */
+
 function Venues() {
   const [filteredVenues, setFilteredVenues] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(40);
   const { errorMessageVenues, venues, meta } = useVenueApiCall(currentPage, itemsPerPage);
-  // const textRef = useRef(null);
 
-  // const { venues, meta } = useVenueApiCall(currentPage, itemsPerPage);
-  console.log("venues123123123", venues);
-  console.log("filteredVenues123123123", filteredVenues);
-
+  // Function to handle pagination
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // const updateItemsPerPage = (newItemsPerPage) => {
-  //   setItemsPerPage(newItemsPerPage);
-  //   setCurrentPage(1); // Reset to page 1 when items per page changes
-  // };
-
+  // Determine venues to display based on whether filtering is applied or not
   const displayVenues = filteredVenues.length > 0 ? filteredVenues : venues;
 
+  // Pagination Component
   const Pagination = ({ itemsPerPage, totalItems, paginate }) => {
-    const pageNumbers = [];
+    // Calculate total number of pages
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-    for (let i = 1; i <= totalPages; i++) {
-      pageNumbers.push(i);
-    }
+    // Array to hold page numbers
+    const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
+    // Function to render pagination buttons
     const renderButton = (number) => (
       <li key={number}>
         <button onClick={() => paginate(number)} className={`btnStyle ${currentPage === number ? "bg-green" : "bg-white"}`}>
@@ -105,15 +104,6 @@ function Venues() {
             <Pagination itemsPerPage={itemsPerPage} totalItems={meta.totalCount} paginate={paginate} />
           </div>
         )}
-        {/* <div className={`${!filteredVenues.length > 0 ? "" : "pt-10"} venueSection`}> */}
-        {/* </div> */}
-        {/* <Pagination currentPage={currentPage} totalPages={meta.totalPages} paginate={paginate} />
-      <VenueFilter setFilteredVenues={setFilteredVenues} />
-      {!filteredVenues.length > 0 && (
-        <div className="flex justify-center p-5">
-          <Pagination itemsPerPage={itemsPerPage} totalItems={meta.totalCount} paginate={paginate} />
-        </div>
-      )} */}
         <div className={`${!filteredVenues.length > 0 ? "" : "pt-10"} venueSection`}>
           {!displayVenues ? (
             <div className="loading"></div>
@@ -121,7 +111,6 @@ function Venues() {
             displayVenues.map((venue) => (
               <Link key={venue.id} to={`/venue/${venue.id}`} className=" rounded">
                 <div className="imgBox">
-                  {/* {venue.media[0] && <img src={venue.media[0].url} alt={venue.media[0].alt} />} */}
                   {venue.media[0] ? (
                     <img src={venue.media[0].url} alt={venue.media[0].alt} />
                   ) : (
@@ -145,24 +134,28 @@ function Venues() {
                   </div>
                   <div className="flex h-10 gap-2.5">
                     {venue.meta.wifi && (
-                      <h3 title="Wifi included" className="metaIconTrue">
+                      <div title="Wifi included" className="metaIconTrue">
                         <FontAwesomeIcon icon={faWifi} />
-                      </h3>
+                        <span className="sr-only">Wifi included</span>
+                      </div>
                     )}
                     {venue.meta.parking && (
-                      <h3 title="Parking available" className="metaIconTrue">
+                      <div title="Parking available" className="metaIconTrue">
                         <FontAwesomeIcon icon={faSquareParking} />
-                      </h3>
+                        <span className="sr-only">Parking available</span>
+                      </div>
                     )}
                     {venue.meta.breakfast && (
-                      <h3 title="Breakfast included" className="metaIconTrue">
+                      <div title="Breakfast included" className="metaIconTrue">
                         <FontAwesomeIcon icon={faMugHot} />
-                      </h3>
+                        <span className="sr-only">Breakfast included</span>
+                      </div>
                     )}
                     {venue.meta.pets && (
-                      <h3 title="Pets permitted" className="metaIconTrue">
+                      <div title="Pets permitted" className="metaIconTrue">
                         <FontAwesomeIcon icon={faPaw} />
-                      </h3>
+                        <span className="sr-only">Pets permitted</span>
+                      </div>
                     )}
                   </div>
                   <p className="text-xl">{venue.price}$ Per Night</p>
@@ -171,9 +164,6 @@ function Venues() {
             ))
           )}
         </div>
-        {/* {!meta ? (
-        <div className="loading"></div>
-      ) : ( */}
         {!filteredVenues.length > 0 && (
           <div className="flex justify-center p-5">
             <Pagination itemsPerPage={itemsPerPage} totalItems={meta.totalCount} paginate={paginate} />

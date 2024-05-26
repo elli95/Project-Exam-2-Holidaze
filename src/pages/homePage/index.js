@@ -1,9 +1,15 @@
 import { Link } from "react-router-dom";
 import Venues from "../../components/Venues";
 
+/**
+ * HomePage component represents the landing page of the application.
+ * It provides information about starting a journey with Holidaze and allows users to sign up.
+ * It also displays a list of venues using the Venues component.
+ * @returns {JSX.Element} JSX element representing the HomePage component
+ */
 function HomePage() {
   return (
-    <div className="mainDiv imgCover flex-col">
+    <div className="mainDiv imgCover flex-col py-10 mt-10 lg:mt-0">
       <div className="self-center">
         <div className="m-5 bg-grayShadeHover rounded homePageInfoCard p-1.5 sm:py-5 sm:px-10">
           <h1 className="flex justify-center text-center text-3xl md:text-4xl lg:text-5xl pt-10 pb-5 font-semibold">
