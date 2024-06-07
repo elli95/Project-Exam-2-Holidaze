@@ -51,6 +51,7 @@ The project is a venue booking platform designed to facilitate hotel reservation
 
 [![My Skills](https://skillicons.dev/icons?i=react)](https://react.dev/)
 [![My Skills](https://skillicons.dev/icons?i=js)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![My Skills](https://skillicons.dev/icons?i=tailwindcss)](https://tailwindcss.com/)
 [![My Skills](https://skillicons.dev/icons?i=css)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
